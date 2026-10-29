@@ -3,6 +3,10 @@
 Scans the promoters of a gene panel (the *Spic* / Nfe2l2 / ferroptosis network) for binding sites of
 SpiC, Nfe2l2 (two matrices) and Bach1, and produces a site map and a coordinate table.
 
+The analysis can be run two ways: directly through the notebook, or through the **Claude agent** bundled
+with this repository, which asks which motifs and genes you want, checks the gene symbols against the
+annotation before running, and packages the report. See [The Claude agent](#the-claude-agent).
+
 **What the notebook does**
 
 1. Reads the RefSeq GRCm39 annotation and keeps the **RefSeq Select** (canonical) transcript of each gene.
@@ -18,15 +22,23 @@ Everything is in one notebook: [Notebooks/PromoterExtraction_adapted_with_rsatco
 
 ```
 DNA_032_FTmotif_search_for_agent/
+├── .claude/
+│   └── skills/
+│       └── ft-motif-search-skill/              # the Claude agent (canonical copy)
+│           ├── SKILL.md
+│           └── scripts/                        # check_genome, check_genes, motifscan, runconfig
 ├── Data/
 │   ├── ncbi_dataset_RefSeq_GCF_000001635.27/   # genome FASTA + GFF3 annotation (not in git, see below)
 │   └── Mus_musculus_<date>_CISBP/              # CIS-BP download: pwms_all_motifs/, logos_used_motifs/
 ├── Notebooks/                                  # the analysis notebook
-├── Results/
+├── Results/                                    # notebook outputs
 │   ├── promoters_sequences.fasta               # extracted promoters (regenerated on every run)
 │   ├── motifs_coordinates_SpiC_network_all_TFs.csv
 │   ├── matrix_scan/                            # RSAT inputs/outputs: .tf matrices, .ft scan, sitemap/logo SVGs
 │   └── results_report/                         # final HTML report, tables, SVGs (also zipped with a timestamp)
+├── runs/                                       # agent outputs, one timestamped directory per run (gitignored)
+├── dist/                                       # built .skill file (gitignored)
+├── package_skill.sh
 └── README.md
 ```
 
@@ -34,11 +46,12 @@ DNA_032_FTmotif_search_for_agent/
 
 | Component | Used for | Notes |
 |---|---|---|
-| **RSAT** (`rsat-core`, bioconda) | `matrix-scan`, `oligo-analysis` | Perl-based; tested with `rsat-core 2025.04.04` |
+| **RSAT** (`rsat-core`, bioconda) | `matrix-scan`, `oligo-analysis` | Perl-based; tested with `rsat-core` 2025.04.04 and 2026.10.08 |
 | Python ≥ 3.10 | notebook kernel | |
 | `pyranges` (0.x), `pyfaidx`, `pandas`, `numpy` | GFF parsing, promoter extraction | the notebook uses the pyranges 0.x API (`Feature`, `five_end`, `slack`), so pin `pyranges<1` |
 | `matplotlib`, `pillow` | site map, CIS-BP logos | |
 | `itables`, `session-info` | interactive tables, session record | |
+| `pyyaml` | agent settings files | only needed for the Claude agent |
 | `jupyter` / `ipykernel` | running the notebook | kernel name used: `python3` |
 | **Quarto** (≥ 1.3) | rendering the final report (last cell) | needs a Jupyter kernel with the packages above |
 | Mouse genome + annotation, CIS-BP PWMs | input data | see [Data](#2-input-data) |
@@ -72,6 +85,10 @@ conda activate rsat
 rsat matrix-scan -h | head
 ```
 
+Note that `matrix-scan` is not a standalone command: `rsat-core` dispatches every tool through the single `rsat`
+entry point. The `matrix-scan-quick` binary that *is* on `PATH` is a different program. The env's `bin` must lead
+`PATH` or the Perl shebang resolves to the system interpreter and the tool dies on missing modules.
+
 **b) Notebook environment (conda + pip)**
 
 ```bash
@@ -79,13 +96,13 @@ conda create -n pybioinfo -c conda-forge -c bioconda python=3.12 pip jupyter ipy
 conda activate pybioinfo
 
 # Python packages (pip)
-pip install "pyranges<1" pyfaidx pandas numpy matplotlib pillow itables session-info
+pip install "pyranges<1" pyfaidx pandas numpy matplotlib pillow itables session-info pyyaml
 
 # register the Jupyter kernel
 python -m ipykernel install --user --name python3 --display-name pybioinfo
 ```
 
-All Python dependencies can also come from conda (`-c conda-forge -c bioconda pyranges pyfaidx pandas numpy matplotlib pillow itables session-info`);
+All Python dependencies can also come from conda (`-c conda-forge -c bioconda pyranges pyfaidx pandas numpy matplotlib pillow itables session-info pyyaml`);
 use one or the other, not both, within the same environment. Check with `python -c "import pyranges, pyfaidx, itables, session_info"`.
 
 **c) Quarto (only for the final report cell)**
@@ -93,12 +110,6 @@ use one or the other, not both, within the same environment. Check with `python 
 Install from <https://quarto.org/docs/get-started/> (a system install is fine; it just needs to be on `PATH`).
 Quarto renders with the kernel of the active environment, so run it from `pybioinfo`; the notebook sets
 `QUARTO_PYTHON` to the current interpreter.
-
-Check RSAT works:
-
-```bash
-$CONDA_PREFIX/bin/rsat matrix-scan -h | head      # run with the rsat env active, or use its full path
-```
 
 ### Known issue: Apple Silicon (M1/M2/M3…) Macs
 
@@ -113,6 +124,18 @@ Workarounds:
   conda config --env --set subdir osx-64     # keep this env on osx-64 for later installs
   ```
 - **Docker / Apptainer:** run RSAT from a container and point `RSAT_ENV`/the `rsat()` helper at it.
+  Note that RSAT's `RSAT_config.bashrc` is appended to `/etc/bash.bashrc`, which bash reads only for *interactive*
+  shells, so a one-shot `docker run … matrix-scan` will not find the tool unless the config is sourced explicitly.
+
+### Known issue: `matrix-scan -bginput` is broken
+
+RSAT's built-in background estimation fails at every Markov order with *“the sum must be strictly positive”*,
+followed by a division by zero in `RSAT/matrix.pm`. Confirmed in bioconda `rsat-core` 2025.04.04 **and still present
+in 2026.10.08**, so this is a permanent workaround, not a patch awaiting a fix. The background is therefore estimated
+with `oligo-analysis` and passed via `-bgfile`: the same estimator over the same sequences, just made explicit.
+
+Related: `matrix-scan` can print `Error` on **stdout while exiting 0**, so the return code alone is not a sufficient
+check. The notebook's `rsat()` helper and the agent's `motifscan.py` both grep for it; do not simplify that away.
 
 ### 2. Input data
 
@@ -124,18 +147,34 @@ unzip mouse_GRCm39.zip -d tmp_ncbi
 # place/rename into Data/ncbi_dataset_RefSeq_GCF_000001635.27/ as:
 #   GCF_000001635.27_GRCm39_genomic.fna
 #   genomic.gff
+#   dataset_catalog.json        <- keep this: it records the expected file sizes
+#   assembly_data_report.jsonl  <- keep this: it records the annotation release
 ```
 
 (`datasets` is the [NCBI Datasets CLI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/); the same files can be
 downloaded from the NCBI genome page for GCF_000001635.27.) The `.fai` index is created automatically by pyfaidx on first use.
-These large files are in `.gitignore`.
+The two large files are in `.gitignore` — GitHub rejects anything over 100 MB, so the genome is never committed.
 
 > **Verify the genome download.** An incomplete copy fails silently: the FASTA is still readable, but chromosomes past the
 > cut-off come back as **empty promoter sequences**, so many genes have no sites and the map looks mostly empty.
-> The complete `GCF_000001635.27_GRCm39_genomic.fna` is **2,762,330,512 bytes**; the `.fai` should list 61 sequences.
-> After the extraction step, `Results/promoters_sequences.fasta` should contain one **2201 bp** sequence per gene.
+>
+> The quickest check is the agent's gate, which compares every file against the sizes NCBI recorded in
+> `dataset_catalog.json` and verifies the annotation release:
 > ```bash
-> ls -l Data/ncbi_dataset_RefSeq_GCF_000001635.27/*.fna
+> python .claude/skills/ft-motif-search-skill/scripts/check_genome.py \
+>     Data/ncbi_dataset_RefSeq_GCF_000001635.27 \
+>     --expect-annotation GCF_000001635.27-RS_2024_02
+> ```
+> Expected sizes, if you prefer to check by hand:
+>
+> | File | Bytes |
+> |---|---|
+> | `GCF_000001635.27_GRCm39_genomic.fna` | 2,762,330,512 |
+> | `genomic.gff` | 921,533,202 |
+>
+> The `.fai` should list 61 sequences. After the extraction step,
+> `Results/promoters_sequences.fasta` should contain one **2201 bp** sequence per gene:
+> ```bash
 > awk '/^>/{if(h)print h,n; h=$0; n=0; next}{n+=length($0)}END{print h,n}' Results/promoters_sequences.fasta | awk '$2!=2201'   # should print nothing
 > ```
 
@@ -147,7 +186,8 @@ Motifs used: `M03221_3.10` (Spic), `M09222_3.10` and `M10174_3.10` (Nfe2l2), `M1
 
 ### 3. Set the local paths
 
-Paths are hard-coded for the original machine. Edit these before running:
+Paths are hard-coded for the original machine. Edit these before running the notebook directly
+(the Claude agent resolves them itself and does not need this step):
 
 | Cell | Variable | Set to |
 |---|---|---|
@@ -165,6 +205,72 @@ Paths are hard-coded for the original machine. Edit these before running:
 Genes not found among RefSeq Select transcripts are listed in the setup summary; look up an alternate symbol (UniProt) and rerun.
 `Scd5` currently falls in this group.
 
+## The Claude agent
+
+This repository carries a Claude skill at `.claude/skills/ft-motif-search-skill/`.
+[Claude Code](https://claude.com/claude-code) loads it automatically when started from the repository root —
+there is nothing to install:
+
+```bash
+cd /path/to/DNA_032_FTmotif_search_for_agent
+claude
+```
+
+Then ask in ordinary words, for example *“scan the promoters of Hmox1, Gclm and Nqo1 for Nfe2l2 and Bach1”*.
+The agent will:
+
+1. Verify the genome is complete and the annotation release is the expected one, and refuse to run otherwise.
+2. Ask which transcription factor motifs to scan (Spic, Nfe2l2_1, Nfe2l2_2, Bach1).
+3. Take your gene list and check each symbol against the RefSeq Select transcripts, in seconds rather than
+   the minutes a full GFF parse costs.
+4. **Stop and tell you which symbols were not found**, with a UniProt link for each, and wait for replacements.
+5. Run the extraction and scan, reporting progress at each stage.
+6. Hand back a zip with the HTML report, the site map (SVG and PNG), the hits CSV and the raw `.ft` file,
+   plus the site map on its own.
+
+Every run writes to its own `runs/<timestamp>/` directory. Nothing from a previous run is ever reused or
+re-presented, and the agent does not modify any tracked file in this repository.
+
+### What you can and cannot change
+
+The agent reads an optional settings file. Create a starter with:
+
+```bash
+python .claude/skills/ft-motif-search-skill/scripts/runconfig.py --init my_settings.yaml
+python .claude/skills/ft-motif-search-skill/scripts/runconfig.py --check my_settings.yaml
+```
+
+**You can change:** which transcription factors are scanned, the gene panel, the p-value, and everything about
+the figures — motif colours, width, row height, dpi, output formats (svg/png/pdf), title, sort order, font size,
+legend — and what goes into the zip.
+
+**Fixed:** the reference genome (species, accession, assembly, annotation release), the background model and
+Markov order, pseudo-counts, strand handling, coordinate origin, the promoter window, transcript selection,
+matrix scaling and gene matching. These define the method; changing one produces results that look valid but
+are not comparable with previous runs or with the published analysis.
+
+A settings file that touches a fixed parameter is **rejected**, not silently ignored. If your work genuinely
+needs a different value, contact **sara.salazar@gimm.pt** rather than editing the analysis.
+
+Each run writes two files: `my_settings.yaml` (only your choices — share it and someone can reproduce your run
+exactly) and `run_config.yaml` (your choices *plus* the fixed method parameters, so the report always records
+what produced it).
+
+### Maintaining the skill
+
+The copy under `.claude/skills/` is canonical. To use the agent in claude.ai chat as well, build an installable
+copy rather than keeping a second one by hand:
+
+```bash
+./package_skill.sh          # writes dist/ft-motif-search-skill.skill
+```
+
+Install that file in Claude's profile settings and treat it as a build output: when the skill changes, run the
+script again. Editing the installed copy means the change is lost and the two silently disagree.
+
+Note that the claude.ai copy can answer questions about this workflow but cannot run it — that sandbox has no
+genome and no access to NCBI. Real scans run where the data is.
+
 ## Outputs
 
 | File | Content |
@@ -174,14 +280,21 @@ Genes not found among RefSeq Select transcripts are listed in the setup summary;
 | `Results/matrix_scan/sitemap_*.svg` | site map: one lane per scanned promoter, markers = motif sites (▲ direct, ▼ reverse), size ∝ significance |
 | `Results/motifs_coordinates_*.csv` | one row per site: sequence, promoter position, distance to TSS, genomic coordinates and strand |
 | `Results/results_report/` | HTML report, tables and figures; also packaged as `results_report_<timestamp>.zip` |
+| `runs/<timestamp>/` | the same set of outputs when the analysis is run through the Claude agent |
 
 Promoters with no site still get a (grey) lane in the map. Positions are relative to the TSS (TSS = 0, upstream negative).
+
+Keep the `;` comment lines at the top of any `.ft` file: they are the authoritative record of the matrices,
+pseudo-counts and background model that produced the scan, and `pd.read_csv(…, comment=";")` discards exactly
+those lines.
 
 ## Troubleshooting
 
 - **Few genes with sites / empty promoters:** truncated genome file, see the verify step above.
 - **`rsat` not found / Perl errors:** `RSAT_ENV` is wrong; the notebook runs `rsat` by full path and puts the env's `bin` first on `PATH`.
 - **`package not found: rsat-core`** on a Mac: Apple Silicon issue above.
+- **`the sum must be strictly positive` / division by zero in `matrix.pm`:** `-bginput` is broken; use the
+  `oligo-analysis` + `-bgfile` route, as the notebook and the agent both do.
 - **`Not found:` genes in the setup summary:** symbol is not a RefSeq Select mRNA in this annotation; try the alternate symbol.
 - **Quarto warnings at the end of `render_report`:**
   ```
@@ -193,3 +306,11 @@ Promoters with no site still get a (grey) lane in the map. Positions are relativ
   Quarto therefore will not clean its `..._files` folder, so stale figures from a previous render can remain there and the folder
   may need to be deleted manually before a re-render. To remove the warning, render from the project root (add a `_quarto.yml` there) instead of `Notebooks/`.
 - **pyranges attribute errors (`Feature`, `five_end`):** pyranges ≥ 1.0 installed; use `pyranges<1`.
+
+## Note on gene matching
+
+The notebook's `scan()` selects promoters with a case-insensitive **substring** test against the FASTA header.
+This is safe as used, because an earlier exact filter has already narrowed the FASTA to the requested panel, and
+no symbol in the current panel is contained in another — the published results are unaffected. It would not be
+safe for an arbitrary gene list (`Cat` would also match `Cat1`), so the agent's `motifscan.py` matches the gene
+field exactly and raises if any requested gene has no promoter.
