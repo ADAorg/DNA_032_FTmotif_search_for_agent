@@ -1,3 +1,0 @@
-Gene_Name,TranscriptID,Motif_Sequence_Found,start_motif_pos_promoter,end_motif_pos_promoter,Pval,sig,Chromosome,Chromosome_Strand,TSS_chromosomal_localization,dist_to_TSS,motif_genomic_localization,motif_genomic_strand
-Hmox1,NM_010442.2,TGCTCGCTCACGGT,-5,8,5.5e-05,4.261,NC_000074.7,+,75820246,0,75820241-75820254,+
-Nqo1,NM_008706.5,TGCCGACTCACTGT,-440,-427,1e-06,5.982,NC_000074.7,-,108129837,-427,108130264-108130277,+

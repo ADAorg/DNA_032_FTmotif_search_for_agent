@@ -1,7 +1,0 @@
-scan,full-set bg,per-scan bg,shared,only full-set,only per-scan,Jaccard,worst discordant P
-SpiC / network,24,24,24,0,0,1.0,-
-Nfe2l2 / network,44,45,44,0,1,0.978,0.0001
-Bach1 / network,18,18,18,0,0,1.0,-
-all 4 / network,86,87,86,0,1,0.989,0.0001
-Bach1 / TF + controls,2,2,2,0,0,1.0,-
-all 4 / TF promoters,7,7,7,0,0,1.0,-
