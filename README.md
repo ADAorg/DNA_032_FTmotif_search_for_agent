@@ -199,8 +199,8 @@ Paths are hard-coded for the original machine. Edit these before running the not
 
 1. Open the notebook with the kernel that has the Python packages.
 2. **Run all cells** (the last cell, `render_report`, has `eval: false` and is run on demand).
-3. To change the analysis, edit the `gene_subset` cell: `NETWORK_GENES` (genes scanned and mapped), `GENES_FOR_RETRIEVAL_ONLY`
-   (promoters extracted but not mapped), `PROMOTER_UPSTREAM_BP` / `PROMOTER_DOWNSTREAM_BP`, `PVAL`, `MOTIFS`.
+3. To change the analysis, edit the `gene_subset` cell: `NETWORK_GENES` (genes whose promoters are extracted, scanned and mapped),
+   `PROMOTER_UPSTREAM_BP` / `PROMOTER_DOWNSTREAM_BP`, `PVAL`, `MOTIFS`.
 
 Genes not found among RefSeq Select transcripts are listed in the setup summary; look up an alternate symbol (UniProt) and rerun.
 `Scd5` currently falls in this group.
