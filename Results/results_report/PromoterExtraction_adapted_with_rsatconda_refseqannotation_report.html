@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Promoter Motif Search Results</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/popper.min.js"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/anchor.min.js"></script>
+<link href="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/libs/bootstrap/bootstrap-2cd65caae563551c3e58ac66d3ea75bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Promoter Motif Search Results</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="analysis-setup" class="level1 page-columns page-full">
+<h1><strong>Analysis setup</strong></h1>
+<div id="setup_packages_paths" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Setup: Imports and Reference File Paths</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- data --------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyranges <span class="im">as</span> pr</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyfaidx                                  <span class="co"># FASTA indexing backend used by pr.get_sequence()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itables <span class="im">import</span> init_notebook_mode, options, show</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> itables <span class="im">import</span> to_html_datatable</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> itables.javascript <span class="im">import</span> to_html_datatable</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>init_notebook_mode(all_interactive<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- cmd / files / strings --------</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> urllib.parse <span class="im">import</span> quote</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- graph --------</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image                          <span class="co"># reads the CIS-BP logo PNGs</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- display --------</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown, HTML</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> session_info</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- Setting the Path for the necessary files -------- #</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Everything is derived from PROJECT, so moving the project only changes one line.</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># str() is used for the reference files because they are handed to pyranges/pyfaidx.</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>PROJECT <span class="op">=</span> Path(<span class="st">"/srv/ext_home/ssalazar/projects/GIMM_projects/DNA_032_FTmotif_search_for_agent"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>DATA    <span class="op">=</span> PROJECT <span class="op">/</span> <span class="st">"Data"</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>RESULTS <span class="op">=</span> PROJECT <span class="op">/</span> <span class="st">"Results"</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>RESULTS.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>SPECIES <span class="op">=</span> <span class="st">"Mus musculus"</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>GENOME_ASSEMBLY <span class="op">=</span> <span class="st">"GRCm39"</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>GENOME_ACCESSION <span class="op">=</span> <span class="st">"GCF_000001635.27"</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>REFSEQ  <span class="op">=</span> DATA <span class="op">/</span> <span class="st">"ncbi_dataset_RefSeq_GCF_000001635.27"</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>GTF_v27 <span class="op">=</span> <span class="bu">str</span>(REFSEQ <span class="op">/</span> <span class="st">"genomic.gff"</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>FA_v27  <span class="op">=</span> <span class="bu">str</span>(REFSEQ <span class="op">/</span> <span class="st">"GCF_000001635.27_GRCm39_genomic.fna"</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># written by the sequence-extraction cell, read back by every scan</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>PROMOTER_FASTA <span class="op">=</span> RESULTS <span class="op">/</span> <span class="st">"promoters_sequences.fasta"</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>RESULTS_FINAL_REPORT <span class="op">=</span> RESULTS <span class="op">/</span> <span class="st">"results_report"</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>RESULTS_FINAL_REPORT.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>NOTEBOOK_NAME <span class="op">=</span> <span class="st">"PromoterExtraction_adapted_with_rsatconda_refseqannotation.ipynb"</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>NOTEBOOK_CANDIDATES <span class="op">=</span> (Path.cwd() <span class="op">/</span> NOTEBOOK_NAME, Path.cwd() <span class="op">/</span> <span class="st">"Notebooks"</span> <span class="op">/</span> NOTEBOOK_NAME,</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>                      <span class="op">*</span>(parent <span class="op">/</span> <span class="st">"Notebooks"</span> <span class="op">/</span> NOTEBOOK_NAME <span class="cf">for</span> parent <span class="kw">in</span> Path.cwd().parents))</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>NOTEBOOK_PATH <span class="op">=</span> <span class="bu">next</span>((candidate.resolve() <span class="cf">for</span> candidate <span class="kw">in</span> NOTEBOOK_CANDIDATES <span class="cf">if</span> candidate.is_file()),</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>                     PROJECT <span class="op">/</span> <span class="st">"Notebooks"</span> <span class="op">/</span> NOTEBOOK_NAME)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>PROMOTER_FASTA_5kb <span class="op">=</span> RESULTS <span class="op">/</span> <span class="st">"promoters_sequences_5kb.fasta"</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="gtf_import" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Import and Filter Reference GTF</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -------- Reference GTF -------- #</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>gtf <span class="op">=</span> pr.read_gff3(GTF_v27)                           <span class="co"># Import the GTF file, which has all the information necessary to extract the coordinates. Keep all attributes in single string</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>gtf_canonical <span class="op">=</span> gtf[(gtf.Feature <span class="op">==</span> <span class="st">"mRNA"</span>) <span class="op">&amp;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                     gtf.tag.<span class="bu">str</span>.contains(<span class="st">"RefSeq Select"</span>, na<span class="op">=</span><span class="va">False</span>)] </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Filter to include only transcripts that contain the tag "RefSeq Select" (curated to canonical transcripts)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="gene_subset" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Select Canonical Transcripts for Genes of Interest</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of genes of interest</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit NETWORK_GENES to choose promoters for the motif scan.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>NETWORK_GENES <span class="op">=</span> [</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Spic"</span>, <span class="st">"Nfe2l2"</span>, <span class="st">"Blvra"</span>, <span class="st">"Hmox1"</span>, <span class="st">"Vcam1"</span>, <span class="st">"Slc40a1"</span>, <span class="st">"Gsr"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Slc7a11"</span>, <span class="st">"Gclc"</span>, <span class="st">"Cat"</span>, <span class="st">"Gpx4"</span>, <span class="st">"Gclm"</span>, <span class="st">"Gss"</span>, <span class="st">"Txnrd1"</span>, <span class="st">"Fth1"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Nfs1"</span>, <span class="st">"Cisd1"</span>, <span class="st">"Aifm2"</span>, <span class="st">"Acsl4"</span>, <span class="st">"Acsl1"</span>, <span class="st">"Lpcat3"</span>, <span class="st">"G6pdx"</span>, <span class="st">"Pgd"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Me1"</span>, <span class="st">"Idh1"</span>, <span class="st">"Nox1"</span>, <span class="st">"Elovl7"</span>, <span class="st">"Ido1"</span>, <span class="st">"Alas1"</span>, <span class="st">"Dhodh"</span>, <span class="st">"Acsl3"</span>, <span class="st">"Scd1"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>GENES_FOR_RETRIEVAL_ONLY <span class="op">=</span> [<span class="st">"Bach1"</span>, <span class="st">"Scd5"</span>, <span class="st">"Nqo1"</span>]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>genes <span class="op">=</span> <span class="bu">list</span>(<span class="bu">dict</span>.fromkeys(NETWORK_GENES <span class="op">+</span> GENES_FOR_RETRIEVAL_ONLY))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>PROMOTER_UPSTREAM_BP <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>PROMOTER_DOWNSTREAM_BP <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>MARKOV_ORDER <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>PVAL <span class="op">=</span> <span class="fl">1e-4</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>CISBP <span class="op">=</span> DATA <span class="op">/</span> <span class="st">"Mus_musculus_2026_09_17_11_49_am_CISBP"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>MOTIFS <span class="op">=</span> {<span class="st">"M03221_3.10"</span>: <span class="st">"Spic"</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>          <span class="st">"M09222_3.10"</span>: <span class="st">"Nfe2l2_1"</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>          <span class="st">"M10174_3.10"</span>: <span class="st">"Nfe2l2_2"</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>          <span class="st">"M10181_3.10"</span>: <span class="st">"Bach1"</span>}</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># NCBI RefSeq GFF3 uses "gene", not "gene_name" -- confirm via gtf_canonical.columns.tolist()</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># before trusting this line if it comes back empty.</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>gtf_sub <span class="op">=</span> gtf_canonical[gtf_canonical.gene.isin(genes)]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>found <span class="op">=</span> <span class="bu">set</span>(gtf_sub.df[<span class="st">"gene"</span>])</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> <span class="bu">set</span>(genes) <span class="op">-</span> found</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(found)<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span><span class="bu">len</span>(<span class="bu">set</span>(genes))<span class="sc">}</span><span class="ss"> requested genes found among RefSeq Select transcripts"</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> missing:</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"All requested genes were found."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p>34/35 requested genes found among RefSeq Select transcripts</p>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Motif labels are selected from the CIS-BP accession mapping above.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>NETWORK_MOTIFS <span class="op">=</span> <span class="bu">list</span>(MOTIFS.values())</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>motif_sources <span class="op">=</span> <span class="st">", "</span>.join(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>factor<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>accession<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> accession, factor <span class="kw">in</span> MOTIFS.items()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> factor <span class="kw">in</span> NETWORK_MOTIFS</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>missing_text <span class="op">=</span> (</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Not found: "</span> <span class="op">+</span> <span class="st">", "</span>.join(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"[</span><span class="sc">{</span>gene<span class="sc">}</span><span class="ss">](https://www.uniprot.org/uniprotkb?query=</span><span class="sc">{</span>quote(gene)<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> gene <span class="kw">in</span> <span class="bu">sorted</span>(missing)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">+</span> <span class="st">". Check UniProt for an alternate symbol, update the relevant gene list, and rerun."</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> missing <span class="cf">else</span> <span class="st">"All requested symbols were found among RefSeq Select records."</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>display(Markdown(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**Organism/reference:** </span><span class="sc">{</span>SPECIES<span class="sc">}</span><span class="ss">, RefSeq </span><span class="sc">{</span>GENOME_ACCESSION<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>GENOME_ASSEMBLY<span class="sc">}</span><span class="ss">). "</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Transcript coordinates use RefSeq Select records.</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**Requested gene panel:** </span><span class="sc">{</span><span class="bu">len</span>(<span class="bu">set</span>(genes))<span class="sc">}</span><span class="ss"> symbols (</span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(genes)<span class="sc">}</span><span class="ss">); "</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(found)<span class="sc">}</span><span class="ss"> found. </span><span class="sc">{</span>missing_text<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**Genes in this scan:** </span><span class="sc">{</span><span class="bu">len</span>(NETWORK_GENES)<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(NETWORK_GENES)<span class="sc">}</span><span class="ss">).</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**TF motif matrices:** </span><span class="sc">{</span>motif_sources<span class="sc">}</span><span class="ss">. PWMs are loaded from the local "</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Mus musculus CIS-BP collection (`</span><span class="sc">{</span>CISBP<span class="sc">.</span>name<span class="sc">}</span><span class="ss">`) and scanned with RSAT.</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**Promoter window:** -</span><span class="sc">{</span>PROMOTER_UPSTREAM_BP<span class="sc">:,}</span><span class="ss"> bp upstream to "</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"+</span><span class="sc">{</span>PROMOTER_DOWNSTREAM_BP<span class="sc">:,}</span><span class="ss"> bp downstream of the TSS (strand-aware).</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"**Site threshold:** P &lt; </span><span class="sc">{</span>PVAL<span class="sc">:g}</span><span class="ss">; background model: order-</span><span class="sc">{</span>MARKOV_ORDER<span class="sc">}</span><span class="ss"> "</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Markov model estimated from the promoters included in this scan."</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p><strong>Organism/reference:</strong> Mus musculus, RefSeq GCF_000001635.27 (GRCm39). Transcript coordinates use RefSeq Select records.</p>
+<p><strong>Requested gene panel:</strong> 35 symbols (Spic, Nfe2l2, Blvra, Hmox1, Vcam1, Slc40a1, Gsr, Slc7a11, Gclc, Cat, Gpx4, Gclm, Gss, Txnrd1, Fth1, Nfs1, Cisd1, Aifm2, Acsl4, Acsl1, Lpcat3, G6pdx, Pgd, Me1, Idh1, Nox1, Elovl7, Ido1, Alas1, Dhodh, Acsl3, Scd1, Bach1, Scd5, Nqo1); 34 found. Not found: <a href="https://www.uniprot.org/uniprotkb?query=Scd5">Scd5</a>. Check UniProt for an alternate symbol, update the relevant gene list, and rerun.</p>
+<p><strong>Genes in this scan:</strong> 32 (Spic, Nfe2l2, Blvra, Hmox1, Vcam1, Slc40a1, Gsr, Slc7a11, Gclc, Cat, Gpx4, Gclm, Gss, Txnrd1, Fth1, Nfs1, Cisd1, Aifm2, Acsl4, Acsl1, Lpcat3, G6pdx, Pgd, Me1, Idh1, Nox1, Elovl7, Ido1, Alas1, Dhodh, Acsl3, Scd1).</p>
+<p><strong>TF motif matrices:</strong> Spic (M03221_3.10), Nfe2l2_1 (M09222_3.10), Nfe2l2_2 (M10174_3.10), Bach1 (M10181_3.10). PWMs are loaded from the local Mus musculus CIS-BP collection (<code>Mus_musculus_2026_09_17_11_49_am_CISBP</code>) and scanned with RSAT.</p>
+<p><strong>Promoter window:</strong> -2,000 bp upstream to +200 bp downstream of the TSS (strand-aware).</p>
+<p><strong>Site threshold:</strong> P &lt; 0.0001; background model: order-1 Markov model estimated from the promoters included in this scan.</p>
+<div id="gene_promoter_coordinates" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Gene and promoter coordinates</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prom_2kb <span class="op">=</span> gtf_sub.five_end().slack({<span class="st">"5"</span>: PROMOTER_UPSTREAM_BP, <span class="st">"3"</span>: PROMOTER_DOWNSTREAM_BP})</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>gene_promoter_coordinates <span class="op">=</span> (</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    gtf_sub.df[[<span class="st">"Chromosome"</span>, <span class="st">"gene"</span>, <span class="st">"transcript_id"</span>, <span class="st">"Strand"</span>, <span class="st">"Start"</span>, <span class="st">"End"</span>]]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"Start"</span>: <span class="st">"gene_start"</span>, <span class="st">"End"</span>: <span class="st">"gene_end"</span>})</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    .merge(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        prom_2kb.df[[<span class="st">"gene"</span>, <span class="st">"transcript_id"</span>, <span class="st">"Start"</span>, <span class="st">"End"</span>]]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        .rename(columns<span class="op">=</span>{<span class="st">"Start"</span>: <span class="st">"promoter_start"</span>, <span class="st">"End"</span>: <span class="st">"promoter_end"</span>}),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        on<span class="op">=</span>[<span class="st">"gene"</span>, <span class="st">"transcript_id"</span>],</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>gene_promoter_coordinates[<span class="st">"start_to_end_gene"</span>] <span class="op">=</span> (</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    gene_promoter_coordinates[<span class="st">"gene_start"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="st">" - "</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> gene_promoter_coordinates[<span class="st">"gene_end"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>gene_promoter_coordinates[<span class="st">"start_to_end_promoter"</span>] <span class="op">=</span> (</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    gene_promoter_coordinates[<span class="st">"promoter_start"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="st">" - "</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> gene_promoter_coordinates[<span class="st">"promoter_end"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>gene_promoter_coordinates <span class="op">=</span> gene_promoter_coordinates[</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Chromosome"</span>, <span class="st">"gene"</span>, <span class="st">"transcript_id"</span>, <span class="st">"Strand"</span>, <span class="st">"start_to_end_gene"</span>, <span class="st">"start_to_end_promoter"</span>]</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>gene_promoter_coordinates.to_csv(RESULTS_FINAL_REPORT <span class="op">/</span> <span class="st">"gene_promoter_coordinates.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="st">"Each row lists a selected transcript and its genomic and promoter coordinates."</span>))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>show(gene_promoter_coordinates, allow_html<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p>Each row lists a selected transcript and its genomic and promoter coordinates.</p>
+<!--| quarto-html-table-processing: none -->
+<table id="itables_3777a323_f077_45e9_b7a1_ba577f438818"><tbody><tr>
+    <td style="vertical-align:middle; text-align:left">
+    <a href="https://mwouts.github.io/itables/"><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="64" viewbox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
+    <g style="fill:#d9d7fc">
+        <path d="M100,400H500V357H100Z"></path>
+        <path d="M100,300H400V257H100Z"></path>
+        <path d="M0,200H400V157H0Z"></path>
+        <path d="M100,100H500V57H100Z"></path>
+        <path d="M100,350H500V307H100Z"></path>
+        <path d="M100,250H400V207H100Z"></path>
+        <path d="M0,150H400V107H0Z"></path>
+        <path d="M100,50H500V7H100Z"></path>
+    </g>
+    <g style="fill:#1a1366;stroke:#1a1366;">
+   <rect x="100" y="7" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="5s" repeatcount="indefinite"></animate>
+      <animate attributename="x" values="100;100;500" dur="5s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="0" y="107" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="3.5s" repeatcount="indefinite"></animate>
+    <animate attributename="x" values="0;0;400" dur="3.5s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="100" y="207" width="300" height="43">
+    <animate attributename="width" values="0;300;0" dur="3s" repeatcount="indefinite"></animate>
+    <animate attributename="x" values="100;100;400" dur="3s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="100" y="307" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="4s" repeatcount="indefinite"></animate>
+      <animate attributename="x" values="100;100;500" dur="4s" repeatcount="indefinite"></animate>
+  </rect>
+        <g style="fill:transparent;stroke-width:8; stroke-linejoin:round" rx="5">
+            <g transform="translate(45 50) rotate(-45)">
+                <circle r="33" cx="0" cy="0"></circle>
+                <rect x="-8" y="32" width="16" height="30"></rect>
+            </g>
+
+            <g transform="translate(450 152)">
+                <polyline points="-15,-20 -35,-20 -35,40 25,40 25,20"></polyline>
+                <rect x="-15" y="-40" width="60" height="60"></rect>
+            </g>
+
+            <g transform="translate(50 352)">
+                <polygon points="-35,-5 0,-40 35,-5"></polygon>
+                <polygon points="-35,10 0,45 35,10"></polygon>
+            </g>
+
+            <g transform="translate(75 250)">
+                <polyline points="-30,30 -60,0 -30,-30"></polyline>
+                <polyline points="0,30 -30,0 0,-30"></polyline>
+            </g>
+
+            <g transform="translate(425 250) rotate(180)">
+                <polyline points="-30,30 -60,0 -30,-30"></polyline>
+                <polyline points="0,30 -30,0 0,-30"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
+</a>
+    Loading ITables v2.6.1 from the <code>init_notebook_mode</code> cell...
+    (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td>
+    </tr></tbody></table>
+<script type="module">
+    (async () => {
+        async function init() {
+            const { ITable, jQuery: $ } = await window._itables_2_6_1;
+
+            document.querySelectorAll("#itables_3777a323_f077_45e9_b7a1_ba577f438818:not(.dataTable)").forEach(table => {
+                if (!(table instanceof HTMLTableElement))
+                    return;
+
+                let dt_args = {"layout": {"topStart": "pageLength", "topEnd": "search", "bottomStart": "info", "bottomEnd": "paging"}, "order": [], "text_in_header_can_be_selected": true, "classes": ["display", "nowrap"], "style": {"table-layout": "auto", "width": "auto", "margin": "auto", "caption-side": "bottom"}, "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      \n      <th>Chromosome</th>\n      <th>gene</th>\n      <th>transcript_id</th>\n      <th>Strand</th>\n      <th>start_to_end_gene</th>\n      <th>start_to_end_promoter</th>\n    </tr>\n  </thead></table>", "data_json": "[[\"NC_000067.7\", \"Acsl3\", \"NM_001033606.3\", \"+\", \"78635599 - 78685462\", \"78633599 - 78635800\"], [\"NC_000067.7\", \"Slc40a1\", \"NM_016917.2\", \"-\", \"45947229 - 45964754\", \"45964553 - 45966754\"], [\"NC_000067.7\", \"Idh1\", \"NM_010497.3\", \"-\", \"65197774 - 65218301\", \"65218100 - 65220301\"], [\"NC_000068.8\", \"Blvra\", \"NM_026678.4\", \"+\", \"126912576 - 126939004\", \"126910576 - 126912777\"], [\"NC_000068.8\", \"Nfe2l2\", \"NM_010902.5\", \"-\", \"75505859 - 75534860\", \"75534659 - 75536860\"], [\"NC_000068.8\", \"Cat\", \"NM_009804.2\", \"-\", \"103284248 - 103315498\", \"103315297 - 103317498\"], [\"NC_000068.8\", \"Gss\", \"NM_008180.2\", \"-\", \"155405100 - 155434730\", \"155434529 - 155436730\"], [\"NC_000068.8\", \"Nfs1\", \"NM_010911.3\", \"-\", \"155965568 - 155986106\", \"155985905 - 155988106\"], [\"NC_000069.7\", \"Gclm\", \"NM_008129.4\", \"+\", \"122039205 - 122060864\", \"122037205 - 122039406\"], [\"NC_000069.7\", \"Slc7a11\", \"NM_011990.2\", \"-\", \"50319384 - 50398062\", \"50397861 - 50400062\"], [\"NC_000069.7\", \"Vcam1\", \"NM_011693.3\", \"-\", \"115903668 - 115923337\", \"115923136 - 115925337\"], [\"NC_000070.7\", \"Pgd\", \"NM_001081274.2\", \"-\", \"149234447 - 149251162\", \"149250961 - 149253162\"], [\"NC_000072.7\", \"Lpcat3\", \"NM_145130.3\", \"+\", \"124640090 - 124681133\", \"124638090 - 124640291\"], [\"NC_000074.7\", \"Gsr\", \"NM_010344.4\", \"+\", \"34143265 - 34188190\", \"34141265 - 34143466\"], [\"NC_000074.7\", \"Acsl1\", \"NM_007981.5\", \"+\", \"46924213 - 46989088\", \"46922213 - 46924414\"], [\"NC_000074.7\", \"Hmox1\", \"NM_010442.2\", \"+\", \"75820245 - 75827221\", \"75818245 - 75820446\"], [\"NC_000074.7\", \"Ido1\", \"NM_008324.3\", \"-\", \"25074147 - 25086987\", \"25086786 - 25088987\"], [\"NC_000074.7\", \"Nqo1\", \"NM_008706.5\", \"-\", \"108114856 - 108129837\", \"108129636 - 108131837\"], [\"NC_000074.7\", \"Dhodh\", \"NM_020046.3\", \"-\", \"110319879 - 110335305\", \"110335104 - 110337305\"], [\"NC_000075.7\", \"Gclc\", \"NM_010295.2\", \"+\", \"77661816 - 77701771\", \"77659816 - 77662017\"], [\"NC_000075.7\", \"Me1\", \"NM_008615.2\", \"-\", \"86463415 - 86577967\", \"86577766 - 86579967\"], [\"NC_000075.7\", \"Alas1\", \"NM_020559.2\", \"-\", \"106110653 - 106125153\", \"106124952 - 106127153\"], [\"NC_000076.7\", \"Aifm2\", \"NM_001284300.1\", \"+\", \"61551041 - 61574432\", \"61549041 - 61551242\"], [\"NC_000076.7\", \"Gpx4\", \"NM_008162.4\", \"+\", \"79889398 - 79892273\", \"79887398 - 79889599\"], [\"NC_000076.7\", \"Txnrd1\", \"NM_001042513.1\", \"+\", \"82695039 - 82733558\", \"82693039 - 82695240\"], [\"NC_000076.7\", \"Cisd1\", \"NM_134007.4\", \"-\", \"71166323 - 71180679\", \"71180478 - 71182679\"], [\"NC_000076.7\", \"Spic\", \"NM_011461.3\", \"-\", \"88511130 - 88518885\", \"88518684 - 88520885\"], [\"NC_000079.7\", \"Elovl7\", \"NM_029001.5\", \"+\", \"108350937 - 108423643\", \"108348937 - 108351138\"], [\"NC_000082.7\", \"Bach1\", \"NM_007520.2\", \"+\", \"87495841 - 87530234\", \"87493841 - 87496042\"], [\"NC_000085.7\", \"Fth1\", \"NM_010239.2\", \"+\", \"9960009 - 9962475\", \"9958009 - 9960210\"], [\"NC_000085.7\", \"Scd1\", \"NM_009127.4\", \"-\", \"44382888 - 44396148\", \"44395947 - 44398148\"], [\"NC_000086.8\", \"G6pdx\", \"NM_008062.3\", \"-\", \"73453088 - 73472486\", \"73472285 - 73474486\"], [\"NC_000086.8\", \"Nox1\", \"NM_172203.2\", \"-\", \"132987169 - 133012603\", \"133012402 - 133014603\"], [\"NC_000086.8\", \"Acsl4\", \"NM_207625.2\", \"-\", \"141100988 - 141173531\", \"141173330 - 141175531\"]]"};
+                new ITable(table, dt_args);
+            });
+        }
+
+        if (window._itables_2_6_1) {
+            init();
+        } else {
+            window.addEventListener("itables-2.6.1-ready", () => {
+                init();
+            });
+        }
+    })();
+</script>
+</div>
+<div id="extract_sequences" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Extract Promoter Sequences from Reference</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>seqs_2kb <span class="op">=</span> pr.get_sequence(prom_2kb, path<span class="op">=</span>FA_v27)                        <span class="co"># Based on the coordinates identified before, we get the sequences from the reference genome</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#get_sequence is also strand-aware and reverse-complements the minus strand</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>df_2kb                 <span class="op">=</span> seqs_2kb.to_frame(name<span class="op">=</span><span class="st">"DNA_Sequence"</span>)   <span class="co"># Convert the extracted sequences into a dataframe</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df_2kb[<span class="st">"Gene_Name"</span>]    <span class="op">=</span> prom_2kb.df[<span class="st">'gene'</span>]                 <span class="co"># Attach gene names for use in the FASTA headers</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>df_2kb[<span class="st">"TranscriptID"</span>] <span class="op">=</span> prom_2kb.df[<span class="st">"transcript_id"</span>]             <span class="co"># Attach transcript IDs for use in the FASTA headers</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(PROMOTER_FASTA, <span class="st">"w"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> index, row <span class="kw">in</span> df_2kb.iterrows():</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Combine your metadata into a single header line</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        header <span class="op">=</span> <span class="ss">f"&gt;</span><span class="sc">{</span>row[<span class="st">'Gene_Name'</span>]<span class="sc">}</span><span class="ss">|</span><span class="sc">{</span>row[<span class="st">'TranscriptID'</span>]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Write the header and the sequence</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span>.write(<span class="ss">f"</span><span class="sc">{</span>header<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span>.write(<span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'DNA_Sequence'</span>]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="rsat_setup" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Setup: paths and scan parameters</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># paths and variables</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>SCAN_DIR <span class="op">=</span> RESULTS <span class="op">/</span> <span class="st">"matrix_scan"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>SCAN_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>RSAT_ENV <span class="op">=</span> Path(<span class="st">"/srv/ext_home/ssalazar/.conda/envs/rsat"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>TSS_OFFSET   <span class="op">=</span> <span class="dv">201</span>      <span class="co"># -origin end places the TSS at -201</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># rsat is a Perl script: its env's bin must lead PATH, or the shebang picks base's perl</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ENV <span class="op">=</span> os.environ <span class="op">|</span> {<span class="st">"PATH"</span>: <span class="ss">f"</span><span class="sc">{</span>RSAT_ENV <span class="op">/</span> <span class="st">'bin'</span><span class="sc">}{</span>os<span class="sc">.</span>pathsep<span class="sc">}{</span>os<span class="sc">.</span>environ[<span class="st">'PATH'</span>]<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"RSAT"</span>: <span class="bu">str</span>(RSAT_ENV <span class="op">/</span> <span class="st">'share'</span> <span class="op">/</span> <span class="st">'rsat'</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"CONDA_PREFIX"</span>: <span class="bu">str</span>(RSAT_ENV)}</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rsat(tool, <span class="op">*</span>args):</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># some tools report errors on stdout while exiting 0</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    cmd <span class="op">=</span> [<span class="bu">str</span>(RSAT_ENV <span class="op">/</span> <span class="st">"bin"</span> <span class="op">/</span> <span class="st">"rsat"</span>), tool, <span class="op">*</span><span class="bu">map</span>(<span class="bu">str</span>, args)]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> subprocess.run(cmd, capture_output<span class="op">=</span><span class="va">True</span>, text<span class="op">=</span><span class="va">True</span>, env<span class="op">=</span>ENV)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> p.stderr <span class="op">+</span> p.stdout</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> p.returncode <span class="kw">or</span> re.search(<span class="vs">r"</span><span class="dv">^</span><span class="vs">Error"</span>, out, re.M):</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">" "</span>.join(cmd) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> out)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_fasta(path):</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [(header, sequence), ...], headers keep their '&gt;'</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># used for counting/subsetting only, so no Biopython dependency;</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># `cur is not None` (not `cur`) so a header right after another header</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># doesn't swallow the next record's lines</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    recs, cur <span class="op">=</span> [], <span class="va">None</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> Path(path).read_text().splitlines():</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> line.startswith(<span class="st">"&gt;"</span>):</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>            cur <span class="op">=</span> [line, []]</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>            recs.append(cur)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> cur <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>            cur[<span class="dv">1</span>].append(line.strip())</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [(h, <span class="st">""</span>.join(s)) <span class="cf">for</span> h, s <span class="kw">in</span> recs]</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="tf_matrices" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>transcription factor matrices</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># color dictionary for consistency across plots (npg / Nature Publishing Group palette)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>MOTIF_COLORS <span class="op">=</span> {<span class="st">"Spic"</span>:     <span class="st">"#E64B35"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Nfe2l2_1"</span>: <span class="st">"#4DBBD5"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Nfe2l2_2"</span>: <span class="st">"#00A087"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Bach1"</span>:    <span class="st">"#3C5488"</span>}</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="st">"These sequence logos show the CIS-BP motifs scanned, in forward and reverse orientations."</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>blocks <span class="op">=</span> []</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> acc, label <span class="kw">in</span> MOTIFS.items():</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> pd.read_csv(CISBP <span class="op">/</span> <span class="st">"pwms_all_motifs"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>acc<span class="sc">}</span><span class="ss">.txt"</span>, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CIS-BP gives probabilities (rows sum to 1); x100 makes them count-like, so</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># matrix-scan's -pseudo 1 stays a small correction instead of half the column</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ch">\t</span><span class="ss">"</span> <span class="op">+</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>.join(<span class="ss">f"</span><span class="sc">{</span>v <span class="op">*</span> <span class="dv">100</span><span class="sc">:.4f}</span><span class="ss">"</span> <span class="cf">for</span> v <span class="kw">in</span> r)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i, r <span class="kw">in</span> <span class="bu">enumerate</span>(m[[<span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"T"</span>]].values, start<span class="op">=</span><span class="dv">1</span>)]</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    blocks.append(<span class="ss">f"AC  </span><span class="sc">{</span>acc<span class="sc">}</span><span class="ch">\n</span><span class="ss">XX</span><span class="ch">\n</span><span class="ss">ID  </span><span class="sc">{</span>label<span class="sc">}</span><span class="ch">\n</span><span class="ss">XX</span><span class="ch">\n</span><span class="ss">DE  </span><span class="sc">{</span>label<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"P0</span><span class="ch">\t</span><span class="st">A</span><span class="ch">\t</span><span class="st">C</span><span class="ch">\t</span><span class="st">G</span><span class="ch">\t</span><span class="st">T</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(rows) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">XX</span><span class="ch">\n</span><span class="st">//</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>acc<span class="sc">:&lt;14}</span><span class="ss"> </span><span class="sc">{</span><span class="bu">len</span>(m)<span class="sc">}</span><span class="ss"> bp -&gt; </span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Show the CIS-BP logo of the matrix actually scanned, both orientations, so the</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># report records what each matrix looks like and not only its accession.</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    ifw  <span class="op">=</span> Image.<span class="bu">open</span>(CISBP <span class="op">/</span> <span class="st">"logos_used_motifs"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>acc<span class="sc">}</span><span class="ss">_fwd.png"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    irev <span class="op">=</span> Image.<span class="bu">open</span>(CISBP <span class="op">/</span> <span class="st">"logos_used_motifs"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>acc<span class="sc">}</span><span class="ss">_rev.png"</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].imshow(ifw)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_title(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>acc<span class="sc">}</span><span class="ss">) - forward"</span>)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].imshow(irev)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_title(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>acc<span class="sc">}</span><span class="ss">) - reverse"</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    fig.savefig(SCAN_DIR <span class="op">/</span> <span class="ss">f"motif_logo_</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">.svg"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"svg"</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>MATRIX <span class="op">=</span> SCAN_DIR <span class="op">/</span> <span class="st">"motif_matrices_SpiC_Nfe2l2_Bach1.tf"</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>MATRIX.write_text(<span class="st">""</span>.join(blocks))</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span><span class="bu">len</span>(blocks)<span class="sc">}</span><span class="ss"> matrices saved in </span><span class="sc">{</span>MATRIX<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p>These sequence logos show the CIS-BP motifs scanned, in forward and reverse orientations. M03221_3.10 14 bp -&gt; Spic <img src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/figure-html/tf_matrices-output-3.png" id="tf_matrices-2" width="950" height="327"> M09222_3.10 11 bp -&gt; Nfe2l2_1 <img src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/figure-html/tf_matrices-output-5.png" id="tf_matrices-3" width="950" height="327"> M10174_3.10 14 bp -&gt; Nfe2l2_2 <img src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/figure-html/tf_matrices-output-7.png" id="tf_matrices-4" width="950" height="327"> M10181_3.10 14 bp -&gt; Bach1 <img src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/figure-html/tf_matrices-output-9.png" id="tf_matrices-5" width="950" height="327"></p>
+<p>4 matrices saved in motif_matrices_SpiC_Nfe2l2_Bach1.tf</p>
+</div>
+<div id="rsat_scan" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Motif scan function</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scan(motifs, genes<span class="op">=</span><span class="va">None</span>, pval<span class="op">=</span>PVAL, name<span class="op">=</span><span class="va">None</span>, bg_from<span class="op">=</span><span class="st">"input"</span>, MATRIX <span class="op">=</span> MATRIX, FASTA<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># motifs: list of ft_name labels, e.g. ['Spic', 'Bach1']</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># genes: list of gene names; None scans all promoters</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># only the .ft.txt is kept</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> SCAN_DIR <span class="op">/</span> <span class="ss">f"scanmotif_</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.ft"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># matrix subset, promoter subset and background model are RSAT inputs, so they're</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># written to a temp dir removed on return; still recoverable from the ';' header of</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the .ft.txt, which records the matrix, pseudo-counts and residue probabilities</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tempfile.TemporaryDirectory() <span class="im">as</span> tmp:</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">=</span> Path(tmp)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># requested matrices only, from motif_matrices_SpiC_Nfe2l2_Bach1.tf</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        blocks <span class="op">=</span> [b.strip() <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">//</span><span class="ch">\n</span><span class="st">"</span> <span class="cf">for</span> b <span class="kw">in</span> MATRIX.read_text().split(<span class="st">"//"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">if</span> (m <span class="op">:=</span> re.search(<span class="vs">r"</span><span class="dv">^</span><span class="vs">ID</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="dv">\S</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">*</span><span class="dv">$</span><span class="vs">"</span>, b, re.M))</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">and</span> m.group(<span class="dv">1</span>) <span class="kw">in</span> motifs]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">len</span>(blocks) <span class="op">==</span> <span class="bu">len</span>(motifs), <span class="ss">f"matrix not found, wanted </span><span class="sc">{</span>motifs<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> tmp <span class="op">/</span> <span class="st">"matrices.tf"</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        mat.write_text(<span class="st">""</span>.join(blocks))</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># requested promoters only; genes=None keeps all</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        recs <span class="op">=</span> [(i, s) <span class="cf">for</span> i, s <span class="kw">in</span> read_fasta(FASTA)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="kw">not</span> genes <span class="kw">or</span> <span class="bu">any</span>(g.lower() <span class="kw">in</span> i.lower() <span class="cf">for</span> g <span class="kw">in</span> genes)]</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> recs, <span class="ss">f"no promoter matched </span><span class="sc">{</span>genes<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        seqs <span class="op">=</span> tmp <span class="op">/</span> <span class="st">"promoters.fasta"</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        seqs.write_text(<span class="st">""</span>.join(<span class="ss">f"&gt;</span><span class="sc">{</span>i<span class="sc">}</span><span class="ch">\n</span><span class="sc">{</span>s<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span> <span class="cf">for</span> i, s <span class="kw">in</span> recs))</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># background is always estimated from the FULL promoter set, never the gene</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -bginput / create-background-model fail in this build (rsat-core 2025.04.04,</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># bioconda) at every Markov order ("the sum must be strictly positive", then a</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># division by zero in RSAT/matrix.pm), so the model is estimated with</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># oligo-analysis and passed via -bgfile instead: same estimator, same sequences.</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -1str matches the web run, whose residue probabilities are strand-asymmetric.</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># verified against the web run: 62/63 sites, same 20 promoters, marginals to 3 decimals</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        bg <span class="op">=</span> tmp <span class="op">/</span> <span class="st">"bg.tab"</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        bg_src <span class="op">=</span> FASTA <span class="cf">if</span> bg_from <span class="op">==</span> <span class="st">"all"</span> <span class="cf">else</span> seqs</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        rsat(<span class="st">"oligo-analysis"</span>, <span class="st">"-i"</span>, bg_src, <span class="st">"-l"</span>, MARKOV_ORDER <span class="op">+</span> <span class="dv">1</span>, <span class="st">"-1str"</span>,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-return"</span>, <span class="st">"occ,freq"</span>, <span class="st">"-o"</span>, bg)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -origin end keeps positions negative from the sequence end (TSS at -TSS_OFFSET)</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -2str reports D/R, combined with transcript strand downstream</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -return limits gives the START_END rows used for promoter extents</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        rsat(<span class="st">"matrix-scan"</span>, <span class="st">"-v"</span>, <span class="dv">1</span>,</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-i"</span>, seqs, <span class="st">"-seq_format"</span>, <span class="st">"fasta"</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-m"</span>, mat, <span class="st">"-matrix_format"</span>, <span class="st">"transfac"</span>,</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-bgfile"</span>, bg, <span class="st">"-bg_pseudo"</span>, <span class="fl">0.01</span>, <span class="st">"-pseudo"</span>, <span class="dv">1</span>,</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-2str"</span>, <span class="st">"-origin"</span>, <span class="st">"end"</span>, <span class="st">"-n"</span>, <span class="st">"score"</span>,</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-return"</span>, <span class="st">"limits"</span>, <span class="st">"-return"</span>, <span class="st">"sites"</span>, <span class="st">"-return"</span>, <span class="st">"pval"</span>,</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>             <span class="st">"-uth"</span>, <span class="st">"pval"</span>, pval, <span class="st">"-o"</span>, out)</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    hits <span class="op">=</span> pd.read_csv(out, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, comment<span class="op">=</span><span class="st">";"</span>).query(<span class="st">"ft_type == 'site'"</span>)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    hits.attrs[<span class="st">"scan_path"</span>] <span class="op">=</span> out</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(recs)<span class="sc">}</span><span class="ss"> promoters, </span><span class="sc">{</span><span class="bu">len</span>(motifs)<span class="sc">}</span><span class="ss"> matrices, "</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(hits)<span class="sc">}</span><span class="ss"> sites at P &lt; </span><span class="sc">{</span>pval<span class="sc">:g}</span><span class="ss">"</span>)</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> hits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="sitemap_function" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Site map function</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sitemap(hits, name<span class="op">=</span><span class="va">None</span>, pval<span class="op">=</span>PVAL, MOTIF_COLORS <span class="op">=</span> MOTIF_COLORS):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Map motif sites along each promoter, positions relative to the TSS.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">    hits  the DataFrame returned by scan(); its .attrs['scan_path'] is re-read to</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">          recover the 'limit' rows, so promoters with no site still get a lane.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> Path(hits.attrs[<span class="st">"scan_path"</span>])</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    lim  <span class="op">=</span> (pd.read_csv(path, sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>, comment<span class="op">=</span><span class="st">";"</span>).query(<span class="st">"ft_type == 'limit'"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>              .drop_duplicates(<span class="st">"#seq_id"</span>).set_index(<span class="st">"#seq_id"</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> hits.assign(tss_pos<span class="op">=</span>hits[[<span class="st">"start"</span>, <span class="st">"end"</span>]].mean(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> TSS_OFFSET,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                    logp<span class="op">=-</span>np.log10(hits[<span class="st">"Pval"</span>]))</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    ypos   <span class="op">=</span> {s: i <span class="cf">for</span> i, s <span class="kw">in</span> <span class="bu">enumerate</span>(lim.index)}</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    colors <span class="op">=</span> {m: MOTIF_COLORS.get(m, <span class="st">"0.4"</span>) <span class="cf">for</span> m <span class="kw">in</span> h[<span class="st">"ft_name"</span>].unique()}</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">0.33</span> <span class="op">*</span> <span class="bu">len</span>(lim) <span class="op">+</span> <span class="fl">1.5</span>))</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    ax.hlines(<span class="bu">range</span>(<span class="bu">len</span>(lim)), lim[<span class="st">"start"</span>] <span class="op">+</span> TSS_OFFSET, lim[<span class="st">"end"</span>] <span class="op">+</span> TSS_OFFSET,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span><span class="st">"0.87"</span>, lw<span class="op">=</span><span class="fl">3.5</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Size scales with significance from the threshold up; label once per motif,</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># on the direct strand, so the legend shows colour rather than colour x strand.</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (motif, strand), g <span class="kw">in</span> h.groupby([<span class="st">"ft_name"</span>, <span class="st">"strand"</span>]):</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        ax.scatter(g[<span class="st">"tss_pos"</span>], g[<span class="st">"#seq_id"</span>].<span class="bu">map</span>(ypos),</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                   marker<span class="op">=</span><span class="st">"v"</span> <span class="cf">if</span> strand <span class="op">==</span> <span class="st">"R"</span> <span class="cf">else</span> <span class="st">"^"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                   s<span class="op">=</span><span class="dv">50</span> <span class="op">+</span> <span class="dv">200</span> <span class="op">*</span> (g[<span class="st">"logp"</span>] <span class="op">+</span> np.log10(pval)) <span class="op">/</span> <span class="dv">3</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>                   color<span class="op">=</span>colors[motif], zorder<span class="op">=</span><span class="dv">3</span>, alpha<span class="op">=</span><span class="fl">0.85</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                   edgecolors<span class="op">=</span><span class="st">"white"</span>, linewidths<span class="op">=</span><span class="fl">0.4</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                   label<span class="op">=</span>motif <span class="cf">if</span> strand <span class="op">==</span> <span class="st">"D"</span> <span class="cf">else</span> <span class="va">None</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"crimson"</span>, lw<span class="op">=</span><span class="dv">1</span>, ls<span class="op">=</span><span class="st">"--"</span>, zorder<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    ax.text(<span class="dv">0</span>, <span class="op">-</span><span class="fl">0.65</span>, <span class="st">" TSS"</span>, color<span class="op">=</span><span class="st">"crimson"</span>, va<span class="op">=</span><span class="st">"top"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(lim)))</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    ax.set_yticklabels([s.lstrip(<span class="st">"&gt;"</span>).split(<span class="st">"|"</span>)[<span class="dv">0</span>] <span class="cf">for</span> s <span class="kw">in</span> lim.index], fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">0.7</span>, <span class="bu">len</span>(lim) <span class="op">-</span> <span class="fl">0.3</span>)<span class="op">;</span> ax.invert_yaxis()</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"position relative to TSS (bp)"</span>)</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    ax.legend(title<span class="op">=</span><span class="ss">f"motif (P &lt; </span><span class="sc">{</span>pval<span class="sc">:g}</span><span class="ss">)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, title_fontsize<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>              markerscale<span class="op">=</span><span class="fl">0.8</span>, loc<span class="op">=</span><span class="st">"upper left"</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.01</span>, <span class="dv">1</span>),</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>              frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>, <span class="st">"left"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    fig.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.85</span>, <span class="dv">1</span>])</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    fig_path <span class="op">=</span> SCAN_DIR <span class="op">/</span> <span class="ss">f"sitemap_</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.svg"</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    fig.savefig(fig_path)</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fig</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="process_motif_hits" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Process motif hits</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_motif_hits(name, hits_df, gtf_sub):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># prepare data from RSAT tools</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        sites <span class="op">=</span> hits_df[hits_df[<span class="st">"ft_type"</span>] <span class="op">==</span> <span class="st">"site"</span>].copy()   <span class="co"># drop the 'limit' (START_END) rows, not significant</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        sites[[<span class="st">"Gene_Name"</span>, <span class="st">"TranscriptID"</span>]] <span class="op">=</span> sites[<span class="st">"#seq_id"</span>].<span class="bu">str</span>.split(<span class="st">"|"</span>, expand<span class="op">=</span><span class="va">True</span>)  <span class="co"># seq_id = Gene_Name|TranscriptID</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        sites[<span class="st">"Gene_Name"</span>] <span class="op">=</span> sites[<span class="st">"Gene_Name"</span>].<span class="bu">str</span>.strip(<span class="st">'&gt;'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        sites_filtered <span class="op">=</span> sites[[<span class="st">'Gene_Name'</span>, <span class="st">'TranscriptID'</span>, <span class="st">'sequence'</span>, <span class="st">'start'</span>, <span class="st">'end'</span>, <span class="st">'strand'</span>, <span class="st">'Pval'</span>, <span class="st">'sig'</span>]].copy()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        sites_filtered <span class="op">=</span> sites_filtered.rename(columns<span class="op">=</span>{<span class="st">'sequence'</span>: <span class="st">'Motif_Sequence_Found'</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                                                        <span class="st">'start'</span>:   <span class="st">"start_motif_pos_promoter"</span>,   <span class="co"># 1-based TSS base</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                                                        <span class="st">'end'</span>:     <span class="st">"end_motif_pos_promoter"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                                                        <span class="st">'strand'</span>:  <span class="st">"strand_motif"</span>})</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># get transcript metadata + TSS (from five_end(), 1-based, strand dependent), merge in one go</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        meta <span class="op">=</span> (gtf_sub.df[[<span class="st">"Chromosome"</span>, <span class="st">"Strand"</span>, <span class="st">"transcript_id"</span>]]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                .rename(columns<span class="op">=</span>{<span class="st">"Strand"</span>: <span class="st">"Chromosome_Strand"</span>, <span class="st">"transcript_id"</span>: <span class="st">"TranscriptID"</span>})</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                .merge(gtf_sub.five_end().df[[<span class="st">"transcript_id"</span>, <span class="st">"End"</span>]]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                        .rename(columns<span class="op">=</span>{<span class="st">"End"</span>: <span class="st">"TSS_chromosomal_localization"</span>, <span class="st">"transcript_id"</span>: <span class="st">"TranscriptID"</span>}),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                        on<span class="op">=</span><span class="st">"TranscriptID"</span>, how<span class="op">=</span><span class="st">"left"</span>))</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        sites_filtered <span class="op">=</span> sites_filtered.merge(meta, on<span class="op">=</span><span class="st">"TranscriptID"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># transcript-relative edges: 0 = TSS base, + = downstream (origin=end anchor at -201)</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"start_motif_pos_promoter"</span>] <span class="op">+=</span> TSS_OFFSET</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"end_motif_pos_promoter"</span>]   <span class="op">+=</span> TSS_OFFSET</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># nearest edge: end if upstream, start if downstream, 0 if it straddles the TSS</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"dist_to_TSS"</span>] <span class="op">=</span> np.where(</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"end_motif_pos_promoter"</span>] <span class="op">&lt;</span> <span class="dv">0</span>, sites_filtered[<span class="st">"end_motif_pos_promoter"</span>],</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        np.where(sites_filtered[<span class="st">"start_motif_pos_promoter"</span>] <span class="op">&gt;</span> <span class="dv">0</span>, sites_filtered[<span class="st">"start_motif_pos_promoter"</span>], <span class="dv">0</span>),</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># to genome (1-based): + adds, - subtracts (edges swap so start &lt;= end)</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>        plus <span class="op">=</span> sites_filtered[<span class="st">"Chromosome_Strand"</span>].eq(<span class="st">"+"</span>)</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>        TSS  <span class="op">=</span> sites_filtered[<span class="st">"TSS_chromosomal_localization"</span>]</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>        start <span class="op">=</span> np.where(plus, TSS <span class="op">+</span> sites_filtered[<span class="st">"start_motif_pos_promoter"</span>], TSS <span class="op">-</span> sites_filtered[<span class="st">"end_motif_pos_promoter"</span>])</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>        end   <span class="op">=</span> np.where(plus, TSS <span class="op">+</span> sites_filtered[<span class="st">"end_motif_pos_promoter"</span>],   TSS <span class="op">-</span> sites_filtered[<span class="st">"start_motif_pos_promoter"</span>])</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"motif_genomic_localization"</span>] <span class="op">=</span> start.astype(<span class="bu">int</span>).astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">"-"</span> <span class="op">+</span> end.astype(<span class="bu">int</span>).astype(<span class="bu">str</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>        sites_filtered[<span class="st">"motif_genomic_strand"</span>] <span class="op">=</span> np.where(plus <span class="op">==</span> sites_filtered[<span class="st">"strand_motif"</span>].eq(<span class="st">"D"</span>), <span class="st">"+"</span>, <span class="st">"-"</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>        sites_filtered.drop(columns<span class="op">=</span>[<span class="st">"strand_motif"</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>        sites_filtered.to_csv(RESULTS <span class="op">/</span> <span class="ss">f"motifs_coordinates_</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sites_filtered</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="motif-scan-results" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="motif-scan-results">Motif scan results</h2>
+<div id="regulation_interaction_map" class="cell column-page" data-execution_count="12">
+<details class="code-fold">
+<summary>Regulation Map</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hits_SpiCnet_allmotifs <span class="op">=</span> scan(NETWORK_MOTIFS, genes<span class="op">=</span>NETWORK_GENES, name<span class="op">=</span><span class="st">"SpiC_network_all_TFs"</span>, FASTA<span class="op">=</span>PROMOTER_FASTA)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>graph_SpiCnet_allmotifs <span class="op">=</span> sitemap(hits_SpiCnet_allmotifs, name<span class="op">=</span><span class="st">"SpiC_network_all_TFs"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="st">"This map shows the scanned promoter regions and detected motif sites relative to each transcription start site."</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>display(graph_SpiCnet_allmotifs)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plt.close(graph_SpiCnet_allmotifs)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> shutil.copy2(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    SCAN_DIR <span class="op">/</span> <span class="st">"sitemap_SpiC_network_all_TFs.svg"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    RESULTS_FINAL_REPORT <span class="op">/</span> <span class="st">"sitemap_SpiC_network_all_TFs.svg"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p>32 promoters, 4 matrices, 93 sites at P &lt; 0.0001 This map shows the scanned promoter regions and detected motif sites relative to each transcription start site. <img src="PromoterExtraction_adapted_with_rsatconda_refseqannotation_files/figure-html/regulation_interaction_map-output-3.png" id="regulation_interaction_map-2" width="723" height="1146"></p>
+</div>
+<div id="spicnetwork_alltfs_motifs_table" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>SpiC Network SpiC, Nfe2l2 and Bach1 Motifs Table</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>spicnet_allmotifs_table <span class="op">=</span> process_motif_hits(<span class="st">"SpiC_network_all_TFs"</span>, hits_SpiCnet_allmotifs, gtf_sub)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>motif_hits_path <span class="op">=</span> RESULTS <span class="op">/</span> <span class="st">"motifs_coordinates_SpiC_network_all_TFs.csv"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>shutil.copy2(motif_hits_path, RESULTS_FINAL_REPORT <span class="op">/</span> motif_hits_path.name)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="st">"Each row reports a detected motif site with its sequence, promoter position, and significance."</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>show(spicnet_allmotifs_table, allow_html<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p>Each row reports a detected motif site with its sequence, promoter position, and significance.</p>
+<!--| quarto-html-table-processing: none -->
+<table id="itables_b9e14918_032b_494d_8a11_443bae374589"><tbody><tr>
+    <td style="vertical-align:middle; text-align:left">
+    <a href="https://mwouts.github.io/itables/"><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="64" viewbox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
+    <g style="fill:#d9d7fc">
+        <path d="M100,400H500V357H100Z"></path>
+        <path d="M100,300H400V257H100Z"></path>
+        <path d="M0,200H400V157H0Z"></path>
+        <path d="M100,100H500V57H100Z"></path>
+        <path d="M100,350H500V307H100Z"></path>
+        <path d="M100,250H400V207H100Z"></path>
+        <path d="M0,150H400V107H0Z"></path>
+        <path d="M100,50H500V7H100Z"></path>
+    </g>
+    <g style="fill:#1a1366;stroke:#1a1366;">
+   <rect x="100" y="7" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="5s" repeatcount="indefinite"></animate>
+      <animate attributename="x" values="100;100;500" dur="5s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="0" y="107" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="3.5s" repeatcount="indefinite"></animate>
+    <animate attributename="x" values="0;0;400" dur="3.5s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="100" y="207" width="300" height="43">
+    <animate attributename="width" values="0;300;0" dur="3s" repeatcount="indefinite"></animate>
+    <animate attributename="x" values="100;100;400" dur="3s" repeatcount="indefinite"></animate>
+  </rect>
+        <rect x="100" y="307" width="400" height="43">
+    <animate attributename="width" values="0;400;0" dur="4s" repeatcount="indefinite"></animate>
+      <animate attributename="x" values="100;100;500" dur="4s" repeatcount="indefinite"></animate>
+  </rect>
+        <g style="fill:transparent;stroke-width:8; stroke-linejoin:round" rx="5">
+            <g transform="translate(45 50) rotate(-45)">
+                <circle r="33" cx="0" cy="0"></circle>
+                <rect x="-8" y="32" width="16" height="30"></rect>
+            </g>
+
+            <g transform="translate(450 152)">
+                <polyline points="-15,-20 -35,-20 -35,40 25,40 25,20"></polyline>
+                <rect x="-15" y="-40" width="60" height="60"></rect>
+            </g>
+
+            <g transform="translate(50 352)">
+                <polygon points="-35,-5 0,-40 35,-5"></polygon>
+                <polygon points="-35,10 0,45 35,10"></polygon>
+            </g>
+
+            <g transform="translate(75 250)">
+                <polyline points="-30,30 -60,0 -30,-30"></polyline>
+                <polyline points="0,30 -30,0 0,-30"></polyline>
+            </g>
+
+            <g transform="translate(425 250) rotate(180)">
+                <polyline points="-30,30 -60,0 -30,-30"></polyline>
+                <polyline points="0,30 -30,0 0,-30"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
+</a>
+    Loading ITables v2.6.1 from the <code>init_notebook_mode</code> cell...
+    (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td>
+    </tr></tbody></table>
+<script type="module">
+    (async () => {
+        async function init() {
+            const { ITable, jQuery: $ } = await window._itables_2_6_1;
+
+            document.querySelectorAll("#itables_b9e14918_032b_494d_8a11_443bae374589:not(.dataTable)").forEach(table => {
+                if (!(table instanceof HTMLTableElement))
+                    return;
+
+                let dt_args = {"layout": {"topStart": "pageLength", "topEnd": "search", "bottomStart": "info", "bottomEnd": "paging"}, "order": [], "text_in_header_can_be_selected": true, "classes": ["display", "nowrap"], "style": {"table-layout": "auto", "width": "auto", "margin": "auto", "caption-side": "bottom"}, "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      \n      <th>Gene_Name</th>\n      <th>TranscriptID</th>\n      <th>Motif_Sequence_Found</th>\n      <th>start_motif_pos_promoter</th>\n      <th>end_motif_pos_promoter</th>\n      <th>Pval</th>\n      <th>sig</th>\n      <th>Chromosome</th>\n      <th>Chromosome_Strand</th>\n      <th>TSS_chromosomal_localization</th>\n      <th>dist_to_TSS</th>\n      <th>motif_genomic_localization</th>\n      <th>motif_genomic_strand</th>\n    </tr>\n  </thead></table>", "data_json": "[[\"Acsl3\", \"NM_001033606.3\", \"GTGAGTCATCA\", -1939, -1929, 9.1e-05, 4.041, \"NC_000067.7\", \"+\", 78635600, -1929, \"78633661-78633671\", \"+\"], [\"Acsl3\", \"NM_001033606.3\", \"AGCTGCGTCAGGGT\", 138, 151, 6.3e-05, 4.203, \"NC_000067.7\", \"+\", 78635600, 138, \"78635738-78635751\", \"+\"], [\"Slc40a1\", \"NM_016917.2\", \"GTGACTGAGCT\", -1853, -1843, 6.7e-05, 4.171, \"NC_000067.7\", \"-\", 45964754, -1843, \"45966597-45966607\", \"-\"], [\"Slc40a1\", \"NM_016917.2\", \"CATAGCTCAGTCAC\", -1853, -1840, 5.4e-05, 4.271, \"NC_000067.7\", \"-\", 45964754, -1840, \"45966594-45966607\", \"+\"], [\"Slc40a1\", \"NM_016917.2\", \"AAAATGGGGTAGTA\", -1174, -1161, 2e-05, 4.689, \"NC_000067.7\", \"-\", 45964754, -1161, \"45965915-45965928\", \"+\"], [\"Slc40a1\", \"NM_016917.2\", \"TGCTCTCTCAAGCT\", -45, -32, 6.3e-05, 4.203, \"NC_000067.7\", \"-\", 45964754, -32, \"45964786-45964799\", \"-\"], [\"Blvra\", \"NM_026678.4\", \"TATGGCTTATTCAT\", -1004, -991, 7.3e-05, 4.135, \"NC_000068.8\", \"+\", 126912577, -991, \"126911573-126911586\", \"+\"], [\"Nfe2l2\", \"NM_010902.5\", \"AAATAGAGTAAGTA\", -966, -953, 2.5e-05, 4.606, \"NC_000068.8\", \"-\", 75534860, -953, \"75535813-75535826\", \"-\"], [\"Nfe2l2\", \"NM_010902.5\", \"CAAATCAGGGAGTG\", -600, -587, 9.9e-05, 4.005, \"NC_000068.8\", \"-\", 75534860, -587, \"75535447-75535460\", \"-\"], [\"Cat\", \"NM_009804.2\", \"ATGTCCTCAGTCAC\", -986, -973, 5.9e-05, 4.226, \"NC_000068.8\", \"-\", 103315498, -973, \"103316471-103316484\", \"-\"], [\"Cat\", \"NM_009804.2\", \"GTGAGACAGCA\", 70, 80, 1.8e-05, 4.739, \"NC_000068.8\", \"-\", 103315498, 70, \"103315418-103315428\", \"+\"], [\"Cat\", \"NM_009804.2\", \"TGCTGTCTCACGTT\", 70, 83, 8.6e-07, 6.063, \"NC_000068.8\", \"-\", 103315498, 70, \"103315415-103315428\", \"-\"], [\"Gclm\", \"NM_008129.4\", \"ATGACTTTGCA\", -1923, -1913, 2.4e-05, 4.621, \"NC_000069.7\", \"+\", 122039206, -1913, \"122037283-122037293\", \"+\"], [\"Gclm\", \"NM_008129.4\", \"GGAATGGGGAAGAA\", -619, -606, 9.4e-05, 4.026, \"NC_000069.7\", \"+\", 122039206, -606, \"122038587-122038600\", \"+\"], [\"Gclm\", \"NM_008129.4\", \"TTCTGCTTAGTCAT\", 91, 104, 7.1e-07, 6.146, \"NC_000069.7\", \"+\", 122039206, 91, \"122039297-122039310\", \"+\"], [\"Gclm\", \"NM_008129.4\", \"ATGACTAAGCA\", 94, 104, 2.1e-06, 5.673, \"NC_000069.7\", \"+\", 122039206, 94, \"122039300-122039310\", \"-\"], [\"Gclm\", \"NM_008129.4\", \"TGCTTAGTCATTGT\", 94, 107, 5.5e-06, 5.259, \"NC_000069.7\", \"+\", 122039206, 94, \"122039300-122039313\", \"+\"], [\"Slc7a11\", \"NM_011990.2\", \"CAAAGCCGGAAATT\", -964, -951, 9.4e-05, 4.026, \"NC_000069.7\", \"-\", 50398062, -951, \"50399013-50399026\", \"+\"], [\"Slc7a11\", \"NM_011990.2\", \"ATATGCCCTGTCAT\", -875, -862, 3.1e-05, 4.511, \"NC_000069.7\", \"-\", 50398062, -862, \"50398924-50398937\", \"-\"], [\"Slc7a11\", \"NM_011990.2\", \"ATGACAGGGCA\", -872, -862, 9.1e-05, 4.041, \"NC_000069.7\", \"-\", 50398062, -862, \"50398924-50398934\", \"+\"], [\"Slc7a11\", \"NM_011990.2\", \"ATTACTCAGCT\", -114, -104, 7.9e-05, 4.1, \"NC_000069.7\", \"-\", 50398062, -104, \"50398166-50398176\", \"+\"], [\"Slc7a11\", \"NM_011990.2\", \"AGCTGAGTAATGTT\", -114, -101, 1.4e-05, 4.841, \"NC_000069.7\", \"-\", 50398062, -101, \"50398163-50398176\", \"-\"], [\"Slc7a11\", \"NM_011990.2\", \"CGCTTTCTCAAGCT\", -98, -85, 6.5e-05, 4.184, \"NC_000069.7\", \"-\", 50398062, -85, \"50398147-50398160\", \"-\"], [\"Vcam1\", \"NM_011693.3\", \"CAACAGAGGAAGTG\", -1472, -1459, 5.4e-05, 4.268, \"NC_000069.7\", \"-\", 115923337, -1459, \"115924796-115924809\", \"+\"], [\"Vcam1\", \"NM_011693.3\", \"ATGAGTCTGCA\", -1387, -1377, 1.2e-05, 4.915, \"NC_000069.7\", \"-\", 115923337, -1377, \"115924714-115924724\", \"-\"], [\"Vcam1\", \"NM_011693.3\", \"TCATGCAGACTCAT\", -1387, -1374, 2.8e-05, 4.561, \"NC_000069.7\", \"-\", 115923337, -1374, \"115924711-115924724\", \"+\"], [\"Vcam1\", \"NM_011693.3\", \"ATGACATGGCA\", -1232, -1222, 5.1e-05, 4.29, \"NC_000069.7\", \"-\", 115923337, -1222, \"115924559-115924569\", \"-\"], [\"Vcam1\", \"NM_011693.3\", \"AGCTGCCATGTCAT\", -1232, -1219, 0.0001, 4.001, \"NC_000069.7\", \"-\", 115923337, -1219, \"115924556-115924569\", \"+\"], [\"Vcam1\", \"NM_011693.3\", \"ATAAAAGGGAAGTT\", -1168, -1155, 4.6e-05, 4.34, \"NC_000069.7\", \"-\", 115923337, -1155, \"115924492-115924505\", \"+\"], [\"Vcam1\", \"NM_011693.3\", \"AACTACTGACTCAC\", -259, -246, 3.9e-05, 4.411, \"NC_000069.7\", \"-\", 115923337, -246, \"115923583-115923596\", \"-\"], [\"Vcam1\", \"NM_011693.3\", \"GTGAGTCAGTA\", -256, -246, 0.0001, 3.982, \"NC_000069.7\", \"-\", 115923337, -246, \"115923583-115923593\", \"+\"], [\"Vcam1\", \"NM_011693.3\", \"TACTGACTCACATT\", -256, -243, 3e-06, 5.52, \"NC_000069.7\", \"-\", 115923337, -243, \"115923580-115923593\", \"-\"], [\"Lpcat3\", \"NM_145130.3\", \"AGCATGAGGAAGTA\", -1731, -1718, 1.7e-05, 4.776, \"NC_000072.7\", \"+\", 124640091, -1718, \"124638360-124638373\", \"+\"], [\"Lpcat3\", \"NM_145130.3\", \"GTGACACTGCA\", -927, -917, 3e-05, 4.527, \"NC_000072.7\", \"+\", 124640091, -917, \"124639164-124639174\", \"+\"], [\"Lpcat3\", \"NM_145130.3\", \"CTATGCAGTGTCAC\", -927, -914, 5.9e-05, 4.226, \"NC_000072.7\", \"+\", 124640091, -914, \"124639164-124639177\", \"-\"], [\"Gsr\", \"NM_010344.4\", \"AACCGCTGAGCCAT\", -1105, -1092, 0.0001, 4.001, \"NC_000074.7\", \"+\", 34143266, -1092, \"34142161-34142174\", \"+\"], [\"Gsr\", \"NM_010344.4\", \"ATGACTTAGCA\", -745, -735, 1.6e-06, 5.808, \"NC_000074.7\", \"+\", 34143266, -735, \"34142521-34142531\", \"+\"], [\"Gsr\", \"NM_010344.4\", \"TACTGCTAAGTCAT\", -745, -732, 2.4e-07, 6.614, \"NC_000074.7\", \"+\", 34143266, -732, \"34142521-34142534\", \"-\"], [\"Gsr\", \"NM_010344.4\", \"CACCGAGTTAAAGT\", -564, -551, 0.0001, 4.0, \"NC_000074.7\", \"+\", 34143266, -551, \"34142702-34142715\", \"-\"], [\"Gsr\", \"NM_010344.4\", \"ATCTCCCAAGTCAT\", -392, -379, 8.9e-05, 4.049, \"NC_000074.7\", \"+\", 34143266, -379, \"34142874-34142887\", \"+\"], [\"Acsl1\", \"NM_007981.5\", \"ATGAGTCAGCT\", -1883, -1873, 1.6e-05, 4.789, \"NC_000074.7\", \"+\", 46924214, -1873, \"46922331-46922341\", \"+\"], [\"Acsl1\", \"NM_007981.5\", \"TCAAGCTGACTCAT\", -1883, -1870, 6.6e-05, 4.183, \"NC_000074.7\", \"+\", 46924214, -1870, \"46922331-46922344\", \"-\"], [\"Acsl1\", \"NM_007981.5\", \"ATATTGCGGAAGTC\", -856, -843, 1.7e-05, 4.776, \"NC_000074.7\", \"+\", 46924214, -843, \"46923358-46923371\", \"+\"], [\"Acsl1\", \"NM_007981.5\", \"GAAAAGCGGAACGT\", 142, 155, 1.8e-05, 4.748, \"NC_000074.7\", \"+\", 46924214, 142, \"46924356-46924369\", \"-\"], [\"Hmox1\", \"NM_010442.2\", \"TGCTCGCTCACGGT\", -5, 8, 5.1e-05, 4.293, \"NC_000074.7\", \"+\", 75820246, 0, \"75820241-75820254\", \"+\"], [\"Dhodh\", \"NM_020046.3\", \"TACTGAGTAAAACT\", -1796, -1783, 5.3e-05, 4.274, \"NC_000074.7\", \"-\", 110335305, -1783, \"110337088-110337101\", \"+\"], [\"Dhodh\", \"NM_020046.3\", \"AGCTGTCTCACTGC\", -1455, -1442, 8.4e-05, 4.074, \"NC_000074.7\", \"-\", 110335305, -1442, \"110336747-110336760\", \"+\"], [\"Dhodh\", \"NM_020046.3\", \"AAAGTGGGGAAGTA\", -647, -634, 1.3e-05, 4.872, \"NC_000074.7\", \"-\", 110335305, -634, \"110335939-110335952\", \"-\"], [\"Gclc\", \"NM_010295.2\", \"TGCTGTCTCTCTCT\", -1497, -1484, 7.1e-05, 4.148, \"NC_000075.7\", \"+\", 77661817, -1484, \"77660320-77660333\", \"-\"], [\"Gclc\", \"NM_010295.2\", \"CAAATGTGGAAGTC\", -1278, -1265, 8e-05, 4.095, \"NC_000075.7\", \"+\", 77661817, -1265, \"77660539-77660552\", \"+\"], [\"Me1\", \"NM_008615.2\", \"TTTTGTATAGTCAT\", -1316, -1303, 4.8e-05, 4.322, \"NC_000075.7\", \"-\", 86577967, -1303, \"86579270-86579283\", \"+\"], [\"Me1\", \"NM_008615.2\", \"CGCTGAGTCACGGC\", -10, 3, 1.7e-06, 5.774, \"NC_000075.7\", \"-\", 86577967, 0, \"86577964-86577977\", \"+\"], [\"Me1\", \"NM_008615.2\", \"GTGACTCAGCG\", -7, 3, 5.3e-06, 5.274, \"NC_000075.7\", \"-\", 86577967, 0, \"86577964-86577974\", \"-\"], [\"Me1\", \"NM_008615.2\", \"AAGCGCTGAGTCAC\", -7, 6, 1.2e-05, 4.915, \"NC_000075.7\", \"-\", 86577967, 0, \"86577961-86577974\", \"+\"], [\"Alas1\", \"NM_020559.2\", \"GAGATCAGGAAGTA\", -1902, -1889, 5.7e-05, 4.245, \"NC_000075.7\", \"-\", 106125153, -1889, \"106127042-106127055\", \"-\"], [\"Alas1\", \"NM_020559.2\", \"TTTTGTTGAGTCAG\", -857, -844, 4.8e-05, 4.322, \"NC_000075.7\", \"-\", 106125153, -844, \"106125997-106126010\", \"+\"], [\"Aifm2\", \"NM_001284300.1\", \"AAAAAGGGGAAGTC\", -1559, -1546, 1.2e-06, 5.923, \"NC_000076.7\", \"+\", 61551042, -1546, \"61549483-61549496\", \"+\"], [\"Aifm2\", \"NM_001284300.1\", \"TACTAACTCATGCT\", -1052, -1039, 1.7e-05, 4.764, \"NC_000076.7\", \"+\", 61551042, -1039, \"61549990-61550003\", \"-\"], [\"Aifm2\", \"NM_001284300.1\", \"GTGACTTGGCA\", -893, -883, 3.2e-05, 4.489, \"NC_000076.7\", \"+\", 61551042, -883, \"61550149-61550159\", \"+\"], [\"Aifm2\", \"NM_001284300.1\", \"GTGTGCCAAGTCAC\", -893, -880, 6.6e-05, 4.183, \"NC_000076.7\", \"+\", 61551042, -880, \"61550149-61550162\", \"-\"], [\"Gpx4\", \"NM_008162.4\", \"ATGTCCTGAGTCAC\", -1347, -1334, 1.2e-05, 4.915, \"NC_000076.7\", \"+\", 79889399, -1334, \"79888052-79888065\", \"+\"], [\"Gpx4\", \"NM_008162.4\", \"GTGACTCAGGA\", -1344, -1334, 2.1e-05, 4.684, \"NC_000076.7\", \"+\", 79889399, -1334, \"79888055-79888065\", \"-\"], [\"Txnrd1\", \"NM_001042513.1\", \"GTAAGGAGGAACTG\", -1675, -1662, 8.4e-05, 4.075, \"NC_000076.7\", \"+\", 82695040, -1662, \"82693365-82693378\", \"+\"], [\"Txnrd1\", \"NM_001042513.1\", \"ACGAGGAGGAAGTA\", -607, -594, 7.5e-05, 4.124, \"NC_000076.7\", \"+\", 82695040, -594, \"82694433-82694446\", \"+\"], [\"Txnrd1\", \"NM_001042513.1\", \"TGTAAGGGGAACTA\", -592, -579, 9.4e-05, 4.026, \"NC_000076.7\", \"+\", 82695040, -579, \"82694448-82694461\", \"+\"], [\"Txnrd1\", \"NM_001042513.1\", \"TTTTGCTTTGTCAT\", -96, -83, 1.2e-05, 4.915, \"NC_000076.7\", \"+\", 82695040, -83, \"82694944-82694957\", \"+\"], [\"Txnrd1\", \"NM_001042513.1\", \"ATGACAAAGCA\", -93, -83, 1.8e-05, 4.739, \"NC_000076.7\", \"+\", 82695040, -83, \"82694947-82694957\", \"-\"], [\"Txnrd1\", \"NM_001042513.1\", \"TGCTTTGTCATTCT\", -93, -80, 3.9e-05, 4.407, \"NC_000076.7\", \"+\", 82695040, -80, \"82694947-82694960\", \"+\"], [\"Cisd1\", \"NM_134007.4\", \"GGATGCTGATTCAT\", -1379, -1366, 3.5e-05, 4.458, \"NC_000076.7\", \"-\", 71180679, -1366, \"71182045-71182058\", \"-\"], [\"Cisd1\", \"NM_134007.4\", \"ATGAATCAGCA\", -1376, -1366, 7.3e-06, 5.137, \"NC_000076.7\", \"-\", 71180679, -1366, \"71182045-71182055\", \"+\"], [\"Cisd1\", \"NM_134007.4\", \"TTGTCCTGAGTCAC\", -224, -211, 2e-05, 4.708, \"NC_000076.7\", \"-\", 71180679, -211, \"71180890-71180903\", \"-\"], [\"Cisd1\", \"NM_134007.4\", \"GTGACTCAGGA\", -221, -211, 2.1e-05, 4.684, \"NC_000076.7\", \"-\", 71180679, -211, \"71180890-71180900\", \"+\"], [\"Spic\", \"NM_011461.3\", \"AACTTCTGAGTCAT\", -787, -774, 4.9e-06, 5.311, \"NC_000076.7\", \"-\", 88518885, -774, \"88519659-88519672\", \"-\"], [\"Spic\", \"NM_011461.3\", \"ATGACTCAGAA\", -784, -774, 2.7e-05, 4.563, \"NC_000076.7\", \"-\", 88518885, -774, \"88519659-88519669\", \"+\"], [\"Spic\", \"NM_011461.3\", \"TAAAGCTGAATCAT\", 179, 192, 5.4e-05, 4.271, \"NC_000076.7\", \"-\", 88518885, 179, \"88518693-88518706\", \"-\"], [\"Spic\", \"NM_011461.3\", \"ATGATTCAGCT\", 182, 192, 3e-05, 4.527, \"NC_000076.7\", \"-\", 88518885, 182, \"88518693-88518703\", \"+\"], [\"Elovl7\", \"NM_029001.5\", \"GCTAAGAGGAAGTC\", -1788, -1775, 3.8e-05, 4.42, \"NC_000079.7\", \"+\", 108350938, -1775, \"108349150-108349163\", \"-\"], [\"Fth1\", \"NM_010239.2\", \"AGCCTAGTCATTGT\", -1649, -1636, 3.9e-05, 4.407, \"NC_000085.7\", \"+\", 9960010, -1636, \"9958361-9958374\", \"-\"], [\"Fth1\", \"NM_010239.2\", \"ATGACTAGGCT\", -1646, -1636, 9.1e-05, 4.041, \"NC_000085.7\", \"+\", 9960010, -1636, \"9958364-9958374\", \"+\"], [\"Fth1\", \"NM_010239.2\", \"CAAAACTGGAAGTT\", -1026, -1013, 6.1e-05, 4.218, \"NC_000085.7\", \"+\", 9960010, -1013, \"9958984-9958997\", \"-\"], [\"Fth1\", \"NM_010239.2\", \"TACTGCAGAGGCAT\", -208, -195, 5.9e-05, 4.226, \"NC_000085.7\", \"+\", 9960010, -195, \"9959802-9959815\", \"-\"], [\"Scd1\", \"NM_009127.4\", \"AATAACAGTAAGTA\", -945, -932, 3.4e-05, 4.474, \"NC_000085.7\", \"-\", 44396148, -932, \"44397080-44397093\", \"-\"], [\"G6pdx\", \"NM_008062.3\", \"GGAAGCCGGAAGTG\", -814, -801, 1.6e-05, 4.808, \"NC_000086.8\", \"-\", 73472486, -801, \"73473287-73473300\", \"+\"], [\"G6pdx\", \"NM_008062.3\", \"GGGATCCGGAAGTA\", -786, -773, 8.9e-05, 4.051, \"NC_000086.8\", \"-\", 73472486, -773, \"73473259-73473272\", \"-\"], [\"G6pdx\", \"NM_008062.3\", \"GTGACACAGGA\", -254, -244, 7.2e-05, 4.141, \"NC_000086.8\", \"-\", 73472486, -244, \"73472730-73472740\", \"-\"], [\"G6pdx\", \"NM_008062.3\", \"GTCTCCTGTGTCAC\", -254, -241, 6.6e-05, 4.183, \"NC_000086.8\", \"-\", 73472486, -241, \"73472727-73472740\", \"+\"], [\"Nox1\", \"NM_172203.2\", \"ACATGGAGGAAGTG\", -1473, -1460, 6.8e-05, 4.169, \"NC_000086.8\", \"-\", 133012603, -1460, \"133014063-133014076\", \"-\"], [\"Nox1\", \"NM_172203.2\", \"TATTGACTCAAAGT\", -994, -981, 6.3e-05, 4.203, \"NC_000086.8\", \"-\", 133012603, -981, \"133013584-133013597\", \"-\"], [\"Nox1\", \"NM_172203.2\", \"TTAAAGAGGAACTT\", -942, -929, 4.6e-05, 4.34, \"NC_000086.8\", \"-\", 133012603, -929, \"133013532-133013545\", \"-\"], [\"Nox1\", \"NM_172203.2\", \"TAAACGAGGAAGTC\", -900, -887, 2.8e-05, 4.558, \"NC_000086.8\", \"-\", 133012603, -887, \"133013490-133013503\", \"-\"], [\"Acsl4\", \"NM_207625.2\", \"AAAAAGAAGAAGAA\", -1220, -1207, 8e-05, 4.095, \"NC_000086.8\", \"-\", 141173531, -1207, \"141174738-141174751\", \"+\"], [\"Acsl4\", \"NM_207625.2\", \"TTTTGCTGAGTGAC\", -556, -543, 3.1e-05, 4.511, \"NC_000086.8\", \"-\", 141173531, -543, \"141174074-141174087\", \"-\"], [\"Acsl4\", \"NM_207625.2\", \"TGCTGAGTGACGCG\", -553, -540, 4.7e-05, 4.327, \"NC_000086.8\", \"-\", 141173531, -540, \"141174071-141174084\", \"-\"]]"};
+                new ITable(table, dt_args);
+            });
+        }
+
+        if (window._itables_2_6_1) {
+            init();
+        } else {
+            window.addEventListener("itables-2.6.1-ready", () => {
+                init();
+            });
+        }
+    })();
+</script>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
