@@ -1,11 +1,11 @@
-# DNA_32_FTmotif_search_for_agent
+# DNA_018_PromotorSeq_MotifFinder
 
-Prepare DNA_018 project for ease use by agent
+Continuation of DNA_007 project. Search for SpiC and Nfe2l2 motifs in promoters
 
 ## Project Structure
 
 ```
-DNA_32_FTmotif_search_for_agent/
+DNA_018_PromotorSeq_MotifFinder/
 ├── Data/        # Raw and input data files
 ├── Notebooks/   # Jupyter / Quarto notebooks
 ├── Results/     # Outputs, reports, and processed results

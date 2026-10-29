@@ -1,0 +1,61 @@
+; matrix-scan  -v 1 -i /tmp/tmpuu6_qxhy/promoters.fasta -seq_format fasta -m /tmp/tmpuu6_qxhy/matrices.tf -matrix_format transfac -bgfile /tmp/tmpuu6_qxhy/bg.tab -bg_pseudo 0.01 -pseudo 1 -2str -origin end -n score -return limits -return sites -return pval -uth pval 0.0001 -o /srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_TFpromoters5kb_Bach1motif.ft
+; Slow counting mode            
+; Input files
+;	bg	/tmp/tmpuu6_qxhy/bg.tab
+;	input	/tmp/tmpuu6_qxhy/promoters.fasta
+; Matrix files
+;	matrix 1	/tmp/tmpuu6_qxhy/matrices.tf
+; Sequence format      	fasta
+; Output files
+;	output	/srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_TFpromoters5kb_Bach1motif.ft
+; Pseudo counts        	1
+; Background model
+;	Method        	file
+;	Markov order  	1
+;	Strand        	sensitive
+;	Background pseudo-frequency	0.01
+;	Residue probabilities
+;		a	0.28531
+;		c	0.21486
+;		g	0.22564
+;		t	0.27419
+; Thresholds	lower	upper
+;	pval  	NA	0.0001
+; Output columns
+;	1	seq_id
+;	2	ft_type
+;	3	ft_name
+;	4	strand
+;	5	start
+;	6	end
+;	7	sequence
+;	8	weight
+#seq_id	ft_type	ft_name	strand	start	end	sequence	weight	Pval	ln_Pval	sig
+>Spic|NM_011461.3	limit	START_END	D	-30201	-1	.	00	0	0
+>Spic|NM_011461.3	site	Bach1	R	-29745	-29732	TGCTTAGTCATGGG	4.1	6.2e-05	-9.684	4.206
+>Spic|NM_011461.3	site	Bach1	D	-26111	-26098	TGCTTACTCATGGC	3.3	8.6e-05	-9.361	4.066
+>Spic|NM_011461.3	site	Bach1	R	-26078	-26065	TGCTGACTCATTGT	13.1	3.3e-07	-14.925	6.482
+>Spic|NM_011461.3	site	Bach1	D	-25110	-25097	CGCTGAGCCATCTT	3.0	9.8e-05	-9.228	4.008
+>Spic|NM_011461.3	site	Bach1	R	-22753	-22740	AGGTGTCTCATGGT	5.2	3.7e-05	-10.194	4.427
+>Spic|NM_011461.3	site	Bach1	R	-21441	-21428	TGCTGTATCACATT	4.9	4.3e-05	-10.053	4.366
+>Spic|NM_011461.3	site	Bach1	D	-9370	-9357	CACTGAGTCTTTCT	4.0	6.5e-05	-9.640	4.187
+>Spic|NM_011461.3	site	Bach1	D	-7716	-7703	AGCTGAGTATTGGT	2.9	1.0e-04	-9.187	3.990
+;
+; Matrices
+;	matrix	name 	ncol	nrow	pseudo	Wmin	Wmax	Wrange
+;	1	Bach1	14	4	1	-64.700	16.900	81.600	a:0.285 c:0.215 g:0.226 t:0.274 
+; Number of sequences scanned	1
+; Sum of sequence lengths	30201
+; N residues           	0
+; Matches per matrix
+;	matrix	name 	matches	scored
+;	1	Bach1          	8	60376
+;		TOTAL          	8	60376
+; Host name	qds
+; Job started	2026-10-09.172921
+; Job done	2026-10-09.172925
+; Seconds	4.05
+;	user	4.05
+;	system	0.02
+;	cuser	0
+;	csystem	0

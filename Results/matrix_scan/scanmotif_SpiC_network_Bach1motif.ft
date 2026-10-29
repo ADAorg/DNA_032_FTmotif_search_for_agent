@@ -1,0 +1,102 @@
+; matrix-scan  -v 1 -i /tmp/tmpq3bqe9bc/promoters.fasta -seq_format fasta -m /tmp/tmpq3bqe9bc/matrices.tf -matrix_format transfac -bgfile /tmp/tmpq3bqe9bc/bg.tab -bg_pseudo 0.01 -pseudo 1 -2str -origin end -n score -return limits -return sites -return pval -uth pval 0.0001 -o /srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_SpiC_network_Bach1motif.ft
+; Slow counting mode            
+; Input files
+;	input	/tmp/tmpq3bqe9bc/promoters.fasta
+;	bg	/tmp/tmpq3bqe9bc/bg.tab
+; Matrix files
+;	matrix 1	/tmp/tmpq3bqe9bc/matrices.tf
+; Sequence format      	fasta
+; Output files
+;	output	/srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_SpiC_network_Bach1motif.ft
+; Pseudo counts        	1
+; Background model
+;	Method        	file
+;	Markov order  	1
+;	Strand        	sensitive
+;	Background pseudo-frequency	0.01
+;	Residue probabilities
+;		a	0.25790
+;		c	0.23921
+;		g	0.24274
+;		t	0.26014
+; Thresholds	lower	upper
+;	pval  	NA	0.0001
+; Output columns
+;	1	seq_id
+;	2	ft_type
+;	3	ft_name
+;	4	strand
+;	5	start
+;	6	end
+;	7	sequence
+;	8	weight
+#seq_id	ft_type	ft_name	strand	start	end	sequence	weight	Pval	ln_Pval	sig
+>Acsl3|NM_001033606.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Acsl3|NM_001033606.3	site	Bach1	D	-63	-50	AGCTGCGTCAGGGT	4.1	6.3e-05	-9.679	4.203
+>Slc40a1|NM_016917.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Slc40a1|NM_016917.2	site	Bach1	D	-246	-233	TGCTCTCTCAAGCT	4.1	6.3e-05	-9.679	4.203
+>Idh1|NM_010497.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Blvra|NM_026678.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Nfe2l2|NM_010902.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Cat|NM_009804.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Cat|NM_009804.2	site	Bach1	D	-131	-118	TGCTGTCTCACGTT	11.9	8.6e-07	-13.961	6.063
+>Gss|NM_008180.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Nfs1|NM_010911.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclm|NM_008129.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclm|NM_008129.4	site	Bach1	D	-107	-94	TGCTTAGTCATTGT	8.7	5.5e-06	-12.109	5.259
+>Slc7a11|NM_011990.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Slc7a11|NM_011990.2	site	Bach1	D	-315	-302	AGCTGAGTAATGTT	7.1	1.4e-05	-11.146	4.841
+>Slc7a11|NM_011990.2	site	Bach1	D	-299	-286	CGCTTTCTCAAGCT	4.0	6.5e-05	-9.635	4.184
+>Vcam1|NM_011693.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Vcam1|NM_011693.3	site	Bach1	D	-457	-444	TACTGACTCACATT	9.7	3.0e-06	-12.710	5.520
+>Pgd|NM_001081274.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Lpcat3|NM_145130.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Gsr|NM_010344.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Gsr|NM_010344.4	site	Bach1	R	-765	-752	CACCGAGTTAAAGT	3.0	1.0e-04	-9.211	4.000
+>Acsl1|NM_007981.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Hmox1|NM_010442.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Hmox1|NM_010442.2	site	Bach1	D	-206	-193	TGCTCGCTCACGGT	4.6	5.1e-05	-9.885	4.293
+>Ido1|NM_008324.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Dhodh|NM_020046.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Dhodh|NM_020046.3	site	Bach1	R	-1997	-1984	TACTGAGTAAAACT	4.5	5.3e-05	-9.842	4.274
+>Dhodh|NM_020046.3	site	Bach1	R	-1656	-1643	AGCTGTCTCACTGC	3.4	8.4e-05	-9.381	4.074
+>Gclc|NM_010295.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclc|NM_010295.2	site	Bach1	R	-1698	-1685	TGCTGTCTCTCTCT	3.8	7.1e-05	-9.552	4.148
+>Me1|NM_008615.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Me1|NM_008615.2	site	Bach1	R	-211	-198	CGCTGAGTCACGGC	10.8	1.7e-06	-13.295	5.774
+>Alas1|NM_020559.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Aifm2|NM_001284300.1	limit	START_END	D	-2201	-1	.	00	0	0
+>Aifm2|NM_001284300.1	site	Bach1	R	-1253	-1240	TACTAACTCATGCT	6.8	1.7e-05	-10.969	4.764
+>Gpx4|NM_008162.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Txnrd1|NM_001042513.1	limit	START_END	D	-2201	-1	.	00	0	0
+>Txnrd1|NM_001042513.1	site	Bach1	D	-294	-281	TGCTTTGTCATTCT	5.2	3.9e-05	-10.147	4.407
+>Cisd1|NM_134007.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Spic|NM_011461.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Elovl7|NM_029001.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Fth1|NM_010239.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Fth1|NM_010239.2	site	Bach1	R	-1850	-1837	AGCCTAGTCATTGT	5.2	3.9e-05	-10.147	4.407
+>Scd1|NM_009127.4	limit	START_END	D	-2201	-1	.	00	0	0
+>G6pdx|NM_008062.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Nox1|NM_172203.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Nox1|NM_172203.2	site	Bach1	D	-1195	-1182	TATTGACTCAAAGT	4.1	6.3e-05	-9.679	4.203
+>Acsl4|NM_207625.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Acsl4|NM_207625.2	site	Bach1	D	-754	-741	TGCTGAGTGACGCG	4.8	4.7e-05	-9.964	4.327
+;
+; Matrices
+;	matrix	name 	ncol	nrow	pseudo	Wmin	Wmax	Wrange
+;	1	Bach1	14	4	1	-64.700	16.700	81.400	a:0.258 c:0.239 g:0.243 t:0.260 
+; Number of sequences scanned	32
+; Sum of sequence lengths	70432
+; N residues           	0
+; Matches per matrix
+;	matrix	name 	matches	scored
+;	1	Bach1          	18	140032
+;		TOTAL          	18	140032
+; Host name	qds
+; Job started	2026-10-09.172908
+; Job done	2026-10-09.172916
+; Seconds	8.39
+;	user	8.39
+;	system	0
+;	cuser	0
+;	csystem	0

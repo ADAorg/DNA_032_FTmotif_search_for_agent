@@ -1,0 +1,110 @@
+; matrix-scan  -v 1 -i /tmp/tmpc0nn8s09/promoters.fasta -seq_format fasta -m /tmp/tmpc0nn8s09/matrices.tf -matrix_format transfac -bgfile /tmp/tmpc0nn8s09/bg.tab -bg_pseudo 0.01 -pseudo 1 -2str -origin end -n score -return limits -return sites -return pval -uth pval 0.0001 -o /srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_SpiC_network_SpiCmotif.ft
+; Slow counting mode            
+; Input files
+;	input	/tmp/tmpc0nn8s09/promoters.fasta
+;	bg	/tmp/tmpc0nn8s09/bg.tab
+; Matrix files
+;	matrix 1	/tmp/tmpc0nn8s09/matrices.tf
+; Sequence format      	fasta
+; Output files
+;	output	/srv/ext_home/ssalazar/projects/GIMM_projects/DNA_018_PromotorSeq_MotifFinder/Results/matrix_scan/scanmotif_SpiC_network_SpiCmotif.ft
+; Pseudo counts        	1
+; Background model
+;	Method        	file
+;	Markov order  	1
+;	Strand        	sensitive
+;	Background pseudo-frequency	0.01
+;	Residue probabilities
+;		a	0.25790
+;		c	0.23921
+;		g	0.24274
+;		t	0.26014
+; Thresholds	lower	upper
+;	pval  	NA	0.0001
+; Output columns
+;	1	seq_id
+;	2	ft_type
+;	3	ft_name
+;	4	strand
+;	5	start
+;	6	end
+;	7	sequence
+;	8	weight
+#seq_id	ft_type	ft_name	strand	start	end	sequence	weight	Pval	ln_Pval	sig
+>Acsl3|NM_001033606.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Slc40a1|NM_016917.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Slc40a1|NM_016917.2	site	Spic	R	-1375	-1362	AAAATGGGGTAGTA	7.8	2.0e-05	-10.798	4.689
+>Idh1|NM_010497.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Blvra|NM_026678.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Nfe2l2|NM_010902.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Nfe2l2|NM_010902.5	site	Spic	D	-1167	-1154	AAATAGAGTAAGTA	7.5	2.5e-05	-10.606	4.606
+>Nfe2l2|NM_010902.5	site	Spic	D	-801	-788	CAAATCAGGGAGTG	5.1	9.9e-05	-9.221	4.005
+>Cat|NM_009804.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Gss|NM_008180.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Nfs1|NM_010911.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclm|NM_008129.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclm|NM_008129.4	site	Spic	D	-820	-807	GGAATGGGGAAGAA	5.2	9.4e-05	-9.271	4.026
+>Slc7a11|NM_011990.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Slc7a11|NM_011990.2	site	Spic	R	-1165	-1152	CAAAGCCGGAAATT	5.2	9.4e-05	-9.271	4.026
+>Vcam1|NM_011693.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Vcam1|NM_011693.3	site	Spic	R	-1673	-1660	CAACAGAGGAAGTG	6.2	5.4e-05	-9.827	4.268
+>Vcam1|NM_011693.3	site	Spic	R	-1369	-1356	ATAAAAGGGAAGTT	6.5	4.6e-05	-9.993	4.340
+>Pgd|NM_001081274.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Lpcat3|NM_145130.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Lpcat3|NM_145130.3	site	Spic	D	-1932	-1919	AGCATGAGGAAGTA	8.1	1.7e-05	-10.998	4.776
+>Gsr|NM_010344.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Acsl1|NM_007981.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Acsl1|NM_007981.5	site	Spic	D	-1057	-1044	ATATTGCGGAAGTC	8.1	1.7e-05	-10.998	4.776
+>Acsl1|NM_007981.5	site	Spic	R	-59	-46	GAAAAGCGGAACGT	8.0	1.8e-05	-10.932	4.748
+>Hmox1|NM_010442.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Ido1|NM_008324.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Dhodh|NM_020046.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Dhodh|NM_020046.3	site	Spic	D	-848	-835	AAAGTGGGGAAGTA	8.4	1.3e-05	-11.219	4.872
+>Gclc|NM_010295.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Gclc|NM_010295.2	site	Spic	D	-1479	-1466	CAAATGTGGAAGTC	5.5	8.0e-05	-9.430	4.095
+>Me1|NM_008615.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Alas1|NM_020559.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Alas1|NM_020559.2	site	Spic	D	-2103	-2090	GAGATCAGGAAGTA	6.1	5.7e-05	-9.775	4.245
+>Aifm2|NM_001284300.1	limit	START_END	D	-2201	-1	.	00	0	0
+>Aifm2|NM_001284300.1	site	Spic	D	-1760	-1747	AAAAAGGGGAAGTC	11.8	1.2e-06	-13.638	5.923
+>Gpx4|NM_008162.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Txnrd1|NM_001042513.1	limit	START_END	D	-2201	-1	.	00	0	0
+>Txnrd1|NM_001042513.1	site	Spic	D	-1876	-1863	GTAAGGAGGAACTG	5.4	8.4e-05	-9.382	4.075
+>Txnrd1|NM_001042513.1	site	Spic	D	-808	-795	ACGAGGAGGAAGTA	5.6	7.5e-05	-9.495	4.124
+>Txnrd1|NM_001042513.1	site	Spic	D	-793	-780	TGTAAGGGGAACTA	5.2	9.4e-05	-9.271	4.026
+>Cisd1|NM_134007.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Spic|NM_011461.3	limit	START_END	D	-2201	-1	.	00	0	0
+>Elovl7|NM_029001.5	limit	START_END	D	-2201	-1	.	00	0	0
+>Elovl7|NM_029001.5	site	Spic	R	-1989	-1976	GCTAAGAGGAAGTC	6.8	3.8e-05	-10.177	4.420
+>Fth1|NM_010239.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Fth1|NM_010239.2	site	Spic	R	-1227	-1214	CAAAACTGGAAGTT	6.0	6.1e-05	-9.713	4.218
+>Scd1|NM_009127.4	limit	START_END	D	-2201	-1	.	00	0	0
+>Scd1|NM_009127.4	site	Spic	D	-1146	-1133	AATAACAGTAAGTA	7.0	3.4e-05	-10.303	4.474
+>G6pdx|NM_008062.3	limit	START_END	D	-2201	-1	.	00	0	0
+>G6pdx|NM_008062.3	site	Spic	R	-1015	-1002	GGAAGCCGGAAGTG	8.2	1.6e-05	-11.070	4.808
+>G6pdx|NM_008062.3	site	Spic	D	-987	-974	GGGATCCGGAAGTA	5.3	8.9e-05	-9.329	4.051
+>Nox1|NM_172203.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Nox1|NM_172203.2	site	Spic	D	-1674	-1661	ACATGGAGGAAGTG	5.8	6.8e-05	-9.599	4.169
+>Nox1|NM_172203.2	site	Spic	D	-1143	-1130	TTAAAGAGGAACTT	6.5	4.6e-05	-9.993	4.340
+>Nox1|NM_172203.2	site	Spic	D	-1101	-1088	TAAACGAGGAAGTC	7.3	2.8e-05	-10.494	4.558
+>Acsl4|NM_207625.2	limit	START_END	D	-2201	-1	.	00	0	0
+>Acsl4|NM_207625.2	site	Spic	R	-1421	-1408	AAAAAGAAGAAGAA	5.5	8.0e-05	-9.430	4.095
+;
+; Matrices
+;	matrix	name	ncol	nrow	pseudo	Wmin	Wmax	Wrange
+;	1	Spic	14	4	1	-53.600	16.400	70.000	a:0.258 c:0.239 g:0.243 t:0.260 
+; Number of sequences scanned	32
+; Sum of sequence lengths	70432
+; N residues           	0
+; Matches per matrix
+;	matrix	name	matches	scored
+;	1	Spic           	26	140032
+;		TOTAL          	26	140032
+; Host name	qds
+; Job started	2026-10-09.172843
+; Job done	2026-10-09.172851
+; Seconds	8.14
+;	user	8.15
+;	system	0
+;	cuser	0
+;	csystem	0

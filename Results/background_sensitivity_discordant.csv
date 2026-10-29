@@ -1,0 +1,3 @@
+scan,only_in,#seq_id,ft_name,strand,start,end,sequence,Pval
+Nfe2l2 / network,per-scan bg,>Vcam1|NM_011693.3,Nfe2l2_1,R,-457,-447,GTGAGTCAGTA,0.0001
+all 4 / network,per-scan bg,>Vcam1|NM_011693.3,Nfe2l2_1,R,-457,-447,GTGAGTCAGTA,0.0001
