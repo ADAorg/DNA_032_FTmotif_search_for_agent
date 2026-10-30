@@ -43,6 +43,24 @@ recomputed, say so plainly instead of serving the old artefact. Rendering a
 notebook with `--no-execute` reformats someone else's run; that is exactly what
 this rule forbids.
 
+The rule separates inputs from outputs. The genome, the GFF and the CIS-BP
+matrices are inputs: read them freely. The scan, the site map, the hits table
+and the report are outputs: they must come from this run, always.
+
+A committed promoter FASTA such as `Results/promoters_sequences.fasta` sits
+between the two — it is a previous run's output being offered as an input — so
+it has its own rule:
+
+- **Genome available: always re-extract.** Ignore the committed FASTA
+  completely, even when the requested genes all appear in it and re-extraction
+  costs minutes. This is the normal case on a machine with the reference.
+- **Genome unavailable: scanning it is permitted, with disclosure.** Say
+  plainly, in the answer and in the report, that the promoters come from a
+  previous extraction and were not regenerated in this run. First confirm it
+  actually contains every requested gene and that each sequence is the expected
+  length (2201 bp for the default window); if either check fails, stop and say
+  the promoters must be extracted instead.
+
 **Never run against a partial genome.** A truncated FASTA still produces
 promoters — shorter ones, or none for genes on the missing contigs — and the
 scan succeeds without complaint. Run `check_genome.py` first and refuse if it
@@ -146,6 +164,9 @@ Use `runs/` at the repository root with `runs/` in `.gitignore`, or a path
 outside the repository entirely. The timestamp is what makes "never reuse a
 previous result" checkable: two runs can never collide, and nothing from last
 week can be mistaken for today's output.
+
+Extract promoters into the run directory — do not reuse a committed promoter
+FASTA when the genome is available (see the input/output rule above).
 
 Extract promoters (default window: 2000 bp upstream, 200 bp downstream of the
 TSS), then scan. Report progress at each stage — the GFF parse alone takes a
