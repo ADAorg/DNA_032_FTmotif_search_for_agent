@@ -57,3 +57,4 @@ __pycache__/
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/*.fna
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/*.fna.fai
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.gff
+runs/
