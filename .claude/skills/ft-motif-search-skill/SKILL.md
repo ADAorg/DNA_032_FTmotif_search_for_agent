@@ -99,14 +99,23 @@ It compares each file against the uncompressed sizes recorded in NCBI's own
 `dataset_catalog.json` and reports the annotation release. The JSON it prints
 carries `fasta` and `gff` paths — use those downstream rather than guessing.
 
-If the genome is absent, fetch it from the repo's GitHub Release (bgzipped
-copies, checksum-verified and decompressed in place):
+If the genome is absent, fetch it from the repo's GitHub Release:
 
 ```bash
 bash scripts/fetch_genome.sh <refseq_dir>
 ```
 
-This works from sandboxes that cannot reach NCBI. If GitHub release downloads
+This works from sandboxes that cannot reach NCBI. It downloads the bgzipped
+FASTA with its `.gzi` and `.fai` indexes and the gzipped GFF (~0.9 GB),
+verifies them against the release's `SHA256SUMS`, and **leaves them
+compressed** — unpacking needs ~3.7 GB, more than a sandbox usually has free.
+Do not decompress them yourself: everything downstream reads the `.gz` files
+directly (pyfaidx/pyranges for the FASTA and GFF, `check_genes.py` for the
+GFF), and a disk that fills mid-unpack leaves a truncated genome behind.
+`check_genome.py` recognises this layout and verifies the SHA-256 sums in
+place of the uncompressed sizes; use the `fasta` and `gff` paths it prints,
+which then point at the `.gz` files. Plain files, where they exist, are
+preferred and checked by size as before. If GitHub release downloads
 are also blocked, do not improvise a substitute; tell the user to fetch it
 from NCBI instead:
 

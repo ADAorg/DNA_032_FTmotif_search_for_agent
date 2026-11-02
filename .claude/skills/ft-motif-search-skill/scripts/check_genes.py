@@ -19,6 +19,7 @@ Exit 0 whether or not genes are missing — deciding what to do is the agent's
 job, not this script's. Exit 1 only on a real error.
 """
 import argparse
+import gzip
 import json
 import re
 import sys
@@ -69,7 +70,9 @@ def main() -> int:
           f"({len(requested)} symbols requested)...", file=sys.stderr)
 
     n = 0
-    with args.gff.open("rt", errors="replace") as fh:
+    # genomic.gff.gz (as fetched from the GitHub Release) is read without unpacking
+    opener = gzip.open if args.gff.suffix == ".gz" else open
+    with opener(args.gff, "rt", errors="replace") as fh:
         for line in fh:
             n += 1
             if n % args.progress_every == 0:

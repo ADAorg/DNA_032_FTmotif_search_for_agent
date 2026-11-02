@@ -10,12 +10,20 @@ file it shipped, so it is the authoritative check and it is small enough to
 live in the repo. assembly_data_report.jsonl carries the annotation release,
 which is what distinguishes a current reference from a stale one.
 
+Compressed mode: where a plain file is absent but its bgzipped copy from the
+GitHub Release is present (what fetch_genome.sh leaves behind, to save disk),
+the .gz cannot be compared with the uncompressed sizes, so it is verified
+against the SHA256SUMS published with the release instead. Those sums were
+taken from files that had already passed the size check above. The FASTA also
+needs its .gzi index for random access.
+
 Usage:
     python check_genome.py <refseq_dir> [--expect-annotation NAME]
 
 Exit 0 with a JSON report on stdout if everything checks out, exit 1 otherwise.
 """
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -32,6 +40,24 @@ def find(directory: Path, name: str) -> Path | None:
         return direct
     hits = sorted(directory.glob(f"*/{name}"))
     return hits[0] if hits else None
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for block in iter(lambda: fh.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def check_compressed(gz: Path, sums: dict[str, str]) -> str | None:
+    """Problem with a bgzipped copy, or None if it matches SHA256SUMS."""
+    if gz.name not in sums:
+        return f"{gz.name}: no entry in SHA256SUMS, cannot confirm the download is complete"
+    if sha256(gz) != sums[gz.name]:
+        return (f"{gz.name}: SHA-256 does not match SHA256SUMS. "
+                "Truncated or corrupted download; delete it and fetch again.")
+    return None
 
 
 def main() -> int:
@@ -73,9 +99,30 @@ def main() -> int:
         print("FAIL  catalog lists no genome FASTA or GFF3 entry", file=sys.stderr)
         return 1
 
+    sums_path = find(d, "SHA256SUMS")
+    sums = {}
+    if sums_path is not None:
+        for line in sums_path.read_text().splitlines():
+            if line.strip():
+                digest, fname = line.split(maxsplit=1)
+                sums[fname.lstrip("*")] = digest
+
     checked = {}
     for name, want in sorted(expected.items()):
         path = find(d, name)
+        gz = find(d, name + ".gz")
+        if path is None and gz is not None:
+            problem = check_compressed(gz, sums)
+            if problem is None and name.endswith((".fna", ".fa", ".fasta")):
+                gzi = gz.with_name(gz.name + ".gzi")
+                problem = (check_compressed(gzi, sums) if gzi.is_file()
+                           else f"{gzi.name}: missing; the bgzipped FASTA cannot be indexed without it")
+            checked[name] = {"status": "problem" if problem else "ok_compressed",
+                             "path": str(gz), "expected_bytes": want,
+                             "actual_bytes": gz.stat().st_size}
+            if problem:
+                problems.append(problem)
+            continue
         if path is None:
             problems.append(f"{name}: not found under {d}")
             checked[name] = {"status": "missing", "expected_bytes": want}
@@ -134,7 +181,8 @@ def main() -> int:
     print(f"OK    genome complete: {accession} {report.get('assembly_name')} "
           f"({report.get('annotation')})", file=sys.stderr)
     for name, v in sorted(checked.items()):
-        print(f"      {name}  {v['actual_bytes']:,} bytes", file=sys.stderr)
+        note = "  (bgzipped, SHA-256 verified)" if v["status"] == "ok_compressed" else ""
+        print(f"      {Path(v['path']).name}  {v['actual_bytes']:,} bytes{note}", file=sys.stderr)
     print(json.dumps(report, indent=2))
     return 0
 

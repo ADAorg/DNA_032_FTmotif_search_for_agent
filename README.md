@@ -141,8 +141,10 @@ check. The notebook's `rsat()` helper and the agent's `motifscan.py` both grep f
 
 The quickest route is the bgzipped copy attached to the repo's GitHub Release
 [`genome-GRCm39-GCF_000001635.27`](https://github.com/ADAorg/DNA_032_FTmotif_search_for_agent/releases/tag/genome-GRCm39-GCF_000001635.27)
-(release assets are not part of git history and can be up to 2 GB each). This script downloads it, checks the
-SHA-256 sums and decompresses it in place:
+(release assets are not part of git history and can be up to 2 GB each). This script downloads the bgzipped
+FASTA (with its `.gzi`/`.fai` indexes) and the gzipped GFF, ~0.9 GB in all, checks the SHA-256 sums and keeps them
+compressed; the notebook and the agent's scripts read the `.gz` files directly, so the 3.7 GB unpacked copy is
+never needed. If the plain files are already in place they are used instead:
 
 ```bash
 bash .claude/skills/ft-motif-search-skill/scripts/fetch_genome.sh
