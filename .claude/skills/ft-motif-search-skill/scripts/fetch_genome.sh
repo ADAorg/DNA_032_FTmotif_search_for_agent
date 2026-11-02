@@ -30,18 +30,29 @@ if [ -s "$FASTA" ] && [ -s "$GFF" ]; then
     exit 0
 fi
 
+REQUIRED=("${FASTA}.gz" "${FASTA}.gz.gzi" "${GFF}.gz")
+# the .fai only saves time: pyfaidx rebuilds it on first use (~30 s) if absent
+OPTIONAL="${FASTA}.gz.fai"
+
+have_all() { for f in "${REQUIRED[@]}"; do [ -s "$f" ] || return 1; done; }
+
 curl -fsSL --retry 3 -o SHA256SUMS "${BASE}/SHA256SUMS"
-if sha256sum -c --quiet SHA256SUMS 2>/dev/null; then
+if have_all && sha256sum -c --quiet --ignore-missing SHA256SUMS 2>/dev/null; then
     echo "compressed genome already present and verified in $DEST"
     exit 0
 fi
 
-for f in "${FASTA}.gz" "${FASTA}.gz.gzi" "${FASTA}.gz.fai" "${GFF}.gz"; do
+for f in "${REQUIRED[@]}"; do
     echo "downloading $f"
     curl -fL --retry 3 -o "$f" "${BASE}/${f}"
 done
+echo "downloading $OPTIONAL (optional)"
+curl -fL --retry 3 -o "$OPTIONAL" "${BASE}/${OPTIONAL}" \
+    || { rm -f "$OPTIONAL"; echo "no $OPTIONAL in the release; pyfaidx will build it on first use"; }
 
-sha256sum -c SHA256SUMS
+# --ignore-missing: the optional .fai may be absent; every required file was
+# downloaded above with curl -f, so it is present and gets checked
+sha256sum -c --ignore-missing SHA256SUMS
 
 df -h . | tail -1
 ls -la
