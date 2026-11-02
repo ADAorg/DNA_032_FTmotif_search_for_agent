@@ -46,7 +46,7 @@ DNA_032_FTmotif_search_for_agent/
 |---|---|---|
 | **RSAT** (`rsat-core`, bioconda) | `matrix-scan`, `oligo-analysis` | Perl-based; tested with `rsat-core` 2025.04.04 and 2026.10.08 |
 | Python ≥ 3.10 | notebook kernel | |
-| `pyranges` (0.x), `pyfaidx`, `pandas`, `numpy` | GFF parsing, promoter extraction | the notebook uses the pyranges 0.x API (`Feature`, `five_end`, `slack`), so pin `pyranges<1` |
+| `pyranges` (0.x), `pyfaidx`, `biopython`, `pandas`, `numpy` | GFF parsing, promoter extraction | the notebook uses the pyranges 0.x API (`Feature`, `five_end`, `slack`), so pin `pyranges<1`; pyfaidx needs `biopython` ≥ 1.73 to read the bgzipped genome from the GitHub Release |
 | `matplotlib`, `pillow` | site map, CIS-BP logos | |
 | `itables`, `session-info` | interactive tables, session record | |
 | `pyyaml` | agent settings files | only needed for the Claude agent |
@@ -94,14 +94,14 @@ conda create -n pybioinfo -c conda-forge -c bioconda python=3.12 pip jupyter ipy
 conda activate pybioinfo
 
 # Python packages (pip)
-pip install "pyranges<1" pyfaidx pandas numpy matplotlib pillow itables session-info pyyaml
+pip install "pyranges<1" pyfaidx biopython pandas numpy matplotlib pillow itables session-info pyyaml
 
 # register the Jupyter kernel
 python -m ipykernel install --user --name python3 --display-name pybioinfo
 ```
 
-All Python dependencies can also come from conda (`-c conda-forge -c bioconda pyranges pyfaidx pandas numpy matplotlib pillow itables session-info pyyaml`);
-use one or the other, not both, within the same environment. Check with `python -c "import pyranges, pyfaidx, itables, session_info"`.
+All Python dependencies can also come from conda (`-c conda-forge -c bioconda pyranges pyfaidx biopython pandas numpy matplotlib pillow itables session-info pyyaml`);
+use one or the other, not both, within the same environment. Check with `python -c "import pyranges, pyfaidx, Bio, itables, session_info"`.
 
 **c) Quarto (only for the final report cell)**
 

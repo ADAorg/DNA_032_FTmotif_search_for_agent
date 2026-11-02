@@ -99,7 +99,16 @@ It compares each file against the uncompressed sizes recorded in NCBI's own
 `dataset_catalog.json` and reports the annotation release. The JSON it prints
 carries `fasta` and `gff` paths — use those downstream rather than guessing.
 
-If the genome is absent, fetch it from the repo's GitHub Release:
+If the genome is absent, first confirm the Python environment can read the
+compressed files, so a missing package surfaces before the ~0.9 GB download
+rather than at promoter extraction:
+
+```bash
+python -c "import pyranges, pyfaidx, Bio"   # Bio = biopython, needed for bgzipped FASTA
+```
+
+Install whatever is missing (`pip install "pyranges<1" pyfaidx biopython`),
+then fetch it from the repo's GitHub Release:
 
 ```bash
 bash scripts/fetch_genome.sh <refseq_dir>
