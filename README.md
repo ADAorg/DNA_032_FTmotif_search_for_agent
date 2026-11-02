@@ -10,7 +10,7 @@ annotation before running, and packages the report. See [The Claude agent](#the-
 **What the notebook does**
 
 1. Reads the RefSeq GRCm39 annotation and keeps the **RefSeq Select** (canonical) transcript of each gene.
-2. Builds strand-aware promoter windows (default **−2000 / +200 bp** around the TSS) and extracts them from the genome.
+2. Builds strand-aware promoter windows (default **−2000 / +200 bp** around the TSS; the upstream length can be changed) and extracts them from the genome.
 3. Loads the CIS-BP PWMs for the TFs, converts them to TRANSFAC format.
 4. Scans the promoters with RSAT `matrix-scan` (P < 1e-4, order-1 Markov background estimated from the scanned promoters).
 5. Draws the site map, converts hits to genomic coordinates, and renders/zips an HTML report.
@@ -235,9 +235,11 @@ The agent will:
 3. Ask for your gene symbols and check each against the RefSeq Select transcripts, in seconds rather than
    the minutes a full GFF parse costs.
 4. **Stop and tell you which symbols were not found**, with a UniProt link for each, and wait for replacements.
-5. Ask for the p-value threshold, in an option box (1e-4 default, 1e-3, 1e-5, or your own value).
-6. Run the extraction and scan, reporting progress at each stage, and show you the site map image.
-7. Ask whether you want the zip; if yes, render the HTML report and hand back a zip with the report, the site
+5. Ask for the promoter length upstream of the TSS, in an option box (1 kb, 2 kb default, 5 kb, or your own value;
+   always plus 200 bp downstream).
+6. Ask for the p-value threshold, in an option box (1e-4 default, 1e-3, 1e-5, or your own value).
+7. Run the extraction and scan, reporting progress at each stage, and show you the site map image.
+8. Ask whether you want the zip; if yes, render the HTML report and hand back a zip with the report, the site
    map (SVG and PNG), the hits CSV and the raw `.ft` file.
 
 Every run writes to its own `runs/<timestamp>/` directory. Nothing from a previous run is ever reused or
@@ -252,12 +254,13 @@ python .claude/skills/ft-motif-search-skill/scripts/runconfig.py --init my_setti
 python .claude/skills/ft-motif-search-skill/scripts/runconfig.py --check my_settings.yaml
 ```
 
-**You can change:** which transcription factors are scanned, the gene panel, the p-value, and everything about
+**You can change:** which transcription factors are scanned, the gene panel, the p-value, the upstream promoter
+length (default 2 kb; the 200 bp downstream is fixed), and everything about
 the figures — motif colours, width, row height, dpi, output formats (svg/png/pdf), title, sort order, font size,
 legend — and what goes into the zip.
 
 **Fixed:** the reference genome (species, accession, assembly, annotation release), the background model and
-Markov order, pseudo-counts, strand handling, coordinate origin, the promoter window, transcript selection,
+Markov order, pseudo-counts, strand handling, coordinate origin, the downstream promoter length, transcript selection,
 matrix scaling and gene matching. These define the method; changing one produces results that look valid but
 are not comparable with previous runs or with the published analysis.
 

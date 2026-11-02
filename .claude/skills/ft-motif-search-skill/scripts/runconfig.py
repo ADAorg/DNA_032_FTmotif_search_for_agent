@@ -9,12 +9,17 @@ that look valid and are not comparable.
 
 So settings fall into two sets:
 
-  SETTABLE  transcription factors, gene panel, p-value, and everything about
-            presentation (colours, figure size, formats, labels).
+  SETTABLE  transcription factors, gene panel, p-value, upstream promoter
+            length, and everything about presentation (colours, figure size,
+            formats, labels).
 
   LOCKED    background model and order, pseudo-counts, strand handling,
-            coordinate origin, promoter window, transcript selection, matrix
-            scaling. Changing any of these changes the method.
+            coordinate origin, downstream promoter length, transcript
+            selection, matrix scaling. Changing any of these changes the method.
+
+The downstream length stays locked because -origin end places the TSS at
+-(downstream + 1); keeping it fixed means the upstream length can change
+without shifting any reported coordinate.
 
 A user config that touches a locked key is rejected with the maintainer's
 contact address rather than silently ignored, because silently ignoring it
@@ -57,7 +62,6 @@ LOCKED: dict = {
     "background_from": "input",
     "strands": "both",
     "origin": "end",
-    "promoter_upstream_bp": 2000,
     "promoter_downstream_bp": 200,
     "transcript_filter": "RefSeq Select",
     "matrix_scaling": 100,
@@ -75,8 +79,7 @@ LOCKED_WHY: dict[str, str] = {
     "background_from": "the background is estimated from the scanned promoters",
     "strands": "both strands are scanned",
     "origin": "coordinates are negative from the sequence end; coupled to the TSS offset",
-    "promoter_upstream_bp": "the promoter window defines the analysis",
-    "promoter_downstream_bp": "the promoter window defines the analysis",
+    "promoter_downstream_bp": "it sets the TSS offset (-origin end); changing it shifts every coordinate",
     "transcript_filter": "canonical transcripts only",
     "matrix_scaling": "makes CIS-BP probabilities count-like so the pseudo-count stays small",
     "gene_match": "exact matching prevents a gene symbol pulling in its neighbours",
@@ -90,6 +93,7 @@ SETTABLE_DEFAULTS: dict = {
         "motifs": ["Spic", "Nfe2l2_1", "Nfe2l2_2", "Bach1"],
         "genes": [],
         "pvalue": 1e-4,
+        "promoter_upstream_bp": 2000,   # 200 bp downstream is locked
     },
     "figure": {
         "colors": {
@@ -149,6 +153,9 @@ def validate(cfg: dict) -> list[str]:
     p = a.get("pvalue")
     if not isinstance(p, (int, float)) or not (0 < p <= 0.1):
         problems.append(f"analysis.pvalue must be a number in (0, 0.1]; got {p!r}")
+    up = a.get("promoter_upstream_bp")
+    if isinstance(up, bool) or not isinstance(up, int) or not (1000 <= up <= 10000):
+        problems.append(f"analysis.promoter_upstream_bp must be a whole number of bp in [1000, 10000]; got {up!r}")
     if not a.get("motifs"):
         problems.append("analysis.motifs is empty — choose at least one transcription factor")
 
@@ -195,8 +202,7 @@ def load(path: str | Path | None) -> dict:
         "gtf": "annotation_release", "annotation": "annotation_release",
         "organism": "species", "taxon": "species",
         "markov": "markov_order", "background": "background_from",
-        "pseudo": "pseudo_count", "window": "promoter_upstream_bp",
-        "promoter_window": "promoter_upstream_bp", "upstream": "promoter_upstream_bp",
+        "pseudo": "pseudo_count",
         "downstream": "promoter_downstream_bp", "strand": "strands",
     }
 
@@ -211,7 +217,7 @@ def load(path: str | Path | None) -> dict:
                     f"  The method parameters are fixed so that results stay comparable\n"
                     f"  between runs and match the published analysis. You can change\n"
                     f"  which transcription factors and genes are scanned, the p-value,\n"
-                    f"  and anything about the figures.\n\n"
+                    f"  the upstream promoter length, and anything about the figures.\n\n"
                     f"  If your work genuinely needs a different {k}, please contact\n"
                     f"  {MAINTAINER} rather than editing the analysis."
                 )
@@ -247,9 +253,10 @@ def save_settings(cfg: dict, path: str | Path) -> Path:
         "# Promoter motif scan — user settings\n"
         "#\n"
         "# These are the settings you may change: which transcription factors and\n"
-        "# genes to scan, the p-value, and how the figures look.\n"
+        "# genes to scan, the p-value, the upstream promoter length, and how the\n"
+        "# figures look.\n"
         "#\n"
-        "# Method parameters (background model, pseudo-counts, promoter window,\n"
+        "# Method parameters (background model, pseudo-counts, downstream length,\n"
         f"# strand handling) are fixed. To discuss changing one, contact {MAINTAINER}.\n"
         "#\n"
         "# Share this file to let someone reproduce your run exactly.\n\n"
@@ -282,7 +289,7 @@ def main() -> int:
     if args.init:
         p = save_settings(copy.deepcopy(SETTABLE_DEFAULTS), args.init)
         print(f"wrote {p}")
-        print("Edit the motifs, genes, p-value and figure settings; everything else is fixed.")
+        print("Edit the motifs, genes, p-value, upstream length and figure settings; everything else is fixed.")
         return 0
 
     try:
@@ -297,6 +304,7 @@ def main() -> int:
     print(f"  motifs: {', '.join(cfg['analysis']['motifs'])}")
     print(f"  genes:  {len(cfg['analysis']['genes'])} requested")
     print(f"  pvalue: {cfg['analysis']['pvalue']:g}")
+    print(f"  promoter: -{cfg['analysis']['promoter_upstream_bp']} / +{LOCKED['promoter_downstream_bp']} bp")
     return 0
 
 

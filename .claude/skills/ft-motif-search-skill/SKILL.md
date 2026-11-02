@@ -59,7 +59,8 @@ it has its own rule:
   plainly, in the answer and in the report, that the promoters come from a
   previous extraction and were not regenerated in this run. First confirm it
   actually contains every requested gene and that each sequence is the expected
-  length (2201 bp for the default window); if either check fails, stop and say
+  length (upstream + 201 bp: 2201 bp for the default 2 kb window), and that it
+  was extracted with the window the user chose; if any check fails, stop and say
   the promoters must be extracted instead.
 
 **Never run against a partial genome.** A truncated FASTA still produces
@@ -69,9 +70,10 @@ fails.
 
 ## Workflow
 
-Follow these in order. Steps 3, 4, 5 and 7 are conversation gates: ask, stop,
-and wait for the user's answer before going on. Ask one question at a time, in
-this order: motifs, genes, p-value, then (after showing the site map) the zip.
+Follow these in order. Steps 3, 4, 5, 6 and 8 are conversation gates: ask,
+stop, and wait for the user's answer before going on. Ask one question at a
+time, in this order: motifs, genes, promoter length, p-value, then (after
+showing the site map) the zip.
 
 **Ask with an option box whenever the answer is a choice.** Use the client's
 multiple-choice question tool (`AskUserQuestion` in Claude Code, or the
@@ -194,7 +196,33 @@ If a symbol has more than one RefSeq Select transcript, mention it and keep all
 of them. That matches the established analysis; the point is that the promoter
 count is explained rather than surprising.
 
-### 5. Ask for the p-value (option box) — then stop
+### 5. Ask for the promoter length (option box) — then stop
+
+One single-select question: *"How far upstream of the TSS should the promoter
+region extend?"*, with these options, in this order:
+
+| Option label | Description to show | `promoter_upstream_bp` |
+|---|---|---|
+| `1 kb` | 1,000 bp upstream + 200 bp downstream (1,201 bp) | 1000 |
+| `2 kb (Recommended)` | 2,000 bp upstream + 200 bp downstream (2,201 bp); published method default | 2000 |
+| `5 kb` | 5,000 bp upstream + 200 bp downstream (5,201 bp) | 5000 |
+
+The user can type another length through "Other" (a whole number of bp,
+1,000–10,000; accept "3 kb" as 3000; anything under 1 kb is rejected). Set it as `analysis.promoter_upstream_bp`
+through `runconfig.py` and relay its error if rejected, then ask again.
+
+Only the upstream length is settable. The 200 bp downstream is locked: with
+`-origin end` the TSS sits at `-(downstream + 1)`, so keeping downstream fixed
+is what lets the upstream length change without shifting any coordinate. If
+the user asks to change the downstream length, it is a locked setting (see
+6b).
+
+Say in the answer and the report which window was used, and flag it if it is
+not 2 kb: the Markov background is estimated from the scanned promoters, so a
+different window changes the background as well as the search space, and the
+results are not directly comparable with the published analysis.
+
+### 6. Ask for the p-value (option box) — then stop
 
 One single-select question: *"Which p-value threshold should matrix-scan
 use?"*, with these options, in this order:
@@ -211,7 +239,7 @@ its error if the value is rejected, then ask again. Say in the answer and the
 report which threshold was used, and flag it if it is not 1e-4, since results
 at another threshold are not directly comparable with the published analysis.
 
-### 6. Run
+### 7. Run
 
 Create a run directory **outside the repository's tracked files** and write
 everything there:
@@ -232,8 +260,10 @@ week can be mistaken for today's output.
 Extract promoters into the run directory — do not reuse a committed promoter
 FASTA when the genome is available (see the input/output rule above).
 
-Extract promoters (default window: 2000 bp upstream, 200 bp downstream of the
-TSS), then scan. Report progress at each stage — the GFF parse alone takes a
+Extract promoters with the window chosen in step 5 (`promoter_upstream_bp`
+upstream, 200 bp downstream of the TSS; in the notebook copy set
+`PROMOTER_UPSTREAM_BP` and leave `PROMOTER_DOWNSTREAM_BP` and `TSS_OFFSET`
+alone), then scan. Report progress at each stage — the GFF parse alone takes a
 couple of minutes and silence reads as a hang.
 
 ```python
@@ -243,26 +273,26 @@ hits = matrix_scan(promoter_fasta, out/"matrices.tf", ["Spic", "Bach1"],
                    out/"scan.ft", genes=panel)
 ```
 
-Pass the p-value chosen in step 5. The other scan parameters are fixed by the
+Pass the p-value chosen in step 6. The other scan parameters are fixed by the
 published method: order-1 Markov background estimated from the input
 promoters, pseudo-count 1, background pseudo-frequency 0.01, both strands,
 `-origin end`.
 
 Then draw the site map (SVG and PNG) into the run directory.
 
-### 6b. Settings: what the user may change
+### 7b. Settings: what the user may change
 
 `scripts/runconfig.py` holds the boundary. **Do not implement it by judgement
 — load the config through that module and let it decide**, so the same answer
 comes back every time.
 
-Settable: which transcription factors, which genes, the p-value, and
-everything about the figures (motif colours, width, row height, dpi, output
+Settable: which transcription factors, which genes, the p-value, the
+upstream promoter length, and everything about the figures (motif colours, width, row height, dpi, output
 formats, title, sort order, font size, legend) and the zip contents.
 
 Locked: the reference genome (species, accession, assembly, annotation
 release), background model and Markov order, pseudo-counts, strand handling,
-coordinate origin, promoter window, transcript filter, matrix scaling, gene
+coordinate origin, downstream promoter length, transcript filter, matrix scaling, gene
 matching. These define the method — altering one produces results that look
 valid but are not comparable with previous runs or the published analysis.
 
@@ -289,11 +319,12 @@ colleague reproduces their run without carrying hidden method differences.
 Every run also writes `run_config.yaml` with the settable **and** locked
 values together, so the report always records the parameters that produced it.
 
-### 7. Show the site map, then ask about the zip (option box) — then stop
+### 8. Show the site map, then ask about the zip (option box) — then stop
 
 Return the site map image (the PNG) to the user, displayed in the chat, with
 a short summary underneath: motifs scanned, number of promoters, number of
-sites per motif, the p-value, and any genes with no site.
+sites per motif, the promoter window, the p-value, and any genes with no
+site.
 
 Then ask one single-select question: *"Do you want the zip with the full HTML
 report?"*
@@ -303,7 +334,7 @@ report?"*
 | `Yes, build the zip` | Render the HTML report and package it with the site map, hits table and raw scan output |
 | `No, the image is enough` | Stop here; the run files stay in the run directory |
 
-### 8. Package (only if the user said yes)
+### 9. Package (only if the user said yes)
 
 Render the notebook copy and deliver a zip containing the HTML report, the
 site map as **both SVG and PNG**, the hits CSV, and the raw `.ft.txt` with its
@@ -339,8 +370,10 @@ requested panel. Given an arbitrary gene list it would pull `Cat1` in alongside
 gene field exactly and raises on any requested gene that finds no promoter.
 
 **`-origin end` couples to `TSS_OFFSET`.** Positions are negative from the
-sequence end, so the TSS sits at `-(downstream_bp + 1)`. Changing the promoter
-window without changing the offset silently shifts every reported coordinate.
+sequence end, so the TSS sits at `-(downstream_bp + 1)`. Changing the
+downstream length without changing the offset silently shifts every reported
+coordinate; that is why downstream is locked. The upstream length is free to
+change: it only moves where the sequence starts, not where the TSS sits.
 
 ## Files
 
