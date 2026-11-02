@@ -26,7 +26,7 @@ DNA_032_FTmotif_search_for_agent/
 │   └── skills/
 │       └── ft-motif-search-skill/              # the Claude agent (canonical copy)
 │           ├── SKILL.md
-│           └── scripts/                        # check_genome, check_genes, motifscan, runconfig
+│           └── scripts/                        # fetch_genome, check_genome, check_genes, motifscan, runconfig
 ├── Data/
 │   ├── ncbi_dataset_RefSeq_GCF_000001635.27/   # genome FASTA + GFF3 annotation (not in git, see below)
 │   └── Mus_musculus_<date>_CISBP/              # CIS-BP download: pwms_all_motifs/, logos_used_motifs/
@@ -37,8 +37,6 @@ DNA_032_FTmotif_search_for_agent/
 │   ├── matrix_scan/                            # RSAT inputs/outputs: .tf matrices, .ft scan, sitemap/logo SVGs
 │   └── results_report/                         # final HTML report, tables, SVGs (also zipped with a timestamp)
 ├── runs/                                       # agent outputs, one timestamped directory per run (gitignored)
-├── dist/                                       # built .skill file (gitignored)
-├── package_skill.sh
 └── README.md
 ```
 
@@ -231,13 +229,14 @@ Then ask in ordinary words, for example *“scan the promoters of Hmox1, Gclm an
 The agent will:
 
 1. Verify the genome is complete and the annotation release is the expected one, and refuse to run otherwise.
-2. Ask which transcription factor motifs to scan (Spic, Nfe2l2_1, Nfe2l2_2, Bach1).
-3. Take your gene list and check each symbol against the RefSeq Select transcripts, in seconds rather than
+2. Ask which transcription factor motifs to scan, in an option box (Spic, Nfe2l2_1, Nfe2l2_2, Bach1; one or more).
+3. Ask for your gene symbols and check each against the RefSeq Select transcripts, in seconds rather than
    the minutes a full GFF parse costs.
 4. **Stop and tell you which symbols were not found**, with a UniProt link for each, and wait for replacements.
-5. Run the extraction and scan, reporting progress at each stage.
-6. Hand back a zip with the HTML report, the site map (SVG and PNG), the hits CSV and the raw `.ft` file,
-   plus the site map on its own.
+5. Ask for the p-value threshold, in an option box (1e-4 default, 1e-3, 1e-5, or your own value).
+6. Run the extraction and scan, reporting progress at each stage, and show you the site map image.
+7. Ask whether you want the zip; if yes, render the HTML report and hand back a zip with the report, the site
+   map (SVG and PNG), the hits CSV and the raw `.ft` file.
 
 Every run writes to its own `runs/<timestamp>/` directory. Nothing from a previous run is ever reused or
 re-presented, and the agent does not modify any tracked file in this repository.
@@ -269,15 +268,9 @@ what produced it).
 
 ### Maintaining the skill
 
-The copy under `.claude/skills/` is canonical. To use the agent in claude.ai chat as well, build an installable
-copy rather than keeping a second one by hand:
-
-```bash
-./package_skill.sh          # writes dist/ft-motif-search-skill.skill
-```
-
-Install that file in Claude's profile settings and treat it as a build output: when the skill changes, run the
-script again. Editing the installed copy means the change is lost and the two silently disagree.
+The skill lives only in `.claude/skills/ft-motif-search-skill/`; there is no packaged or installed copy to
+rebuild. Claude Code picks it up from the repository root, and in claude.ai chat Claude clones this repository
+from GitHub and follows the same `SKILL.md`. To change the agent, edit that folder and push.
 
 The claude.ai sandbox cannot reach NCBI, but it can download GitHub Release assets, so the skill fetches the
 genome with `fetch_genome.sh` (see [Input data](#2-input-data)) and can run the scan there.

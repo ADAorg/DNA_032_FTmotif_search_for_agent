@@ -21,8 +21,12 @@ GFF="genomic.gff"
 mkdir -p "$DEST"
 cd "$DEST"
 
+if [ -s "$FASTA" ] && [ -s "$GFF" ]; then
+    echo "genome already present in $DEST; run check_genome.py to verify it"
+    exit 0
+fi
+
 for f in SHA256SUMS "${FASTA}.gz" "${GFF}.gz"; do
-    [ -s "$f" ] && [ "$f" != SHA256SUMS ] && { echo "have $f"; continue; }
     echo "downloading $f"
     curl -fL --retry 3 -o "$f" "${BASE}/${f}"
 done

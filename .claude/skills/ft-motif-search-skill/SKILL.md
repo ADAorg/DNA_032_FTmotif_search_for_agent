@@ -3,8 +3,8 @@ name: ft-motif-search-skill
 description: Scan gene promoters for transcription factor binding motifs using RSAT matrix-scan with CIS-BP matrices, and produce a Quarto HTML report, a site map figure and a hits table packaged as a zip. Use this skill whenever the user wants to search for TF motifs or binding sites in promoters, scan promoters with a PWM or position weight matrix, run matrix-scan, look for Spic / Nfe2l2 / Bach1 (or other CIS-BP) motifs in a gene panel, regenerate or update the promoter motif report, or asks anything about the DNA_018 / DNA_032 promoter motif workflow — even if they only say "run the motif search", "scan these genes", or hand over a gene list and a repo.
 metadata:
   display-name: "FT Motif Search"
-  version: "0.1.0"
-  updated: "2026-10-29"
+  version: "0.2.0"
+  updated: "2026-11-02"
   canonical: ".claude/skills/ft-motif-search-skill/ in the DNA_032 repository"
 ---
 
@@ -26,8 +26,9 @@ factor motifs with RSAT matrix-scan, and package a report.
 > notebook are destroyed.
 >
 > **This skill lives in the repository.** The copy under
-> `.claude/skills/ft-motif-search-skill/` is canonical. Any copy installed in a
-> Claude profile is a build output, regenerated with `./package_skill.sh`.
+> `.claude/skills/ft-motif-search-skill/` is the only one. Claude Code loads it
+> from the repository root, and a sandbox uses it from a fresh clone of the
+> GitHub repository, so there is no separate installed copy to keep in sync.
 
 The analysis is driven by a Quarto notebook. This skill parameterises that
 notebook, gates it on checks that are easy to skip and expensive to get wrong,
@@ -68,8 +69,18 @@ fails.
 
 ## Workflow
 
-Follow these in order. Steps 3 and 4 are conversation gates: stop and wait for
-the user.
+Follow these in order. Steps 3, 4, 5 and 7 are conversation gates: ask, stop,
+and wait for the user's answer before going on. Ask one question at a time, in
+this order: motifs, genes, p-value, then (after showing the site map) the zip.
+
+**Ask with an option box whenever the answer is a choice.** Use the client's
+multiple-choice question tool (`AskUserQuestion` in Claude Code, or the
+equivalent ask-user / input tool in claude.ai). Only fall back to a plain
+numbered list in the message if no such tool is available. Gene symbols are
+free text, so ask for those in a normal message.
+
+Steps 1 and 2 need no input; do them first, quietly, and only report if they
+fail, so the user is not asked for choices that cannot then be run.
 
 ### 1. Locate the project and verify the genome
 
@@ -120,23 +131,32 @@ bioconda ships `rsat-core` for linux-64, linux-aarch64 and osx-64 but **not
 osx-arm64**. On Apple Silicon use `CONDA_SUBDIR=osx-64` or a container, and
 say so rather than letting the install fail opaquely.
 
-### 3. Ask which motifs — then stop
+### 3. Ask which motifs (option box, multi-select) — then stop
 
-Offer the curated set, which have logos bundled in the CIS-BP folder:
+Offer the curated set, which have logos bundled in the CIS-BP folder, as one
+multi-select question with exactly these four options:
 
-| Label | CIS-BP accession | TF |
+| Option label | Description to show | CIS-BP accession |
 |---|---|---|
-| `Spic` | M03221_3.10 | Spic |
-| `Nfe2l2_1` | M09222_3.10 | Nfe2l2 |
-| `Nfe2l2_2` | M10174_3.10 | Nfe2l2 (second matrix) |
-| `Bach1` | M10181_3.10 | Bach1 |
+| `Spic` | Spic | M03221_3.10 |
+| `Nfe2l2_1` | Nfe2l2, first matrix | M09222_3.10 |
+| `Nfe2l2_2` | Nfe2l2, second matrix | M10174_3.10 |
+| `Bach1` | Bach1 | M10181_3.10 |
 
-One or several. Do not pick for the user, and do not silently default to all
-four — which motifs are scanned is a scientific choice that belongs to them.
+Put the accession in each option's description so the choice is recorded
+unambiguously. Question: *"Which transcription factor motifs should I scan
+for? (choose one or more)"*.
 
-### 4. Ask for the gene panel, check it, and stop again
+One or several. Do not pre-select, mark one as recommended, or silently
+default to all four — which motifs are scanned is a scientific choice that
+belongs to the user. If they answer with "Other" and name a different CIS-BP
+motif, say it is outside the curated set (no bundled logo) and confirm before
+using it.
 
-Take the gene symbols, then:
+### 4. Ask for the gene symbols, check them, and stop again
+
+Ask in a plain message: *"Which gene symbols should I scan? (mouse symbols,
+e.g. Hmox1, Gclm, Nqo1)"*. Take the gene symbols, then:
 
 ```bash
 python scripts/check_genes.py <genomic.gff> --genes Spic Nfe2l2 Hmox1 ...
@@ -156,7 +176,24 @@ If a symbol has more than one RefSeq Select transcript, mention it and keep all
 of them. That matches the established analysis; the point is that the promoter
 count is explained rather than surprising.
 
-### 5. Run
+### 5. Ask for the p-value (option box) — then stop
+
+One single-select question: *"Which p-value threshold should matrix-scan
+use?"*, with these options, in this order:
+
+| Option label | Description to show |
+|---|---|
+| `1e-4 (Recommended)` | Published method default |
+| `1e-3` | More permissive: more sites, more false positives |
+| `1e-5` | Stricter: fewer, higher-confidence sites |
+
+The user can type any other value through "Other". The p-value is settable,
+but it must be a number in (0, 0.1]; set it through `runconfig.py` and relay
+its error if the value is rejected, then ask again. Say in the answer and the
+report which threshold was used, and flag it if it is not 1e-4, since results
+at another threshold are not directly comparable with the published analysis.
+
+### 6. Run
 
 Create a run directory **outside the repository's tracked files** and write
 everything there:
@@ -188,12 +225,14 @@ hits = matrix_scan(promoter_fasta, out/"matrices.tf", ["Spic", "Bach1"],
                    out/"scan.ft", genes=panel)
 ```
 
-Scan parameters are fixed by the published method and should not be changed
-without the user saying so: order-1 Markov background estimated from the input
+Pass the p-value chosen in step 5. The other scan parameters are fixed by the
+published method: order-1 Markov background estimated from the input
 promoters, pseudo-count 1, background pseudo-frequency 0.01, both strands,
-p <= 1e-4, `-origin end`.
+`-origin end`.
 
-### 5b. Settings: what the user may change
+Then draw the site map (SVG and PNG) into the run directory.
+
+### 6b. Settings: what the user may change
 
 `scripts/runconfig.py` holds the boundary. **Do not implement it by judgement
 — load the config through that module and let it decide**, so the same answer
@@ -232,13 +271,29 @@ colleague reproduces their run without carrying hidden method differences.
 Every run also writes `run_config.yaml` with the settable **and** locked
 values together, so the report always records the parameters that produced it.
 
-### 6. Package
+### 7. Show the site map, then ask about the zip (option box) — then stop
 
-Deliver a zip containing the HTML report, the site map as **both SVG and PNG**,
-the hits CSV, and the raw `.ft.txt` with its `;` header intact — that header is
-the authoritative record of the background model and pseudo-counts, and
-`pd.read_csv(..., comment=";")` discards it. Also hand the user the site map
-image on its own, outside the zip.
+Return the site map image (the PNG) to the user, displayed in the chat, with
+a short summary underneath: motifs scanned, number of promoters, number of
+sites per motif, the p-value, and any genes with no site.
+
+Then ask one single-select question: *"Do you want the zip with the full HTML
+report?"*
+
+| Option label | Description to show |
+|---|---|
+| `Yes, build the zip` | Render the HTML report and package it with the site map, hits table and raw scan output |
+| `No, the image is enough` | Stop here; the run files stay in the run directory |
+
+### 8. Package (only if the user said yes)
+
+Render the notebook copy and deliver a zip containing the HTML report, the
+site map as **both SVG and PNG**, the hits CSV, and the raw `.ft.txt` with its
+`;` header intact — that header is the authoritative record of the background
+model and pseudo-counts, and `pd.read_csv(..., comment=";")` discards it.
+
+If the user said no, do not render the report. Tell them where the run
+directory is, and that they can ask for the zip later from the same run.
 
 ## Things that will bite
 
@@ -271,6 +326,7 @@ window without changing the offset silently shifts every reported coordinate.
 
 ## Files
 
+- `scripts/fetch_genome.sh` — download the genome from the GitHub Release
 - `scripts/check_genome.py` — genome completeness gate
 - `scripts/check_genes.py` — fast RefSeq Select lookup, UniProt links for misses
 - `scripts/motifscan.py` — matrices, background, scan; importable or CLI
