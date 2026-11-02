@@ -88,15 +88,24 @@ It compares each file against the uncompressed sizes recorded in NCBI's own
 `dataset_catalog.json` and reports the annotation release. The JSON it prints
 carries `fasta` and `gff` paths — use those downstream rather than guessing.
 
-If the genome is absent, do not improvise a substitute. Tell the user to fetch
-it, once:
+If the genome is absent, fetch it from the repo's GitHub Release (bgzipped
+copies, checksum-verified and decompressed in place):
+
+```bash
+bash scripts/fetch_genome.sh <refseq_dir>
+```
+
+This works from sandboxes that cannot reach NCBI. If GitHub release downloads
+are also blocked, do not improvise a substitute; tell the user to fetch it
+from NCBI instead:
 
 ```bash
 datasets download genome accession GCF_000001635.27 --include genome,gff3
 ```
 
-The genome is deliberately not in the repo: GitHub rejects files over 100 MB
-and these are 2.7 GB and 920 MB. A clone will not have them.
+Either way, run `check_genome.py` afterwards. The genome is deliberately not
+in the repo: GitHub rejects files over 100 MB and these are 2.7 GB and
+920 MB. A clone will not have them.
 
 ### 2. Check RSAT
 

@@ -141,6 +141,17 @@ check. The notebook's `rsat()` helper and the agent's `motifscan.py` both grep f
 
 **Genome and annotation (NCBI RefSeq, GRCm39 / GCF_000001635.27)**
 
+The quickest route is the bgzipped copy attached to the repo's GitHub Release
+[`genome-GRCm39-GCF_000001635.27`](https://github.com/ADAorg/DNA_032_FTmotif_search_for_agent/releases/tag/genome-GRCm39-GCF_000001635.27)
+(release assets are not part of git history and can be up to 2 GB each). This script downloads it, checks the
+SHA-256 sums and decompresses it in place:
+
+```bash
+bash .claude/skills/ft-motif-search-skill/scripts/fetch_genome.sh
+```
+
+Or download it from NCBI directly:
+
 ```bash
 datasets download genome accession GCF_000001635.27 --include genome,gff3 --filename mouse_GRCm39.zip
 unzip mouse_GRCm39.zip -d tmp_ncbi
@@ -268,8 +279,8 @@ copy rather than keeping a second one by hand:
 Install that file in Claude's profile settings and treat it as a build output: when the skill changes, run the
 script again. Editing the installed copy means the change is lost and the two silently disagree.
 
-Note that the claude.ai copy can answer questions about this workflow but cannot run it — that sandbox has no
-genome and no access to NCBI. Real scans run where the data is.
+The claude.ai sandbox cannot reach NCBI, but it can download GitHub Release assets, so the skill fetches the
+genome with `fetch_genome.sh` (see [Input data](#2-input-data)) and can run the scan there.
 
 ## Outputs
 
