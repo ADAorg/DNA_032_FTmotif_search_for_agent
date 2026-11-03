@@ -31,6 +31,8 @@ together — so the report always carries the parameters that produced it.
 Usage:
     python runconfig.py --init my_settings.yaml      # write a starter config
     python runconfig.py --check my_settings.yaml     # validate without running
+    python runconfig.py --log RUN_DIR --settings RUN_DIR/my_settings.yaml \
+        --promoters re-extracted --genome-check passed   # write run_log.md
 """
 from __future__ import annotations
 
@@ -279,12 +281,126 @@ def save_run_record(cfg: dict, path: str | Path) -> Path:
     return path
 
 
+def changes_from_defaults(cfg: dict) -> list[tuple[str, object, object]]:
+    """Settable values that differ from SETTABLE_DEFAULTS, as (key, default, value).
+
+    analysis.genes is left out: it has no meaningful default, every run
+    supplies it, and the run log lists the panel on its own. Computed here
+    rather than by eye so the same config always yields the same list.
+    """
+    out: list[tuple[str, object, object]] = []
+
+    def walk(default: dict, value: dict, path: str) -> None:
+        for k, d in default.items():
+            here = f"{path}.{k}" if path else k
+            if here == "analysis.genes":
+                continue
+            v = value.get(k, d)
+            if isinstance(d, dict) and isinstance(v, dict):
+                walk(d, v, here)
+            elif v != d:
+                out.append((here, d, v))
+
+    walk(SETTABLE_DEFAULTS, cfg, "")
+    return out
+
+
+def _git_state(repo: Path) -> str:
+    """Commit and cleanliness of the checkout, for the run log."""
+    import subprocess
+    try:
+        commit = subprocess.run(["git", "-C", str(repo), "rev-parse", "--short", "HEAD"],
+                                capture_output=True, text=True, check=True).stdout.strip()
+        dirty = subprocess.run(["git", "-C", str(repo), "status", "--porcelain"],
+                               capture_output=True, text=True, check=True).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown (not a git checkout)"
+    if dirty:
+        return f"{commit} — **{len(dirty)} uncommitted change(s) in the repository**"
+    return f"{commit} (clean)"
+
+
+def write_run_log(cfg: dict, path: str | Path, *, promoters: str, genome_check: str,
+                  repo: str | Path = ".", replaced: list[str] | None = None,
+                  unticked: list[str] | None = None) -> Path:
+    """Write run_log.md: what was run, what differs from the defaults, what was not ticked.
+
+    promoters is "re-extracted" or "reused:<path to FASTA>". Written on every
+    run, not only when something changed, so a missing log is never mistaken
+    for "no changes".
+    """
+    if promoters == "re-extracted":
+        prom = "re-extracted from the genome in this run"
+    elif promoters.startswith("reused:"):
+        prom = (f"**reused from `{promoters[len('reused:'):]}` — not regenerated "
+                "in this run** (genome unavailable)")
+    else:
+        raise ValueError("promoters must be 're-extracted' or 'reused:<path>'")
+
+    path = Path(path)
+    a = cfg["analysis"]
+    lines = [
+        f"# Run log — {path.parent.name}",
+        "",
+        f"- Recorded: {datetime.now().isoformat(timespec='seconds')}",
+        f"- Repository commit: {_git_state(Path(repo))}",
+        f"- Genome check: {genome_check}",
+        "",
+        "## What was run",
+        "",
+        f"- Motifs: {', '.join(a['motifs'])}",
+        f"- Genes ({len(a['genes'])}): {', '.join(a['genes']) or '—'}",
+        f"- Gene check replacements: {'; '.join(replaced) if replaced else 'none'}",
+        f"- Promoter window: -{a['promoter_upstream_bp']} / +{LOCKED['promoter_downstream_bp']} bp",
+        f"- p-value: {a['pvalue']:g}",
+        f"- Promoters: {prom}",
+        "- Locked method: unchanged (full values in `run_config.yaml`)",
+        "",
+        "## Changes from defaults",
+        "",
+    ]
+    changes = changes_from_defaults(cfg)
+    if changes:
+        lines += ["| Setting | Default | This run |", "|---|---|---|"]
+        lines += [f"| `{k}` | `{d!r}` | `{v!r}` |" for k, d, v in changes]
+    else:
+        lines.append("None — every setting is at its default.")
+    lines += ["", "## Checklist items not ticked", ""]
+    lines += [f"- {u}" for u in unticked] if unticked else ["None."]
+    path.write_text("\n".join(lines) + "\n")
+    return path
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--init", metavar="PATH", help="write a starter settings file")
     g.add_argument("--check", metavar="PATH", help="validate a settings file")
+    g.add_argument("--log", metavar="RUN_DIR", help="write RUN_DIR/run_log.md")
+    ap.add_argument("--settings", metavar="PATH", help="(--log) the run's my_settings.yaml")
+    ap.add_argument("--promoters", metavar="SOURCE", help="(--log) 're-extracted' or 'reused:<fasta>'")
+    ap.add_argument("--genome-check", metavar="RESULT", help="(--log) e.g. 'passed' or 'not available'")
+    ap.add_argument("--replaced", nargs="*", default=[], metavar="OLD=NEW",
+                    help="(--log) gene check outcomes, e.g. Nrf2=Nfe2l2 Foo=dropped")
+    ap.add_argument("--unticked", nargs="*", default=[], metavar="ITEM",
+                    help="(--log) checklist items that could not be ticked, with the reason")
+    ap.add_argument("--repo", default=".", metavar="PATH", help="(--log) repository root")
     args = ap.parse_args()
+
+    if args.log:
+        if not (args.settings and args.promoters and args.genome_check):
+            ap.error("--log needs --settings, --promoters and --genome-check")
+        try:
+            cfg = load(args.settings)
+            p = write_run_log(cfg, Path(args.log) / "run_log.md", promoters=args.promoters,
+                              genome_check=args.genome_check, repo=args.repo,
+                              replaced=[r.replace("=", " → ") for r in args.replaced],
+                              unticked=args.unticked)
+        except (LockedSettingError, FileNotFoundError, ValueError) as e:
+            print(f"{e}", file=sys.stderr)
+            return 1
+        print(f"wrote {p}")
+        return 0
 
     if args.init:
         p = save_settings(copy.deepcopy(SETTABLE_DEFAULTS), args.init)

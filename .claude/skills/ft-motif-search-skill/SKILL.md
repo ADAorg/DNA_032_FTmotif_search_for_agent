@@ -249,6 +249,9 @@ runs/<YYYYMMDD_HHMM>/
 ├── notebook.ipynb        # a COPY, outputs stripped, rendered here
 ├── promoters.fasta
 ├── scan.ft.txt
+├── my_settings.yaml      # what the user chose (shareable)
+├── run_config.yaml       # settable + locked values
+├── run_log.md            # what was run, changes from defaults, unticked items
 └── report/
 ```
 
@@ -319,6 +322,31 @@ colleague reproduces their run without carrying hidden method differences.
 Every run also writes `run_config.yaml` with the settable **and** locked
 values together, so the report always records the parameters that produced it.
 
+Finally, write `run_log.md` — what was run, what differs from the defaults, and
+anything that went wrong. Write it on **every** run, not only when something
+changed: a missing log must never be read as "no changes".
+
+```bash
+python scripts/runconfig.py --log runs/<YYYYMMDD_HHMM> \
+    --settings runs/<YYYYMMDD_HHMM>/my_settings.yaml \
+    --repo <repository root> \
+    --promoters re-extracted \
+    --genome-check passed \
+    --replaced Nrf2=Nfe2l2 Foo=dropped \
+    --unticked "<item> — <reason>"
+```
+
+`--promoters` is `re-extracted` or `reused:<path to the FASTA scanned>`;
+`--genome-check` is `passed` or `not available`; `--replaced` lists the gene
+check outcomes (`OLD=NEW`, or `OLD=dropped`); `--unticked` lists checklist items
+that could not be ticked. Omit the last two when there are none.
+
+Do not write the "changes from defaults" part yourself — `runconfig.py`
+computes it against `SETTABLE_DEFAULTS` so the list is the same every time.
+Write the log after walking the checklist at the end of this file, so
+`--unticked` reflects it; if the run stops early, still write the log with
+what was done and why it stopped.
+
 ### 8. Show the site map, then ask about the zip (option box) — then stop
 
 Return the site map image (the PNG) to the user, displayed in the chat, with
@@ -337,9 +365,11 @@ report?"*
 ### 9. Package (only if the user said yes)
 
 Render the notebook copy and deliver a zip containing the HTML report, the
-site map as **both SVG and PNG**, the hits CSV, and the raw `.ft.txt` with its
+site map as **both SVG and PNG**, the hits CSV, the raw `.ft.txt` with its
 `;` header intact — that header is the authoritative record of the background
-model and pseudo-counts, and `pd.read_csv(..., comment=";")` discards it.
+model and pseudo-counts, and `pd.read_csv(..., comment=";")` discards it — and
+the run record: `run_log.md`, `run_config.yaml` and `my_settings.yaml`. These
+three go in every zip, so the package always says how it was made.
 
 If the user said no, do not render the report. Tell them where the run
 directory is, and that they can ask for the zip later from the same run.
@@ -381,4 +411,30 @@ change: it only moves where the sequence starts, not where the TSS sits.
 - `scripts/check_genome.py` — genome completeness gate
 - `scripts/check_genes.py` — fast RefSeq Select lookup, UniProt links for misses
 - `scripts/motifscan.py` — matrices, background, scan; importable or CLI
-- `scripts/runconfig.py` — settable vs locked settings; load, validate, save
+- `scripts/runconfig.py` — settable vs locked settings; load, validate, save; write `run_log.md`
+
+## Checklist before finishing
+
+Walk this before reporting back. It is an instruction, not documentation: check
+each item against what actually happened in this session.
+
+**Any item that cannot be ticked must be reported to the user**, naming which
+one and why. An unticked box nobody is told about is the failure this checklist
+exists to prevent — silence reads as success.
+
+This skill owns the analysis. When it is run through `motif-scan-from-github`,
+that skill's checklist covers the clone and the environment; walk both.
+
+- [ ] `check_genome.py` passed before anything was extracted or scanned — or, if no genome was available, that was said before the run started
+- [ ] Motifs chosen by the user (step 3), not assumed from a previous run or the examples in this file
+- [ ] Gene symbols given by the user (step 4), `check_genes.py` run on them, and every miss resolved by the user — replaced or dropped explicitly, never silently skipped
+- [ ] Promoter length chosen by the user (step 5) and that exact window used for extraction
+- [ ] p-value chosen by the user (step 6) and that exact value passed to the scan
+- [ ] Promoters handled by the input/output rule: **genome available** → re-extracted into the run directory, committed FASTA ignored; **genome unavailable** → committed FASTA checked (every requested gene present, every sequence upstream + 201 bp for the chosen window) and its reuse disclosed in the answer and in the report
+- [ ] Notebook copied into the run directory with stored outputs stripped, rendered with `--execute`; the committed notebook was never rendered in place
+- [ ] No locked setting changed or worked around; any request for one was refused with the `runconfig.py` message
+- [ ] All outputs written to `runs/<YYYYMMDD_HHMM>/` (or a path outside the repository); `git status` shows the repository unchanged
+- [ ] `my_settings.yaml` and `run_config.yaml` written to the run directory, and the user told where they are
+- [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
+- [ ] Site map PNG shown in the chat with its summary (step 8) before any packaging
+- [ ] Zip built only after the user answered yes (step 9), and contains the HTML report, site map SVG and PNG, hits CSV, the raw `.ft.txt` with its `;` header, and `run_log.md`, `run_config.yaml` and `my_settings.yaml`
