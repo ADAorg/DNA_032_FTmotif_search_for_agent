@@ -156,8 +156,8 @@ def validate(cfg: dict) -> list[str]:
     if not isinstance(p, (int, float)) or not (0 < p <= 0.1):
         problems.append(f"analysis.pvalue must be a number in (0, 0.1]; got {p!r}")
     up = a.get("promoter_upstream_bp")
-    if isinstance(up, bool) or not isinstance(up, int) or not (1000 <= up <= 10000):
-        problems.append(f"analysis.promoter_upstream_bp must be a whole number of bp in [1000, 10000]; got {up!r}")
+    if isinstance(up, bool) or not isinstance(up, int) or up < 1000:
+        problems.append(f"analysis.promoter_upstream_bp must be a whole number of bp, at least 1000; got {up!r}")
     if not a.get("motifs"):
         problems.append("analysis.motifs is empty — choose at least one transcription factor")
 

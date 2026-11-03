@@ -3,8 +3,8 @@ name: ft-motif-search-skill
 description: Scan gene promoters for transcription factor binding motifs using RSAT matrix-scan with CIS-BP matrices, and produce a Quarto HTML report, a site map figure and a hits table packaged as a zip. Use this skill whenever the user wants to search for TF motifs or binding sites in promoters, scan promoters with a PWM or position weight matrix, run matrix-scan, look for Spic / Nfe2l2 / Bach1 (or other CIS-BP) motifs in a gene panel, regenerate or update the promoter motif report, or asks anything about the DNA_018 / DNA_032 promoter motif workflow — even if they only say "run the motif search", "scan these genes", or hand over a gene list and a repo.
 metadata:
   display-name: "FT Motif Search"
-  version: "0.2.0"
-  updated: "2026-11-02"
+  version: "0.4.0"
+  updated: "2026-11-03"
   canonical: ".claude/skills/ft-motif-search-skill/ in the DNA_032 repository"
 ---
 
@@ -207,15 +207,19 @@ region extend?"*, with these options, in this order:
 | `2 kb (Recommended)` | 2,000 bp upstream + 200 bp downstream (2,201 bp); published method default | 2000 |
 | `5 kb` | 5,000 bp upstream + 200 bp downstream (5,201 bp) | 5000 |
 
-The user can type another length through "Other" (a whole number of bp,
-1,000–10,000; accept "3 kb" as 3000; anything under 1 kb is rejected). Set it as `analysis.promoter_upstream_bp`
-through `runconfig.py` and relay its error if rejected, then ask again.
+The user can type any other length through "Other" — a whole number of bp,
+at least 1,000, with no upper limit; accept "3 kb" as 3000; anything under
+1 kb is rejected. Set it as
+`analysis.promoter_upstream_bp` through `runconfig.py` and relay its error if
+rejected, then ask again. Do not refuse or second-guess a long window; for one
+much longer than 5 kb, mention once that it will reach into neighbouring genes
+and intergenic sequence, then run it as asked.
 
 Only the upstream length is settable. The 200 bp downstream is locked: with
 `-origin end` the TSS sits at `-(downstream + 1)`, so keeping downstream fixed
 is what lets the upstream length change without shifting any coordinate. If
 the user asks to change the downstream length, it is a locked setting (see
-6b).
+7b).
 
 Say in the answer and the report which window was used, and flag it if it is
 not 2 kb: the Markov background is estimated from the scanned promoters, so a

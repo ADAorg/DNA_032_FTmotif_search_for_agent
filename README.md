@@ -235,15 +235,18 @@ The agent will:
 3. Ask for your gene symbols and check each against the RefSeq Select transcripts, in seconds rather than
    the minutes a full GFF parse costs.
 4. **Stop and tell you which symbols were not found**, with a UniProt link for each, and wait for replacements.
-5. Ask for the promoter length upstream of the TSS, in an option box (1 kb, 2 kb default, 5 kb, or your own value;
-   always plus 200 bp downstream).
+5. Ask for the promoter length upstream of the TSS, in an option box (1 kb, 2 kb default, 5 kb, or any length you
+   type from 1 kb up, with no upper limit; always plus 200 bp downstream).
 6. Ask for the p-value threshold, in an option box (1e-4 default, 1e-3, 1e-5, or your own value).
 7. Run the extraction and scan, reporting progress at each stage, and show you the site map image.
 8. Ask whether you want the zip; if yes, render the HTML report and hand back a zip with the report, the site
-   map (SVG and PNG), the hits CSV and the raw `.ft` file.
+   map (SVG and PNG), the hits CSV, the raw `.ft` file and the run record (`run_log.md`, `run_config.yaml`,
+   `my_settings.yaml`).
 
 Every run writes to its own `runs/<timestamp>/` directory. Nothing from a previous run is ever reused or
-re-presented, and the agent does not modify any tracked file in this repository.
+re-presented, and the agent does not modify any tracked file in this repository. Before reporting back, the
+agent walks a checklist at the end of `SKILL.md` (genome verified, every choice taken from you, gene misses
+resolved, outputs in the run directory, …) and tells you about any item it could not tick.
 
 ### What you can and cannot change
 
@@ -267,9 +270,21 @@ are not comparable with previous runs or with the published analysis.
 A settings file that touches a fixed parameter is **rejected**, not silently ignored. If your work genuinely
 needs a different value, contact **sara.salazar@gimm.pt** rather than editing the analysis.
 
-Each run writes two files: `my_settings.yaml` (only your choices — share it and someone can reproduce your run
-exactly) and `run_config.yaml` (your choices *plus* the fixed method parameters, so the report always records
-what produced it).
+Each run writes three files, and all three go into every zip:
+
+| File | Content |
+|---|---|
+| `my_settings.yaml` | only your choices — share it and someone can reproduce your run exactly |
+| `run_config.yaml` | your choices *plus* the fixed method parameters, so the report always records what produced it |
+| `run_log.md` | what was run: repository commit (and whether it had uncommitted changes), genome check result, motifs, genes and any gene-check replacements, promoter window, p-value, whether promoters were re-extracted or reused, a table of every setting that differs from the defaults (or "none"), and any checklist item that could not be ticked |
+
+`run_log.md` is written on every run, not only when something changed, so a run without one is never mistaken
+for a run at defaults. The "changes from defaults" table is computed by `runconfig.py`, not written by hand:
+
+```bash
+python .claude/skills/ft-motif-search-skill/scripts/runconfig.py --log runs/<timestamp> \
+    --settings runs/<timestamp>/my_settings.yaml --promoters re-extracted --genome-check passed
+```
 
 ### Maintaining the skill
 
@@ -289,7 +304,7 @@ genome with `fetch_genome.sh` (see [Input data](#2-input-data)) and can run the 
 | `Results/matrix_scan/sitemap_*.svg` | site map: one lane per scanned promoter, markers = motif sites (▲ direct, ▼ reverse), size ∝ significance |
 | `Results/motifs_coordinates_*.csv` | one row per site: sequence, promoter position, distance to TSS, genomic coordinates and strand |
 | `Results/results_report/` | HTML report, tables and figures; also packaged as `results_report_<timestamp>.zip` |
-| `runs/<timestamp>/` | the same set of outputs when the analysis is run through the Claude agent |
+| `runs/<timestamp>/` | the same set of outputs when the analysis is run through the Claude agent, plus `my_settings.yaml`, `run_config.yaml` and `run_log.md` |
 
 Promoters with no site still get a (grey) lane in the map. Positions are relative to the TSS (TSS = 0, upstream negative).
 
