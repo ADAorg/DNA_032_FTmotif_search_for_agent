@@ -149,6 +149,8 @@ Each run writes to its own timestamped folder, so runs never overwrite one anoth
 
 The last three files go into every zip, so a package always records how it was made.
 
+The zip is built by `scripts/package_results.py`, never by hand. That script holds this list as code and refuses to build a zip that is missing any of these files, naming what is absent. If this table and the script ever disagree, the script is right; update the table. The zip and its file list are shown to you when it is built. If a file was deliberately left out, the agent tells you which one and why.
+
 Promoters with no site above the threshold still appear in the site map as an empty lane. This is a result, not a failure — it means no match was found at that significance.
 
 ### Interpreting results responsibly

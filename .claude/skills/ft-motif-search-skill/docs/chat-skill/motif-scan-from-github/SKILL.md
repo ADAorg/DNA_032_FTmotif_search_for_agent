@@ -3,7 +3,7 @@ name: motif-scan-from-github
 description: Fetch the DNA_032 promoter motif-search repository from GitHub and run it here in chat — install RSAT, scan promoters for transcription factor binding motifs with matrix-scan, and produce the report and site map. Use this skill whenever the user wants to run the promoter motif search, scan promoters for TF motifs, re-render the motif report, try a different motif or p-value against existing promoters, or asks to pull the motif-search repo and work with it, without having a local checkout. Also use it for questions about how that workflow operates.
 metadata:
   display-name: "Motif Scan from GitHub"
-  version: "0.4.0"
+  version: "0.5.1"
   updated: "2026-11-03"
   repository: "https://github.com/ADAorg/DNA_032_FTmotif_search_for_agent"
   companion: "ft-motif-search-skill, which lives inside the repository"
@@ -179,15 +179,42 @@ import sys; sys.path.insert(0, "/home/claude/dna032/.claude/skills/ft-motif-sear
 from motifscan import RSAT, cisbp_to_transfac, matrix_scan
 ```
 
-Its `runconfig.py` defines what may be changed. Motifs, genes, p-value and
-figure appearance are settable; the genome, background model, pseudo-counts,
-promoter window, strand handling and gene matching are not. Load settings
-through that module and relay its refusals verbatim — they name the maintainer,
-**sara.salazar@gimm.pt**, for anything locked.
+Its `runconfig.py` defines what may be changed, and is the enforcing copy: if
+this file and that module ever disagree, the module is right. Settable are the
+motifs, the genes, the p-value, the **upstream** promoter length (1 kb and up,
+no ceiling) and the figure appearance. Locked are the genome (species,
+accession, assembly, annotation release), the background model and Markov
+order, the pseudo-counts, the **downstream** promoter length of 200 bp, the
+strand handling and coordinate origin, the transcript filter, the matrix
+scaling and the gene matching.
 
-Write outputs to `/home/claude/runs/<timestamp>/`, never into the clone.
-Present the report and the site map as files, and the site map on its own as
-well as inside the zip.
+Note the promoter window is split deliberately: the upstream length is the
+user's, while the fixed 200 bp downstream is what holds the TSS offset constant
+under `-origin end`, so changing the upstream length never shifts a reported
+coordinate. Everything else in the locked list stays untouchable — do not edit
+the scripts to get around a refusal.
+
+Load settings through that module and relay its refusals verbatim — they name
+the maintainer, **sara.salazar@gimm.pt**, for anything locked.
+
+Write outputs to `/home/claude/runs/<timestamp>/`, never into the clone. When
+running or rendering the notebook copy, set `DNA032_RESULTS` to that run
+directory; without it the notebook writes into the clone's `Results/` and the
+run directory lacks the files the zip needs.
+
+Build the zip **only** with the repository's `package_results.py` (step 9 of
+the repository `SKILL.md`):
+
+```bash
+python /home/claude/dna032/.claude/skills/ft-motif-search-skill/scripts/package_results.py \
+    /home/claude/runs/<timestamp>
+```
+
+It refuses to build a zip that is missing any required file and names what is
+absent. If it refuses, produce the missing files and run it again — never zip
+files by hand, and never call a partial zip complete. Present the report and
+the site map as files, the site map on its own as well as inside the zip, and
+show the script's `OK` output (zip path and file list) in the reply.
 
 ## Checklist before finishing
 
@@ -211,7 +238,8 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] Promoters re-extracted in this run from the fetched genome; the committed FASTA was used only if the genome could not be fetched, and that reuse was disclosed in the answer and in the report
 - [ ] All four choices taken from the user — motifs, genes, upstream window, p-value — and the window and threshold reported, flagged where not 2 kb and 1e-4
 - [ ] Every requested gene present in the scanned set; a missing gene stopped the run rather than being scanned around
-- [ ] Outputs written to `/home/claude/runs/<timestamp>/`, nothing written into the clone
+- [ ] Outputs written to `/home/claude/runs/<timestamp>/` (notebook run with `DNA032_RESULTS` set to it), nothing written into the clone
+- [ ] Zip built by `package_results.py`, not by hand, and its `OK` output shown in the reply
 - [ ] No genome, API or sequence source substituted for the ones the repository specifies
 
 ---

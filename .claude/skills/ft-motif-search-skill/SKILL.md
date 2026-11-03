@@ -3,7 +3,7 @@ name: ft-motif-search-skill
 description: Scan gene promoters for transcription factor binding motifs using RSAT matrix-scan with CIS-BP matrices, and produce a Quarto HTML report, a site map figure and a hits table packaged as a zip. Use this skill whenever the user wants to search for TF motifs or binding sites in promoters, scan promoters with a PWM or position weight matrix, run matrix-scan, look for Spic / Nfe2l2 / Bach1 (or other CIS-BP) motifs in a gene panel, regenerate or update the promoter motif report, or asks anything about the DNA_018 / DNA_032 promoter motif workflow — even if they only say "run the motif search", "scan these genes", or hand over a gene list and a repo.
 metadata:
   display-name: "FT Motif Search"
-  version: "0.4.0"
+  version: "0.5.0"
   updated: "2026-11-03"
   canonical: ".claude/skills/ft-motif-search-skill/ in the DNA_032 repository"
 ---
@@ -37,7 +37,7 @@ and hands back a zip.
 ## Two rules that override convenience
 
 **Never reuse a previous result.** Stored notebook outputs, a `Results/`
-directory from last week, a cached `.ft.txt` — none of it may be presented as
+directory from last week, a cached `.ft` scan — none of it may be presented as
 the output of this run. Strip stored outputs before rendering, render with
 `--execute`, and write to a timestamped directory. If something cannot be
 recomputed, say so plainly instead of serving the old artefact. Rendering a
@@ -250,14 +250,27 @@ everything there:
 
 ```
 runs/<YYYYMMDD_HHMM>/
-├── notebook.ipynb        # a COPY, outputs stripped, rendered here
-├── promoters.fasta
-├── scan.ft.txt
-├── my_settings.yaml      # what the user chose (shareable)
-├── run_config.yaml       # settable + locked values
-├── run_log.md            # what was run, changes from defaults, unticked items
-└── report/
+├── notebook.ipynb                 # a COPY, outputs stripped, rendered here
+├── notebook_report.html           # the rendered report (step 9)
+├── promoters_sequences.fasta
+├── motifs_coordinates_<name>.csv  # hits table
+├── matrix_scan/
+│   ├── scanmotif_<name>.ft        # raw RSAT output, ';' header intact
+│   └── sitemap_<name>.{svg,png,pdf}
+├── results_report/                # the notebook's copies; package_results.py dedupes
+├── my_settings.yaml               # what the user chose (shareable)
+├── run_config.yaml                # settable + locked values
+├── run_log.md                     # what was run, changes from defaults, unticked items
+└── results_<YYYYMMDD_HHMM>.zip    # built by package_results.py only (step 9)
 ```
+
+These names are what the notebook writes when `DNA032_RESULTS` is set, and
+they are the names `scripts/package_results.py` requires. Do not rename them.
+
+**Always run the notebook copy with `DNA032_RESULTS` set to the run
+directory.** Without it the notebook writes to the repository's `Results/`,
+which both modifies tracked files and leaves the run directory without the
+files the zip needs.
 
 Use `runs/` at the repository root with `runs/` in `.gitignore`, or a path
 outside the repository entirely. The timestamp is what makes "never reuse a
@@ -285,9 +298,8 @@ published method: order-1 Markov background estimated from the input
 promoters, pseudo-count 1, background pseudo-frequency 0.01, both strands,
 `-origin end`.
 
-Then draw the site map (SVG, PNG and PDF) into the run directory. The notebook
-saves the site map as SVG and PDF; add the PNG from the
-same figure.
+The notebook saves the site map as SVG, PNG and PDF under
+`matrix_scan/` in the run directory; do not redraw it separately.
 
 ### 7b. Settings: what the user may change
 
@@ -367,17 +379,37 @@ report?"*
 
 | Option label | Description to show |
 |---|---|
-| `Yes, build the zip` | Render the HTML report and package it with the site map, hits table and raw scan output |
+| `Yes, build the zip` | Render the HTML report and package it with the site map, hits table, raw scan output and run record |
 | `No, the image is enough` | Stop here; the run files stay in the run directory |
 
 ### 9. Package (only if the user said yes)
 
-Render the notebook copy and deliver a zip containing the HTML report, the
-site map as **SVG, PNG and PDF**, the hits CSV, the raw `.ft.txt` with its
-`;` header intact — that header is the authoritative record of the background
-model and pseudo-counts, and `pd.read_csv(..., comment=";")` discards it — and
-the run record: `run_log.md`, `run_config.yaml` and `my_settings.yaml`. These
-three go in every zip, so the package always says how it was made.
+Render the notebook copy into the run directory, then build the zip with
+`package_results.py`:
+
+```bash
+cd runs/<YYYYMMDD_HHMM>
+DNA032_RESULTS="$PWD" QUARTO_PYTHON="$(which python)" \
+    quarto render notebook.ipynb --to html --execute --output notebook_report.html
+python <skill>/scripts/package_results.py runs/<YYYYMMDD_HHMM>
+```
+
+**Build the zip only with `package_results.py`.** It holds the contract — the
+list of files every zip must contain — as code, and refuses to build a zip
+that is missing any of them, naming what is absent. If it refuses, produce the
+missing files and run it again. Never assemble a zip by hand, never zip a
+directory yourself, and never describe a partial zip as complete. The
+notebook does not package; any zip it left in `Results/` is not the
+deliverable.
+
+`--allow-missing <pattern>` exists for a file that legitimately cannot be
+produced in this run. Use it only after telling the user which file and why;
+the script prints every waived file, and that output goes in the reply.
+
+Show the user the script's `OK` output — the zip path and the file list — so
+they can see what the zip holds. The raw `.ft` file keeps its `;` header: that
+header is the authoritative record of the background model and pseudo-counts,
+and `pd.read_csv(..., comment=";")` discards it.
 
 If the user said no, do not render the report. Tell them where the run
 directory is, and that they can ask for the zip later from the same run.
@@ -420,6 +452,7 @@ change: it only moves where the sequence starts, not where the TSS sits.
 - `scripts/check_genes.py` — fast RefSeq Select lookup, UniProt links for misses
 - `scripts/motifscan.py` — matrices, background, scan; importable or CLI
 - `scripts/runconfig.py` — settable vs locked settings; load, validate, save; write `run_log.md`
+- `scripts/package_results.py` — the results contract; builds the zip or refuses and names what is missing
 
 ## Checklist before finishing
 
@@ -445,4 +478,5 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] `my_settings.yaml` and `run_config.yaml` written to the run directory, and the user told where they are
 - [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
 - [ ] Site map PNG shown in the chat with its summary, and the site map SVG and PDF handed back as files (step 8), before any packaging
-- [ ] Zip built only after the user answered yes (step 9), and contains the HTML report, site map SVG, PNG and PDF, hits CSV, the raw `.ft.txt` with its `;` header, and `run_log.md`, `run_config.yaml` and `my_settings.yaml`
+- [ ] Notebook copy run with `DNA032_RESULTS` set to the run directory, so nothing was written to the repository's `Results/`
+- [ ] Zip built only after the user answered yes (step 9), only by `package_results.py`, and its `OK` output (zip path and file list, plus any waived file) shown in the reply

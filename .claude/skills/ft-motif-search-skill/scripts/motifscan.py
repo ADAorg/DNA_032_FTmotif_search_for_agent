@@ -255,7 +255,7 @@ def matrix_scan(fasta: Path, matrix_file: Path, labels: list[str], out_ft: Path,
 
 
 def rsat_parameters(ft_path: Path) -> str:
-    """The ';' header of a .ft.txt: the authoritative parameter record.
+    """The ';' header of a .ft: the authoritative parameter record.
 
     pd.read_csv(..., comment=';') discards exactly these lines, which is why
     the run's real background order and pseudo-counts are easy to lose.
@@ -271,7 +271,7 @@ def main() -> int:
     ap.add_argument("matrices", type=Path, help="TRANSFAC matrix file")
     ap.add_argument("-l", "--labels", nargs="+", required=True, help="matrix IDs to scan")
     ap.add_argument("-g", "--genes", nargs="*", default=None, help="genes to scan; default all")
-    ap.add_argument("-o", "--out", type=Path, required=True, help="output .ft.txt")
+    ap.add_argument("-o", "--out", type=Path, required=True, help="output .ft")
     ap.add_argument("-p", "--pvalue", type=float, default=DEFAULT_PVALUE)
     ap.add_argument("--markov", type=int, default=DEFAULT_MARKOV)
     ap.add_argument("--bg-from", choices=["input", "all"], default="input")
