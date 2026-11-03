@@ -26,7 +26,7 @@ DNA_032_FTmotif_search_for_agent/
 │   └── skills/
 │       └── ft-motif-search-skill/              # the Claude agent (canonical copy)
 │           ├── SKILL.md
-│           └── scripts/                        # fetch_genome, check_genome, check_genes, motifscan, runconfig
+│           └── scripts/                        # fetch_genome, check_genome, prefilter_gff, check_genes, motifscan, runconfig, package_results
 ├── Data/
 │   ├── ncbi_dataset_RefSeq_GCF_000001635.27/   # genome FASTA + GFF3 annotation (not in git, see below)
 │   └── Mus_musculus_<date>_CISBP/              # CIS-BP download: pwms_all_motifs/, logos_used_motifs/
@@ -55,6 +55,9 @@ DNA_032_FTmotif_search_for_agent/
 | Mouse genome + annotation, CIS-BP PWMs | input data | see [Data](#2-input-data) |
 
 Disk: the genome FASTA is ~2.8 GB, the GFF ~0.9 GB.
+
+Memory: under 1 GB once the annotation is prefiltered (see [Input data](#2-input-data)). Without that step the
+notebook parses the full GFF, which needs ~11 GB of RAM.
 
 ## Installation
 
@@ -189,6 +192,22 @@ The two large files are in `.gitignore` — GitHub rejects anything over 100 MB,
 > awk '/^>/{if(h)print h,n; h=$0; n=0; next}{n+=length($0)}END{print h,n}' Results/promoters_sequences.fasta | awk '$2!=2201'   # should print nothing
 > ```
 
+**Prefilter the annotation (recommended)**
+
+The notebook only uses the mRNA records tagged `RefSeq Select`. This writes exactly those lines (21,002 records, ~6 MB)
+to `genomic.refseq_select_mrna.gff` next to the GFF, in a few seconds:
+
+```bash
+python .claude/skills/ft-motif-search-skill/scripts/prefilter_gff.py \
+    Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.gff.gz      # or genomic.gff
+```
+
+When that file exists the notebook reads it instead of the full GFF: the parse drops from ~1 minute and ~11 GB of RAM to
+under a second and ~0.1 GB. The notebook still applies its own RefSeq Select filter, so the result is the same — rendered both
+ways, the promoters, hits tables and coordinates are byte-identical. The report's summary names the annotation file it read.
+The file's header records the source GFF's size and SHA-256, and the notebook refuses one built from a different GFF; rerun
+the script if you replace the annotation. It is gitignored along with the rest of the genome.
+
 **CIS-BP motifs (Mus musculus)**
 
 Download the *Mus musculus* PWM collection from [CIS-BP](https://cisbp.ccbr.utoronto.ca/) and unpack it as
@@ -230,10 +249,11 @@ claude
 Then ask in ordinary words, for example *“scan the promoters of Hmox1, Gclm and Nqo1 for Nfe2l2 and Bach1”*.
 The agent will:
 
-1. Verify the genome is complete and the annotation release is the expected one, and refuse to run otherwise.
+1. Verify the genome is complete and the annotation release is the expected one, and refuse to run otherwise;
+   then prefilter the annotation to its RefSeq Select records, so the run fits in a few hundred MB of RAM.
 2. Ask which transcription factor motifs to scan, in an option box (Spic, Nfe2l2_1, Nfe2l2_2, Bach1; one or more).
 3. Ask for your gene symbols and check each against the RefSeq Select transcripts, in seconds rather than
-   the minutes a full GFF parse costs.
+   the minute a full GFF parse costs.
 4. **Stop and tell you which symbols were not found**, with a UniProt link for each, and wait for replacements.
 5. Ask for the promoter length upstream of the TSS, in an option box (1 kb, 2 kb default, 5 kb, or any length you
    type from 1 kb up, with no upper limit; always plus 200 bp downstream).

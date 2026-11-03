@@ -138,6 +138,24 @@ Either way, run `check_genome.py` afterwards. The genome is deliberately not
 in the repo: GitHub rejects files over 100 MB and these are 2.7 GB and
 920 MB. A clone will not have them.
 
+Once the check passes, build the RefSeq Select annotation, on every machine:
+
+```bash
+python scripts/prefilter_gff.py <gff path printed by check_genome.py>
+```
+
+It streams the full GFF and writes `genomic.refseq_select_mrna.gff` (~6 MB,
+21,002 records) next to it — only the mRNA lines tagged `RefSeq Select`, the
+records the notebook's `gtf_import` cell selects. The notebook reads that file
+when it exists, so the parse takes under a second and ~0.1 GB of RAM instead
+of ~1 minute and ~11 GB; a 3 GB sandbox is OOM-killed on the full file. This
+is part of the method, not a deviation: the notebook still applies its own
+filter, and the promoters, hits and coordinates were verified byte-identical
+against a render from the full GFF. The file's header records the source GFF's
+size and SHA-256; re-running is a no-op when it is current, and the notebook
+refuses a file built from a different GFF. Do not hand-filter the GFF or patch
+the notebook's GFF path instead — use this script.
+
 ### 2. Check RSAT
 
 `motifscan.RSAT()` discovers an environment from `$RSAT_ENV`, `PATH`, or the
@@ -179,12 +197,12 @@ Ask in a plain message: *"Which gene symbols should I scan? (mouse symbols,
 e.g. Hmox1, Gclm, Nqo1)"*. Take the gene symbols, then:
 
 ```bash
-python scripts/check_genes.py <genomic.gff> --genes Spic Nfe2l2 Hmox1 ...
+python scripts/check_genes.py <genomic.refseq_select_mrna.gff> --genes Spic Nfe2l2 Hmox1 ...
 ```
 
-This streams the GFF looking only at mRNA lines tagged `RefSeq Select` — the
-same filter the analysis uses — and answers in seconds rather than the minutes
-a full `pyranges` parse costs.
+This looks only at mRNA lines tagged `RefSeq Select` — the same filter the
+analysis uses. Point it at the prefiltered file from step 1 and it answers
+instantly; the full GFF gives the same answer, just slower.
 
 **If any symbol is missing**, stop. Report which ones, give the UniProt link
 the script generates for each (symbols change; the alternative name is usually
@@ -283,8 +301,11 @@ FASTA when the genome is available (see the input/output rule above).
 Extract promoters with the window chosen in step 5 (`promoter_upstream_bp`
 upstream, 200 bp downstream of the TSS; in the notebook copy set
 `PROMOTER_UPSTREAM_BP` and leave `PROMOTER_DOWNSTREAM_BP` and `TSS_OFFSET`
-alone), then scan. Report progress at each stage — the GFF parse alone takes a
-couple of minutes and silence reads as a hang.
+alone), then scan. Report progress at each stage — silence reads as a hang. Check
+that the rendered report's summary says the annotation was read from
+`genomic.refseq_select_mrna.gff`; if it names `genomic.gff`, step 1's
+prefilter was skipped (the result is the same, but the full parse needs
+~11 GB of RAM).
 
 ```python
 from motifscan import RSAT, cisbp_to_transfac, matrix_scan
@@ -350,12 +371,14 @@ python scripts/runconfig.py --log runs/<YYYYMMDD_HHMM> \
     --repo <repository root> \
     --promoters re-extracted \
     --genome-check passed \
+    --annotation genomic.refseq_select_mrna.gff \
     --replaced Nrf2=Nfe2l2 Foo=dropped \
     --unticked "<item> — <reason>"
 ```
 
 `--promoters` is `re-extracted` or `reused:<path to the FASTA scanned>`;
-`--genome-check` is `passed` or `not available`; `--replaced` lists the gene
+`--genome-check` is `passed` or `not available`; `--annotation` is the file
+the report's summary says was read; `--replaced` lists the gene
 check outcomes (`OLD=NEW`, or `OLD=dropped`); `--unticked` lists checklist items
 that could not be ticked. Omit the last two when there are none.
 
@@ -467,6 +490,7 @@ This skill owns the analysis. When it is run through `motif-scan-from-github`,
 that skill's checklist covers the clone and the environment; walk both.
 
 - [ ] `check_genome.py` passed before anything was extracted or scanned — or, if no genome was available, that was said before the run started
+- [ ] `prefilter_gff.py` run after the genome check, and the report's summary names `genomic.refseq_select_mrna.gff` as the annotation read — no hand-filtered GFF and no edit to the notebook's GFF path
 - [ ] Motifs chosen by the user (step 3), not assumed from a previous run or the examples in this file
 - [ ] Gene symbols given by the user (step 4), `check_genes.py` run on them, and every miss resolved by the user — replaced or dropped explicitly, never silently skipped
 - [ ] Promoter length chosen by the user (step 5) and that exact window used for extraction

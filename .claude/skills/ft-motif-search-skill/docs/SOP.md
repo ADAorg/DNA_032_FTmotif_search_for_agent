@@ -127,7 +127,7 @@ A symbol can be missing for several reasons: it has been renamed; it is a human 
 
 ### During the run
 
-The agent reports progress at each stage. A first run that must download the genome takes around fifteen minutes; afterwards a typical scan of thirty to forty promoters takes a few minutes, most of it reading the annotation.
+The agent reports progress at each stage. A first run that must download the genome takes around fifteen minutes; afterwards a typical scan of thirty to forty promoters takes a few minutes, most of it the motif scan itself.
 
 Before packaging the results, the agent shows you the site map so you can check it looks sensible, and gives you the site map as SVG and PDF files to keep. It then asks whether you want the zip with the full report.
 
@@ -167,7 +167,9 @@ The analysis uses the NCBI RefSeq reference for mouse, **GRCm39 (GCF_000001635.2
 
 RefSeq Select names one representative transcript per protein-coding gene, so it gives the most consensual definition of where a gene — and therefore its promoter — begins. That is why it is preferred here over annotations that enumerate many alternative isoforms: with several transcription start sites per gene there is no single promoter to scan, and the choice between them would change the result.
 
-The genome is too large to include in the repository (2.7 GB of sequence and 0.9 GB of annotation), so it is attached to the repository as a release and downloaded on first use. Where it is already present, nothing needs doing.
+The genome is too large to include in the repository (2.7 GB of sequence and 0.9 GB of annotation), so it is attached to the repository as a release (tag `genome-GRCm39-GCF_000001635.27`) and downloaded on first use. Where it is already present, nothing needs doing.
+
+Before the first run the agent also writes a small copy of the annotation holding only the RefSeq Select transcripts (`genomic.refseq_select_mrna.gff`, about 6 MB). The analysis reads that instead of the full 0.9 GB file, which would need about 11 GB of memory to load. It selects exactly the same transcripts — this was checked by rendering the report both ways and comparing every result file — and the report states which annotation file it read.
 
 > **The agent verifies the genome before every run** and refuses to continue if the files are incomplete or from the wrong annotation release. An incomplete genome produces empty promoters and a report that looks sparse rather than broken, so this check is not optional. If it fails, let it refuse and re-download rather than working around it.
 

@@ -60,3 +60,4 @@ runs/
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/*.gz
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/*.gz.*
 Data/ncbi_dataset_RefSeq_GCF_000001635.27/SHA256SUMS
+Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.refseq_select_mrna.gff

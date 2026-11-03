@@ -144,6 +144,8 @@ Run the repository's own scripts; do not improvise a download:
 bash .claude/skills/ft-motif-search-skill/scripts/fetch_genome.sh
 python .claude/skills/ft-motif-search-skill/scripts/check_genome.py \
     Data/ncbi_dataset_RefSeq_GCF_000001635.27
+python .claude/skills/ft-motif-search-skill/scripts/prefilter_gff.py \
+    Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.gff.gz
 ```
 
 About 900 MB and ten minutes on a fresh session; say so rather than going
@@ -151,6 +153,12 @@ quiet. The files stay bgzipped — do not decompress them, there is not enough
 disk for that and the `.fai`/`.gzi` indexes make it unnecessary. If
 `check_genome.py` fails, let it refuse and fetch again; never scan against a
 genome that did not verify.
+
+`prefilter_gff.py` is not optional here. Parsing the full 920 MB GFF needs
+~11 GB of RAM and is OOM-killed in a chat sandbox; the script writes the
+RefSeq Select mRNA records (~6 MB) that the notebook reads instead, with
+identical results. Do not hand-filter the GFF or edit the notebook's GFF path —
+that was the workaround this step replaces, and it is now a deviation.
 
 ### 4. Promoter sequences
 
@@ -235,6 +243,7 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] RSAT installed and `matrix-scan` actually executed, not merely located
 - [ ] `biopython` installed before any attempt to read a bgzipped FASTA with `pyfaidx`
 - [ ] Genome fetched and verified with `fetch_genome.sh` and `check_genome.py` before any extraction, and the user told the first fetch was running rather than left waiting in silence
+- [ ] `prefilter_gff.py` run after the check, and the notebook copy run unmodified apart from its parameter cell (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
 - [ ] Promoters re-extracted in this run from the fetched genome; the committed FASTA was used only if the genome could not be fetched, and that reuse was disclosed in the answer and in the report
 - [ ] All four choices taken from the user — motifs, genes, upstream window, p-value — and the window and threshold reported, flagged where not 2 kb and 1e-4
 - [ ] Every requested gene present in the scanned set; a missing gene stopped the run rather than being scanned around

@@ -322,12 +322,13 @@ def _git_state(repo: Path) -> str:
 
 def write_run_log(cfg: dict, path: str | Path, *, promoters: str, genome_check: str,
                   repo: str | Path = ".", replaced: list[str] | None = None,
-                  unticked: list[str] | None = None) -> Path:
+                  unticked: list[str] | None = None, annotation: str | None = None) -> Path:
     """Write run_log.md: what was run, what differs from the defaults, what was not ticked.
 
     promoters is "re-extracted" or "reused:<path to FASTA>". Written on every
     run, not only when something changed, so a missing log is never mistaken
-    for "no changes".
+    for "no changes". annotation is the GFF file the notebook read (the full
+    genomic.gff or the prefilter_gff.py output); recorded so the log says which.
     """
     if promoters == "re-extracted":
         prom = "re-extracted from the genome in this run"
@@ -345,6 +346,7 @@ def write_run_log(cfg: dict, path: str | Path, *, promoters: str, genome_check: 
         f"- Recorded: {datetime.now().isoformat(timespec='seconds')}",
         f"- Repository commit: {_git_state(Path(repo))}",
         f"- Genome check: {genome_check}",
+        f"- Annotation file read: {annotation or 'not recorded'}",
         "",
         "## What was run",
         "",
@@ -385,6 +387,8 @@ def main() -> int:
     ap.add_argument("--unticked", nargs="*", default=[], metavar="ITEM",
                     help="(--log) checklist items that could not be ticked, with the reason")
     ap.add_argument("--repo", default=".", metavar="PATH", help="(--log) repository root")
+    ap.add_argument("--annotation", metavar="FILE",
+                    help="(--log) GFF the notebook read, e.g. genomic.refseq_select_mrna.gff")
     args = ap.parse_args()
 
     if args.log:
@@ -395,7 +399,7 @@ def main() -> int:
             p = write_run_log(cfg, Path(args.log) / "run_log.md", promoters=args.promoters,
                               genome_check=args.genome_check, repo=args.repo,
                               replaced=[r.replace("=", " → ") for r in args.replaced],
-                              unticked=args.unticked)
+                              unticked=args.unticked, annotation=args.annotation)
         except (LockedSettingError, FileNotFoundError, ValueError) as e:
             print(f"{e}", file=sys.stderr)
             return 1
