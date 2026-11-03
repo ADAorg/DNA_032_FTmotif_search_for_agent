@@ -107,7 +107,7 @@ SETTABLE_DEFAULTS: dict = {
         "width_in": 9.0,
         "row_height_in": 0.33,
         "dpi": 300,
-        "formats": ["svg", "png"],
+        "formats": ["svg", "png", "pdf"],
         "title": None,
         "tss_line_color": "#C1272D",
         "track_color": "#DEDEDE",

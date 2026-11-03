@@ -1,10 +1,10 @@
-; matrix-scan  -v 1 -i /tmp/tmpbzmrobbv/promoters.fasta -seq_format fasta -m /tmp/tmpbzmrobbv/matrices.tf -matrix_format transfac -bgfile /tmp/tmpbzmrobbv/bg.tab -bg_pseudo 0.01 -pseudo 1 -2str -origin end -n score -return limits -return sites -return pval -uth pval 0.0001 -o /srv/ext_home/ssalazar/projects/GIMM_projects/DNA_032_FTmotif_search_for_agent/Results/matrix_scan/scanmotif_SpiC_network_all_TFs.ft
+; matrix-scan  -v 1 -i /tmp/tmp4ipqi8g4/promoters.fasta -seq_format fasta -m /tmp/tmp4ipqi8g4/matrices.tf -matrix_format transfac -bgfile /tmp/tmp4ipqi8g4/bg.tab -bg_pseudo 0.01 -pseudo 1 -2str -origin end -n score -return limits -return sites -return pval -uth pval 0.0001 -o /srv/ext_home/ssalazar/projects/GIMM_projects/DNA_032_FTmotif_search_for_agent/Results/matrix_scan/scanmotif_SpiC_network_all_TFs.ft
 ; Slow counting mode            
 ; Input files
-;	input	/tmp/tmpbzmrobbv/promoters.fasta
-;	bg	/tmp/tmpbzmrobbv/bg.tab
+;	bg	/tmp/tmp4ipqi8g4/bg.tab
+;	input	/tmp/tmp4ipqi8g4/promoters.fasta
 ; Matrix files
-;	matrix 1	/tmp/tmpbzmrobbv/matrices.tf
+;	matrix 1	/tmp/tmp4ipqi8g4/matrices.tf
 ; Sequence format      	fasta
 ; Output files
 ;	output	/srv/ext_home/ssalazar/projects/GIMM_projects/DNA_032_FTmotif_search_for_agent/Results/matrix_scan/scanmotif_SpiC_network_all_TFs.ft
@@ -181,10 +181,10 @@
 ;	4	Bach1          	19	148784
 ;		TOTAL          	98	595340
 ; Host name	qds
-; Job started	2026-10-29.193747
-; Job done	2026-10-29.193821
-; Seconds	34.44
-;	user	34.44
+; Job started	2026-11-03.121657
+; Job done	2026-11-03.121730
+; Seconds	33.28
+;	user	33.28
 ;	system	0
 ;	cuser	0
 ;	csystem	0

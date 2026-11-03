@@ -285,7 +285,9 @@ published method: order-1 Markov background estimated from the input
 promoters, pseudo-count 1, background pseudo-frequency 0.01, both strands,
 `-origin end`.
 
-Then draw the site map (SVG and PNG) into the run directory.
+Then draw the site map (SVG, PNG and PDF) into the run directory. The notebook
+saves the site map as SVG and PDF; add the PNG from the
+same figure.
 
 ### 7b. Settings: what the user may change
 
@@ -356,7 +358,9 @@ what was done and why it stopped.
 Return the site map image (the PNG) to the user, displayed in the chat, with
 a short summary underneath: motifs scanned, number of promoters, number of
 sites per motif, the promoter window, the p-value, and any genes with no
-site.
+site. Also hand back the site map **SVG and PDF** as files the user can
+download — neither displays inline, so the PNG is what they see and the SVG
+and PDF are what they keep.
 
 Then ask one single-select question: *"Do you want the zip with the full HTML
 report?"*
@@ -369,7 +373,7 @@ report?"*
 ### 9. Package (only if the user said yes)
 
 Render the notebook copy and deliver a zip containing the HTML report, the
-site map as **both SVG and PNG**, the hits CSV, the raw `.ft.txt` with its
+site map as **SVG, PNG and PDF**, the hits CSV, the raw `.ft.txt` with its
 `;` header intact — that header is the authoritative record of the background
 model and pseudo-counts, and `pd.read_csv(..., comment=";")` discards it — and
 the run record: `run_log.md`, `run_config.yaml` and `my_settings.yaml`. These
@@ -440,5 +444,5 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] All outputs written to `runs/<YYYYMMDD_HHMM>/` (or a path outside the repository); `git status` shows the repository unchanged
 - [ ] `my_settings.yaml` and `run_config.yaml` written to the run directory, and the user told where they are
 - [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
-- [ ] Site map PNG shown in the chat with its summary (step 8) before any packaging
-- [ ] Zip built only after the user answered yes (step 9), and contains the HTML report, site map SVG and PNG, hits CSV, the raw `.ft.txt` with its `;` header, and `run_log.md`, `run_config.yaml` and `my_settings.yaml`
+- [ ] Site map PNG shown in the chat with its summary, and the site map SVG and PDF handed back as files (step 8), before any packaging
+- [ ] Zip built only after the user answered yes (step 9), and contains the HTML report, site map SVG, PNG and PDF, hits CSV, the raw `.ft.txt` with its `;` header, and `run_log.md`, `run_config.yaml` and `my_settings.yaml`

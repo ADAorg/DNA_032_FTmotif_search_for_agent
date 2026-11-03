@@ -34,8 +34,8 @@ DNA_032_FTmotif_search_for_agent/
 ├── Results/                                    # notebook outputs
 │   ├── promoters_sequences.fasta               # extracted promoters (regenerated on every run)
 │   ├── motifs_coordinates_SpiC_network_all_TFs.csv
-│   ├── matrix_scan/                            # RSAT inputs/outputs: .tf matrices, .ft scan, sitemap/logo SVGs
-│   └── results_report/                         # final HTML report, tables, SVGs (also zipped with a timestamp)
+│   ├── matrix_scan/                            # RSAT inputs/outputs: .tf matrices, .ft scan, sitemap/logo SVGs, sitemap PDF
+│   └── results_report/                         # final HTML report, tables, SVGs and PDFs (also zipped with a timestamp)
 ├── runs/                                       # agent outputs, one timestamped directory per run (gitignored)
 └── README.md
 ```
@@ -238,9 +238,10 @@ The agent will:
 5. Ask for the promoter length upstream of the TSS, in an option box (1 kb, 2 kb default, 5 kb, or any length you
    type from 1 kb up, with no upper limit; always plus 200 bp downstream).
 6. Ask for the p-value threshold, in an option box (1e-4 default, 1e-3, 1e-5, or your own value).
-7. Run the extraction and scan, reporting progress at each stage, and show you the site map image.
+7. Run the extraction and scan, reporting progress at each stage, show you the site map image and give you
+   the site map as SVG and PDF files.
 8. Ask whether you want the zip; if yes, render the HTML report and hand back a zip with the report, the site
-   map (SVG and PNG), the hits CSV, the raw `.ft` file and the run record (`run_log.md`, `run_config.yaml`,
+   map (SVG, PNG and PDF), the hits CSV, the raw `.ft` file and the run record (`run_log.md`, `run_config.yaml`,
    `my_settings.yaml`).
 
 Every run writes to its own `runs/<timestamp>/` directory. Nothing from a previous run is ever reused or
@@ -301,7 +302,7 @@ genome with `fetch_genome.sh` (see [Input data](#2-input-data)) and can run the 
 |---|---|
 | `Results/promoters_sequences.fasta` | extracted promoter sequences (`>Gene\|TranscriptID`) |
 | `Results/matrix_scan/scanmotif_*.ft` | raw RSAT `matrix-scan` output (header records matrices, pseudo-counts, background) |
-| `Results/matrix_scan/sitemap_*.svg` | site map: one lane per scanned promoter, markers = motif sites (▲ direct, ▼ reverse), size ∝ significance |
+| `Results/matrix_scan/sitemap_*.svg`, `.pdf` | site map: one lane per scanned promoter, markers = motif sites (▲ direct, ▼ reverse), size ∝ significance |
 | `Results/motifs_coordinates_*.csv` | one row per site: sequence, promoter position, distance to TSS, genomic coordinates and strand |
 | `Results/results_report/` | HTML report, tables and figures; also packaged as `results_report_<timestamp>.zip` |
 | `runs/<timestamp>/` | the same set of outputs when the analysis is run through the Claude agent, plus `my_settings.yaml`, `run_config.yaml` and `run_log.md` |
