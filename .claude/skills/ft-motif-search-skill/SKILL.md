@@ -326,6 +326,26 @@ promoters, pseudo-count 1, background pseudo-frequency 0.01, both strands,
 The notebook saves the site map as SVG, PNG and PDF under
 `matrix_scan/` in the run directory; do not redraw it separately.
 
+**Execute the notebook copy with `quarto render`, once, and with nothing
+else.** `DNA032_PROJECT` is the repository root; the notebook needs it when the
+run directory is outside the clone, or it falls back to a path on the
+maintainer's server.
+
+```bash
+cd runs/<YYYYMMDD_HHMM>
+DNA032_RESULTS="$PWD" DNA032_PROJECT="<repository root>" QUARTO_PYTHON="$(command -v python3)" \
+    quarto render notebook.ipynb --to html --execute --output notebook_report.html
+```
+
+Never execute the copy with nbclient, papermill or `jupyter nbconvert
+--execute`. The notebook's last cell (`render_report`) is marked `eval: false`,
+which only Quarto honours; any other executor runs it. That cell finds the
+notebook by its long file name, and the copy is called `notebook.ipynb`, so it
+resolves the **committed** notebook and renders that: it re-runs the default
+panel (37 genes, 5 kb) over the run's outputs and modifies a tracked file. This
+happened in a test run. One `quarto render` also runs the analysis once;
+executing first and rendering afterwards runs it twice.
+
 ### 7b. Settings: what the user may change
 
 `scripts/runconfig.py` holds the boundary. **Do not implement it by judgement
@@ -368,8 +388,8 @@ layout, the order of the promoter lanes, and making all markers or all text
 larger or smaller together. The settings above expose only some of these, and
 the notebook does not read all of the ones they expose. For a visual change the
 settings do not cover, edit the **figure-drawing code of the notebook copy in
-the run directory**, then re-execute that copy, so the figure and the report
-still come from the same notebook. The repository stays untouched. Do not redraw
+the run directory**, then run that copy again with `quarto render`, as in step 7,
+so the figure and the report still come from the same notebook. The repository stays untouched. Do not redraw
 a figure outside the notebook and do not edit an output by hand.
 
 Record each such edit in `run_log.md`, naming the cell or function that was
@@ -434,20 +454,23 @@ report?"*
 
 | Option label | Description to show |
 |---|---|
-| `Yes, build the zip` | Render the HTML report and package it with the site map, hits table, raw scan output and run record |
+| `Yes, build the zip` | Package the HTML report with the site map, hits table, raw scan output and run record |
 | `No, the image is enough` | Stop here; the run files stay in the run directory |
 
 ### 9. Package (only if the user said yes)
 
-Render the notebook copy into the run directory, then build the zip with
-`package_results.py`:
+The report was built in step 7 by the same `quarto render`; do not render again.
+Build the zip with `package_results.py`:
 
 ```bash
-cd runs/<YYYYMMDD_HHMM>
-DNA032_RESULTS="$PWD" QUARTO_PYTHON="$(which python)" \
-    quarto render notebook.ipynb --to html --execute --output notebook_report.html
 python <skill>/scripts/package_results.py runs/<YYYYMMDD_HHMM>
 ```
+
+Before it zips anything, `package_results.py` runs `verify_run.py`, which
+compares what the run produced with what the run's own `run_config.yaml` says
+was asked for (the genes, the window, the p-value, the motifs) and checks the
+repository was left unchanged. A failure there means the run is wrong even
+though every file is present: do not zip it anyway. Show its lines in the reply.
 
 **Build the zip only with `package_results.py`.** It holds the contract — the
 list of files every zip must contain — as code, and refuses to build a zip
@@ -466,8 +489,9 @@ they can see what the zip holds. The raw `.ft` file keeps its `;` header: that
 header is the authoritative record of the background model and pseudo-counts,
 and `pd.read_csv(..., comment=";")` discards it.
 
-If the user said no, do not render the report. Tell them where the run
-directory is, and that they can ask for the zip later from the same run.
+If the user said no, do not package. The report stays in the run directory with
+the other files; tell them where it is, and that they can ask for the zip later
+from the same run.
 
 ## Things that will bite
 
@@ -500,6 +524,18 @@ downstream length without changing the offset silently shifts every reported
 coordinate; that is why downstream is locked. The upstream length is free to
 change: it only moves where the sequence starts, not where the TSS sits.
 
+**Never put the RSAT environment on `PATH`.** It ships its own `python3`, which
+has none of the packages installed into the system Python (`pyfaidx`,
+`biopython`, `pyranges`, the Jupyter stack Quarto needs) and silently shadows
+it. Do not `micromamba activate rsat`; use `RSAT_ENV`. `motifscan.RSAT` and the
+notebook build a private `PATH` for the RSAT subprocesses only. Call
+`python3 -m pip` and `python3 …`, not bare `pip` or `python`.
+
+**If the repository changed during a run, do not repair it with git.**
+`checkout`, `restore`, `reset`, `stash` and `clean` are forbidden. In a sandbox
+the clone is disposable: discard it, clone again, and redo the run. On a user's
+machine, tell them which tracked files changed and let them restore them.
+
 ## Files
 
 - `scripts/fetch_genome.sh` — download the genome from the GitHub Release
@@ -529,6 +565,7 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] p-value chosen by the user (step 6) and that exact value passed to the scan
 - [ ] Promoters handled by the input/output rule: **genome available** → re-extracted into the run directory, committed FASTA ignored; **genome unavailable** → committed FASTA checked (every requested gene present, every sequence upstream + 201 bp for the chosen window) and its reuse disclosed in the answer and in the report
 - [ ] Notebook copied into the run directory with stored outputs stripped, rendered with `--execute`; the committed notebook was never rendered in place
+- [ ] Notebook copy executed once, by `quarto render` only — never nbclient, papermill or nbconvert — with the system `python3`, and the RSAT environment never on `PATH`
 - [ ] No locked setting changed or worked around; any request for one was refused with the `runconfig.py` message
 - [ ] Any visual change the settings do not cover was made only in the figure-drawing code of the notebook copy in the run directory — never in the repository, never in the analysis cells — with no site position changed and the size-to-significance mapping intact, and each edit recorded in `run_log.md`
 - [ ] All outputs written to `runs/<YYYYMMDD_HHMM>/` (or a path outside the repository); `git status` shows the repository unchanged
@@ -536,4 +573,5 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
 - [ ] Site map PNG shown in the chat with its summary, and the site map SVG and PDF handed back as files (step 8), before any packaging
 - [ ] Notebook copy run with `DNA032_RESULTS` set to the run directory, so nothing was written to the repository's `Results/`
+- [ ] `verify_run.py` passed (it runs inside `package_results.py`) or its failures were reported; if the repository changed, the run was discarded and redone from a fresh clone, not repaired with git
 - [ ] Zip built only after the user answered yes (step 9), only by `package_results.py`, and its `OK` output (zip path and file list, plus any waived file) shown in the reply

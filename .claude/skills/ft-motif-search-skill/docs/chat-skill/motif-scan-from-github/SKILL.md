@@ -140,6 +140,7 @@ Expected times, so the messages are consistent:
 | Clone | seconds |
 | Install RSAT | a few minutes |
 | Fetch the genome (first run in a session only, about 900 MB) | about ten minutes |
+| Install Quarto (pinned, from PyPI) | about half a minute (measured: 33 s) |
 | Scan and render, for thirty to forty promoters | a few minutes |
 | Anything else | no time has been measured: say it may take a while, and do not quote a number |
 
@@ -186,7 +187,7 @@ setsid nohup bash -c '
   ./bin/micromamba create -y -n rsat -c bioconda -c conda-forge "rsat-core=2026.10.08"
   ./bin/micromamba clean --all -y
   echo "STAGE python start"
-  pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml
+  python3 -m pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml nbformat nbclient ipykernel jupyter-client "quarto-cli==1.11.9"
   echo "STAGE rsat done"
 ' > /home/claude/rsat_install.log 2>&1 &
 export RSAT_ENV=/home/claude/mm/root/envs/rsat
@@ -204,6 +205,19 @@ the package cache's disk space.
 `biopython` is not optional: `pyfaidx` refuses to open a bgzipped FASTA without
 it, raising *BioPython >= 1.73 must be installed to read block gzip files*, and
 the genome is bgzipped. It is installed by the job above, before any extraction.
+
+Quarto comes from PyPI (`quarto-cli`, pinned to `1.11.9`) because it installs and
+runs with nothing else to fix; the conda-forge package did not run until its
+bundled tools were linked by hand. It takes about 420 MB on disk and about half a
+minute to install. The notebook needs Quarto's own Jupyter packages, which the
+same line installs.
+
+**Never put the RSAT environment on `PATH`, and never `micromamba activate rsat`.**
+It ships its own `python3`, which has none of the packages above and silently
+shadows the system one; a test run lost time to exactly that. Use `RSAT_ENV` as
+shown. `motifscan.RSAT` and the notebook build a private `PATH` for the RSAT
+subprocesses only. Call `python3 -m pip` and `python3 …`, never bare `pip` or
+`python`.
 
 ### 3b. Fetch and verify the genome
 
@@ -284,10 +298,28 @@ the scripts to get around a refusal.
 Load settings through that module and relay its refusals verbatim — they name
 the maintainer, **sara.salazar@gimm.pt**, for anything locked.
 
-Write outputs to `/home/claude/runs/<timestamp>/`, never into the clone. When
-running or rendering the notebook copy, set `DNA032_RESULTS` to that run
-directory; without it the notebook writes into the clone's `Results/` and the
-run directory lacks the files the zip needs.
+Write outputs to `/home/claude/runs/<timestamp>/`, never into the clone. Run the
+notebook copy as the repository skill's step 7 says, with these set:
+
+```bash
+cd /home/claude/runs/<timestamp>
+DNA032_RESULTS="$PWD" DNA032_PROJECT=/home/claude/dna032 QUARTO_PYTHON="$(command -v python3)" \
+    quarto render notebook.ipynb --to html --execute --output notebook_report.html
+```
+
+`DNA032_RESULTS` keeps the outputs out of the clone's `Results/`. `DNA032_PROJECT`
+is needed because the run directory is outside the clone; without it the
+notebook falls back to a path on the maintainer's server.
+
+**Execute the notebook with `quarto render`, once, and nothing else.** Never use
+nbclient, papermill or `jupyter nbconvert --execute`. The notebook's last cell is
+only skipped by Quarto (`eval: false`); any other executor runs it, and it then
+renders the **committed** notebook, re-running the default panel (37 genes, 5 kb)
+over the run's outputs and modifying a tracked file. That happened in a test run.
+
+If the clone does change, do not repair it with `git checkout`, `restore`,
+`reset` or `stash`: they are forbidden. The clone is disposable here. Discard it,
+clone again, and redo the run.
 
 Write `requested_changes.md` first (step 6): the zip contract requires it.
 
@@ -299,9 +331,13 @@ python /home/claude/dna032/.claude/skills/ft-motif-search-skill/scripts/package_
     /home/claude/runs/<timestamp>
 ```
 
-It refuses to build a zip that is missing any required file and names what is
-absent. If it refuses, produce the missing files and run it again — never zip
-files by hand, and never call a partial zip complete. Present the report and
+It first runs `verify_run.py`, which compares what the run produced with the
+genes, window, p-value and motifs recorded in the run's own `run_config.yaml`
+and checks the repository is unchanged; a failure there means the run is wrong
+even though every file is present, so do not zip it anyway. Show its lines in
+the reply. It then refuses to build a zip that is missing any required file and
+names what is absent. If it refuses, produce the missing files and run it again —
+never zip files by hand, and never call a partial zip complete. Present the report and
 the site map as files, the site map on its own as well as inside the zip, and
 show the script's `OK` output (zip path and file list) in the reply.
 
@@ -324,8 +360,8 @@ layout, the order of the promoter lanes, and making all markers or all text
 larger or smaller together. `runconfig.py` exposes only some of these, and the
 notebook does not read all of the ones it exposes. For a visual change that is
 not covered, edit the **figure-drawing code of the notebook copy in the run
-directory**, then re-execute that copy, so the figure and the report still come
-from the same notebook. The clone stays untouched. Do not redraw a figure
+directory**, then run that copy again with `quarto render`, so the figure and the
+report still come from the same notebook. The clone stays untouched. Do not redraw a figure
 outside the notebook and do not edit an output by hand.
 
 The repository skill carries the same rule. If an older clone's text seems to
@@ -405,6 +441,7 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] RSAT installed and `matrix-scan` actually executed, not merely located
 - [ ] RSAT (pinned to `rsat-core=2026.10.08`) and the genome fetch started detached right after the clone, in parallel, with the four questions asked while they ran; each job followed through its log, and the scan did not start until both showed `done` and the genome check had passed
 - [ ] `biopython` installed before any attempt to read a bgzipped FASTA with `pyfaidx`
+- [ ] The RSAT environment was never put on `PATH` or activated; `python3 -m pip` and `python3` were used throughout
 - [ ] Genome fetched and verified with `fetch_genome.sh` and `check_genome.py` before any extraction, and the user told the first fetch was running rather than left waiting in silence
 - [ ] `prefilter_gff.py` run after the check, and the notebook copy changed only in its parameter cell and, where the user asked for a visual change, in its figure-drawing code — never in the analysis cells — with each such edit recorded in `run_log.md` and `requested_changes.md` (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
 - [ ] Promoters re-extracted in this run from the fetched genome; the committed FASTA was used only if the genome could not be fetched, and that reuse was disclosed in the answer and in the report
@@ -412,6 +449,8 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] Every requested gene present in the scanned set; a missing gene stopped the run rather than being scanned around
 - [ ] Outputs written to `/home/claude/runs/<timestamp>/` (notebook run with `DNA032_RESULTS` set to it), nothing written into the clone
 - [ ] Before each stage the user was told what was starting and whether it takes time; stages that can exceed a minute ran in the background and were checked in rounds of at most 4 minutes, with a message after each round; no single command ran past 300 seconds
+- [ ] Notebook executed once, by `quarto render` only, with `DNA032_RESULTS` and `DNA032_PROJECT` set; if the clone changed it was discarded and cloned again, not repaired with git
+- [ ] `verify_run.py` passed, and its lines were shown in the reply, or its failures were reported to the user
 - [ ] Zip built by `package_results.py`, not by hand, and its `OK` output shown in the reply
 - [ ] `requested_changes.md` written in the run directory on this run (even if empty of requests), every request outside the four choices logged in the user's words with its outcome, refusals naming the locked setting and the maintainer's address, written before the zip was built, listed in `package_results.py`'s `OK` output (or, if the script did not list it, the user told it is delivered beside the zip), and also returned to the user as its own file
 - [ ] No genome, API or sequence source substituted for the ones the repository specifies
