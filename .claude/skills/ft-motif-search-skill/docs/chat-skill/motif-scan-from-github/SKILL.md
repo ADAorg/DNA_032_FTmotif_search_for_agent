@@ -26,6 +26,30 @@ code here, starts the environment, and collects the three choices below. After
 cloning, read the repository's `SKILL.md` and follow it; do not reimplement the
 workflow from memory and do not override anything it says.
 
+## Start the setup first
+
+Do steps 1 and 2 (clone, read the repository skill). Then start steps 3 and 3b
+**in the background, in parallel**, and ask the four questions below while they
+run. Setup takes about ten minutes and the user's answers take a minute or two,
+so otherwise those minutes are simply lost. Tell the user that setup is running
+in the background and that you will ask four questions meanwhile.
+
+- Start each job with `setsid nohup`, as shown in steps 3 and 3b. A job started
+  as part of an ordinary command can be killed when that command ends or times
+  out; in a test run the RSAT install died partway for exactly that reason.
+- Each job writes `STAGE` lines to its own log. Check the logs in rounds, as
+  described under *Keeping the user informed*.
+- Do not start the scan until `rsat_install.log` ends with `STAGE rsat done`,
+  `genome_fetch.log` ends with `STAGE genome done`, and the genome check passed.
+- If a job's process is gone without its `done` line, start the same command
+  again. The RSAT install resumes from the package cache, and `fetch_genome.sh`
+  skips what it already has and verifies it.
+- If the genome check fails after the user has answered the questions, say so
+  then. It is the same refusal as before, only reached later.
+- Check free disk space (`df -h /home/claude`) before starting. If a job fails
+  with a disk error, say so and stop; delete nothing outside the run directory,
+  the micromamba tree or the genome folder.
+
 ## Ask for four things, in this order
 
 Ask for each **separately, and wait** for the answer before asking the next.
@@ -87,6 +111,41 @@ Do not substitute a different genome, a different annotation source, or
 sequences obtained some other way. If the release cannot be reached, say so and
 stop.
 
+## Keeping the user informed
+
+The user only hears from you between commands. Nothing reaches them while a
+command is running, so say what is about to happen **before** starting it, not
+during it.
+
+Two limits shape how long steps are run:
+
+- A single command is stopped after **300 seconds**, and what it was doing may
+  be lost. Any step that can take longer than that runs in the background
+  (`nohup ... > <log> 2>&1 &`) and is checked in short rounds.
+- Each round is **one command that waits at most 4 minutes in total** (for
+  example 8 checks 30 seconds apart). Never write a wait loop whose total is
+  longer. After each round, tell the user which stage it has reached.
+
+For every stage, send three short messages:
+
+1. **Before** it starts: what is about to happen, and whether it takes time.
+2. **During** a long stage, after each round: that it is still running, and
+   which stage.
+3. **After** it finishes: the result, in one line, before the next stage begins.
+
+Expected times, so the messages are consistent:
+
+| Stage | Expected time |
+|---|---|
+| Clone | seconds |
+| Install RSAT | a few minutes |
+| Fetch the genome (first run in a session only, about 900 MB) | about ten minutes |
+| Scan and render, for thirty to forty promoters | a few minutes |
+| Anything else | no time has been measured: say it may take a while, and do not quote a number |
+
+Do not invent a time for a stage that is not in the table. When the real time of
+a stage has been measured, put it in the table.
+
 ## Steps
 
 ### 1. Clone
@@ -112,46 +171,66 @@ the end of this file.
 
 ### 3. Install RSAT
 
-No conda is present in a fresh sandbox, so bootstrap micromamba first:
+No conda is present in a fresh sandbox, so bootstrap micromamba first. Run this
+detached, and pinned to the RSAT version the scan was validated on:
 
 ```bash
-cd /home/claude && mkdir -p mm && cd mm
-curl -sL https://conda.anaconda.org/conda-forge/linux-64/micromamba-2.0.5-0.tar.bz2 -o mm.tar.bz2
-tar -xjf mm.tar.bz2 bin/micromamba
-export MAMBA_ROOT_PREFIX=/home/claude/mm/root
-./bin/micromamba create -y -n rsat -c bioconda -c conda-forge rsat-core
+cd /home/claude && mkdir -p mm runs
+setsid nohup bash -c '
+  set -e
+  echo "STAGE rsat start"
+  cd /home/claude/mm
+  curl -sL https://conda.anaconda.org/conda-forge/linux-64/micromamba-2.0.5-0.tar.bz2 -o mm.tar.bz2
+  tar -xjf mm.tar.bz2 bin/micromamba
+  export MAMBA_ROOT_PREFIX=/home/claude/mm/root
+  ./bin/micromamba create -y -n rsat -c bioconda -c conda-forge "rsat-core=2026.10.08"
+  ./bin/micromamba clean --all -y
+  echo "STAGE python start"
+  pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml
+  echo "STAGE rsat done"
+' > /home/claude/rsat_install.log 2>&1 &
 export RSAT_ENV=/home/claude/mm/root/envs/rsat
 ```
 
-A few minutes; keep the user informed rather than going quiet. Verified with
-`rsat-core 2026.10.08`.
+A few minutes; the user hears about it from the messages described under
+*Keeping the user informed*.
 
-Python packages as needed:
-
-```bash
-pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml
-```
+The pin matters twice over. It skips a fresh dependency solve, and it makes every
+session install the same RSAT; the committed scan was reproduced exactly on
+`2026.10.08`. Change the pin deliberately, and re-check that the scan still
+reproduces, not as a side effect of an install. The `clean` at the end returns
+the package cache's disk space.
 
 `biopython` is not optional: `pyfaidx` refuses to open a bgzipped FASTA without
 it, raising *BioPython >= 1.73 must be installed to read block gzip files*, and
-the genome is bgzipped. Install it before any extraction.
+the genome is bgzipped. It is installed by the job above, before any extraction.
 
 ### 3b. Fetch and verify the genome
 
-Run the repository's own scripts; do not improvise a download:
+Run the repository's own scripts; do not improvise a download. Run them
+detached, from the clone, in this order:
 
 ```bash
-bash .claude/skills/ft-motif-search-skill/scripts/fetch_genome.sh
-python .claude/skills/ft-motif-search-skill/scripts/check_genome.py \
-    Data/ncbi_dataset_RefSeq_GCF_000001635.27
-python .claude/skills/ft-motif-search-skill/scripts/prefilter_gff.py \
-    Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.gff.gz
+cd /home/claude/dna032
+setsid nohup bash -c '
+  set -e
+  echo "STAGE genome start"
+  bash .claude/skills/ft-motif-search-skill/scripts/fetch_genome.sh
+  echo "STAGE genome verify"
+  python .claude/skills/ft-motif-search-skill/scripts/check_genome.py \
+      Data/ncbi_dataset_RefSeq_GCF_000001635.27
+  echo "STAGE genome filter"
+  python .claude/skills/ft-motif-search-skill/scripts/prefilter_gff.py \
+      Data/ncbi_dataset_RefSeq_GCF_000001635.27/genomic.gff.gz
+  echo "STAGE genome done"
+' > /home/claude/genome_fetch.log 2>&1 &
 ```
 
 About 900 MB and ten minutes on a fresh session; say so rather than going
 quiet. The files stay bgzipped — do not decompress them, there is not enough
 disk for that and the `.fai`/`.gzi` indexes make it unnecessary. If
-`check_genome.py` fails, let it refuse and fetch again; never scan against a
+`check_genome.py` fails, the job stops there (`set -e`) and there is no
+`STAGE genome done` line: let it refuse and fetch again; never scan against a
 genome that did not verify.
 
 `prefilter_gff.py` is not optional here. Parsing the full 920 MB GFF needs
@@ -210,6 +289,8 @@ running or rendering the notebook copy, set `DNA032_RESULTS` to that run
 directory; without it the notebook writes into the clone's `Results/` and the
 run directory lacks the files the zip needs.
 
+Write `requested_changes.md` first (step 6): the zip contract requires it.
+
 Build the zip **only** with the repository's `package_results.py` (step 9 of
 the repository `SKILL.md`):
 
@@ -223,6 +304,87 @@ absent. If it refuses, produce the missing files and run it again — never zip
 files by hand, and never call a partial zip complete. Present the report and
 the site map as files, the site map on its own as well as inside the zip, and
 show the script's `OK` output (zip path and file list) in the reply.
+
+### 5b. Changing how the results look
+
+The line is **analysis versus presentation**.
+
+**The analysis is never touched.** That is where a motif lies in the promoter —
+the site positions, strands, scores and p-values, which are the result itself —
+and everything that produces them: the promoter extraction, the matrix
+conversion, the RSAT calls and every parameter in them, and the hit table. It
+also includes what marker size means: size must keep growing with significance
+(a smaller p-value gives a larger marker), and that mapping is not changed. A
+locked parameter stays refused; nothing in this section turns a refusal into
+permission.
+
+**Everything else visual may be changed**, including scaling. That covers marker
+shape, colour, font weight and size, labels, title, legend, figure size and
+layout, the order of the promoter lanes, and making all markers or all text
+larger or smaller together. `runconfig.py` exposes only some of these, and the
+notebook does not read all of the ones it exposes. For a visual change that is
+not covered, edit the **figure-drawing code of the notebook copy in the run
+directory**, then re-execute that copy, so the figure and the report still come
+from the same notebook. The clone stays untouched. Do not redraw a figure
+outside the notebook and do not edit an output by hand.
+
+The repository skill carries the same rule. If an older clone's text seems to
+say otherwise, this is the newer rule for presentation.
+
+Record every such edit in `requested_changes.md` (status: applied) and in
+`run_log.md`, naming the cell or function that was edited, so the run states
+that it used a modified notebook copy.
+
+If the requested change would remove information the figure carries, say so
+once and offer a way to keep it. Circles instead of triangles, for example, drop
+the strand, which the triangles show by pointing up or down; filled and open
+circles, or an added strand column, would keep it. Then do what the user decides.
+
+### 6. Record what the user asked to change
+
+The four questions and their defaults are this skill's own. Anything else the
+user asks for goes in `requested_changes.md` in the run directory: a different
+colour or title, an extra output, a change of wording, a request to alter a
+locked parameter, anything outside the four choices. The user can hand the file
+to the maintainer (**sara.salazar@gimm.pt**), so a request is never lost
+inside a chat, and the file shows what was done by default and what was asked.
+
+Do not log the answers to the four questions; `my_settings.yaml` and
+`run_config.yaml` already hold those. Do not log your own suggestions as the
+user's requests. If you suggested something and the user accepted it, record it
+as *suggested by the agent, accepted*.
+
+Write one entry per request, in the user's own words, with what was done and a
+status: **applied**, **refused** (locked), **not possible here**, or **needs the
+maintainer**. For a refusal, give the setting's name and relay the message from
+`runconfig.py` as it was shown.
+
+```markdown
+# Requested changes — run <timestamp>
+
+Run <timestamp> · repository commit <short hash> · skill <version>
+
+## Applied
+- "<what the user asked>" → <what was done> (setting: figure.width_in = 12)
+
+## Refused or not possible
+- "<what the user asked>" → <reason>. Locked: <setting>. Contact sara.salazar@gimm.pt.
+
+## For the maintainer
+- "<what the user asked>" → needs a code or method change, not a setting
+```
+
+Write the file on **every** run. When nothing was asked, it says *No changes
+requested beyond the four choices.* A missing file cannot be told apart from a
+forgotten one.
+
+Write it **before** the zip is built in step 5. `package_results.py` lists it in
+its contract and refuses to build without it, so it travels inside the zip.
+Also return it to the user as its own file, next to the site map.
+
+Check that the script's `OK` output lists `requested_changes.md`. If it does
+not, the clone predates that contract line: say so, deliver the file beside the
+zip instead, and do not add it to the zip by hand or edit the script.
 
 ## Checklist before finishing
 
@@ -241,14 +403,17 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] The repository's `SKILL.md` was actually read, and followed rather than reimplemented from memory
 - [ ] If the clone failed, it was reported as private or renamed and the run stopped — no workaround attempted
 - [ ] RSAT installed and `matrix-scan` actually executed, not merely located
+- [ ] RSAT (pinned to `rsat-core=2026.10.08`) and the genome fetch started detached right after the clone, in parallel, with the four questions asked while they ran; each job followed through its log, and the scan did not start until both showed `done` and the genome check had passed
 - [ ] `biopython` installed before any attempt to read a bgzipped FASTA with `pyfaidx`
 - [ ] Genome fetched and verified with `fetch_genome.sh` and `check_genome.py` before any extraction, and the user told the first fetch was running rather than left waiting in silence
-- [ ] `prefilter_gff.py` run after the check, and the notebook copy run unmodified apart from its parameter cell (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
+- [ ] `prefilter_gff.py` run after the check, and the notebook copy changed only in its parameter cell and, where the user asked for a visual change, in its figure-drawing code — never in the analysis cells — with each such edit recorded in `run_log.md` and `requested_changes.md` (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
 - [ ] Promoters re-extracted in this run from the fetched genome; the committed FASTA was used only if the genome could not be fetched, and that reuse was disclosed in the answer and in the report
 - [ ] All four choices taken from the user — motifs, genes, upstream window, p-value — and the window and threshold reported, flagged where not 2 kb and 1e-4
 - [ ] Every requested gene present in the scanned set; a missing gene stopped the run rather than being scanned around
 - [ ] Outputs written to `/home/claude/runs/<timestamp>/` (notebook run with `DNA032_RESULTS` set to it), nothing written into the clone
+- [ ] Before each stage the user was told what was starting and whether it takes time; stages that can exceed a minute ran in the background and were checked in rounds of at most 4 minutes, with a message after each round; no single command ran past 300 seconds
 - [ ] Zip built by `package_results.py`, not by hand, and its `OK` output shown in the reply
+- [ ] `requested_changes.md` written in the run directory on this run (even if empty of requests), every request outside the four choices logged in the user's words with its outcome, refusals naming the locked setting and the maintainer's address, written before the zip was built, listed in `package_results.py`'s `OK` output (or, if the script did not list it, the user told it is delivered beside the zip), and also returned to the user as its own file
 - [ ] No genome, API or sequence source substituted for the ones the repository specifies
 
 ---

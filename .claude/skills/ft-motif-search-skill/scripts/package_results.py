@@ -40,6 +40,7 @@ CONTRACT: list[tuple[str, str]] = [
     ("my_settings.yaml",         "the user's choices"),
     ("run_config.yaml",          "choices plus locked method parameters"),
     ("run_log.md",               "what actually happened in the run"),
+    ("requested_changes.md",     "changes the user asked for beyond the four choices"),
 ]
 
 

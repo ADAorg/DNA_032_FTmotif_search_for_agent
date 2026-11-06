@@ -25,6 +25,10 @@ factor motifs with RSAT matrix-scan, and package a report.
 > directory first and render the copy, or the stored outputs of the committed
 > notebook are destroyed.
 >
+> The copy in the run directory is not the repository. What may be edited in it
+> is set out under *Presentation changes the settings do not cover*, in the
+> settings step below.
+>
 > **This skill lives in the repository.** The copy under
 > `.claude/skills/ft-motif-search-skill/` is the only one. Claude Code loads it
 > from the repository root, and a sandbox uses it from a fresh clone of the
@@ -348,6 +352,34 @@ Spic markers bigger", "sort the promoters alphabetically", "I want it as a
 PDF" — are all allowed. When unsure which side something falls on, check
 whether it would change the sites reported. If it would, it is locked.
 
+**Presentation changes the settings do not cover.** The boundary is **analysis
+versus presentation**.
+
+*The analysis is never touched.* That is where a motif lies in the promoter —
+the site positions, strands, scores and p-values, which are the result itself —
+and everything that produces them: the promoter extraction, the matrix
+conversion, the RSAT calls and every parameter in them, and the hit table. It
+also includes what marker size means: size must keep growing with significance
+(a smaller p-value gives a larger marker), and that mapping is not changed.
+
+*Everything else visual may be changed*, including scaling. That covers marker
+shape, colour, font weight and size, labels, title, legend, figure size and
+layout, the order of the promoter lanes, and making all markers or all text
+larger or smaller together. The settings above expose only some of these, and
+the notebook does not read all of the ones they expose. For a visual change the
+settings do not cover, edit the **figure-drawing code of the notebook copy in
+the run directory**, then re-execute that copy, so the figure and the report
+still come from the same notebook. The repository stays untouched. Do not redraw
+a figure outside the notebook and do not edit an output by hand.
+
+Record each such edit in `run_log.md`, naming the cell or function that was
+changed, so the run states that it used a modified notebook copy.
+
+If a requested change would remove information the figure carries, say so once
+and offer a way to keep it. Circles instead of triangles, for example, drop the
+strand that the triangles show by pointing up or down; filled and open circles,
+or an added strand column, would keep it. Then do what the user decides.
+
 Save what the user chose so they can reuse and share it:
 
 ```bash
@@ -498,6 +530,7 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] Promoters handled by the input/output rule: **genome available** → re-extracted into the run directory, committed FASTA ignored; **genome unavailable** → committed FASTA checked (every requested gene present, every sequence upstream + 201 bp for the chosen window) and its reuse disclosed in the answer and in the report
 - [ ] Notebook copied into the run directory with stored outputs stripped, rendered with `--execute`; the committed notebook was never rendered in place
 - [ ] No locked setting changed or worked around; any request for one was refused with the `runconfig.py` message
+- [ ] Any visual change the settings do not cover was made only in the figure-drawing code of the notebook copy in the run directory — never in the repository, never in the analysis cells — with no site position changed and the size-to-significance mapping intact, and each edit recorded in `run_log.md`
 - [ ] All outputs written to `runs/<YYYYMMDD_HHMM>/` (or a path outside the repository); `git status` shows the repository unchanged
 - [ ] `my_settings.yaml` and `run_config.yaml` written to the run directory, and the user told where they are
 - [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
