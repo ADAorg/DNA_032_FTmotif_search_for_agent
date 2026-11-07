@@ -3,8 +3,8 @@ name: motif-scan-from-github
 description: Fetch the DNA_032 promoter motif-search repository from GitHub and run it here in chat — install RSAT, scan promoters for transcription factor binding motifs with matrix-scan, and produce the report and site map. Use this skill whenever the user wants to run the promoter motif search, scan promoters for TF motifs, re-render the motif report, try a different motif or p-value against existing promoters, or asks to pull the motif-search repo and work with it, without having a local checkout. Also use it for questions about how that workflow operates.
 metadata:
   display-name: "Motif Scan from GitHub"
-  version: "0.5.1"
-  updated: "2026-11-03"
+  version: "0.8.0"
+  updated: "2026-11-07"
   repository: "https://github.com/ADAorg/DNA_032_FTmotif_search_for_agent"
   companion: "ft-motif-search-skill, which lives inside the repository"
 ---
@@ -74,8 +74,8 @@ stop, show which ones with the UniProt link it generates for each, and ask for
 replacements. Re-check. Never drop a gene silently and never proceed past a
 miss without asking.
 
-**3. How far upstream the promoter extends.** Offer `1 kb`, `2 kb` (the
-published default) and `5 kb`, plus the option to type another distance. Any
+**3. How far upstream the promoter extends.** Offer `1 kb`, `2 kb (Recommended)`
+and `5 kb`, plus the option to type another distance. Any
 length from 1,000 bp up is allowed and there is no upper limit; under 1 kb is
 rejected. Only the upstream length is settable — the 200 bp downstream of the
 TSS is locked, because it sets the TSS offset under `-origin end`. Do not
@@ -187,7 +187,7 @@ setsid nohup bash -c '
   ./bin/micromamba create -y -n rsat -c bioconda -c conda-forge "rsat-core=2026.10.08"
   ./bin/micromamba clean --all -y
   echo "STAGE python start"
-  python3 -m pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml nbformat nbclient ipykernel jupyter-client "quarto-cli==1.11.9"
+  python3 -m pip install --break-system-packages "pyranges<1" pyfaidx biopython itables session-info pyyaml nbformat nbclient ipykernel jupyter-client cairosvg "quarto-cli==1.11.9"
   echo "STAGE rsat done"
 ' > /home/claude/rsat_install.log 2>&1 &
 export RSAT_ENV=/home/claude/mm/root/envs/rsat
@@ -211,6 +211,11 @@ runs with nothing else to fix; the conda-forge package did not run until its
 bundled tools were linked by hand. It takes about 420 MB on disk and about half a
 minute to install. The notebook needs Quarto's own Jupyter packages, which the
 same line installs.
+
+`cairosvg` is also not optional if a presentation change is requested:
+`restyle_sitemap.py` (section 5b) needs it to regenerate PNG and PDF from an
+edited SVG. Without it the script still edits the SVG but leaves the PNG and
+PDF as they were, which then disagree with it.
 
 **Never put the RSAT environment on `PATH`, and never `micromamba activate rsat`.**
 It ships its own `python3`, which has none of the packages above and silently
@@ -321,8 +326,6 @@ If the clone does change, do not repair it with `git checkout`, `restore`,
 `reset` or `stash`: they are forbidden. The clone is disposable here. Discard it,
 clone again, and redo the run.
 
-Write `requested_changes.md` first (step 6): the zip contract requires it.
-
 Build the zip **only** with the repository's `package_results.py` (step 9 of
 the repository `SKILL.md`):
 
@@ -352,24 +355,57 @@ conversion, the RSAT calls and every parameter in them, and the hit table. It
 also includes what marker size means: size must keep growing with significance
 (a smaller p-value gives a larger marker), and that mapping is not changed. A
 locked parameter stays refused; nothing in this section turns a refusal into
-permission.
+permission. A request to move a site or change what marker size means is
+refused exactly like a locked analysis setting, and recorded the same way: in
+`requested_changes.md`'s "Refused or not possible" section, naming which of
+the two it would have touched.
 
 **Everything else visual may be changed**, including scaling. That covers marker
 shape, colour, font weight and size, labels, title, legend, figure size and
 layout, the order of the promoter lanes, and making all markers or all text
 larger or smaller together. `runconfig.py` exposes only some of these, and the
-notebook does not read all of the ones it exposes. For a visual change that is
-not covered, edit the **figure-drawing code of the notebook copy in the run
-directory**, then run that copy again with `quarto render`, so the figure and the
-report still come from the same notebook. The clone stays untouched. Do not redraw a figure
-outside the notebook and do not edit an output by hand.
+notebook does not read all of the ones it exposes.
+
+**Use `scripts/restyle_sitemap.py` first**, on the already-rendered
+`sitemap_*.svg` in the run directory:
+
+```bash
+python /home/claude/dna032/.claude/skills/ft-motif-search-skill/scripts/restyle_sitemap.py \
+    /home/claude/runs/<timestamp>/matrix_scan/sitemap_<name>.svg \
+    --recolor Spic=#1B9E77 --hide-gene Sqstm1 --set-text title="Nrf2 network" --bold title \
+    --log /home/claude/runs/<timestamp>/requested_changes.md
+```
+
+It recolours a motif, hides a gene's lane, edits the title or a label's text,
+sets font-weight or font-size, and swaps a marker's shape -- each new shape
+sized from that marker's own existing bounding box, so a point that was bigger
+because it was more significant stays exactly as big. It never writes a
+coordinate, checks that itself before writing anything, and refuses (nothing
+written) if a requested gene or motif is not in the figure. It then
+regenerates the PNG and PDF from the edited SVG (needs `cairosvg`, installed in
+step 3) so all three formats in the zip agree. With `--log`, it also writes its
+own "Applied" entry into `requested_changes.md` (section 6) from what it
+actually changed -- do not describe the same edit yourself.
+
+For a visual change it does not support (figure size, layout, promoter sort
+order, a new kind of element), edit the **figure-drawing code of the notebook
+copy in the run directory** instead, then run that copy again with
+`quarto render`, so the figure and the report still come from the same
+notebook. The clone stays untouched either way. Do not redraw a figure outside
+the notebook or `restyle_sitemap.py`, and do not edit an output by hand.
+
+There is no equivalent self-check for this path -- the figure-drawing code can
+do anything, and nothing here tries to constrain what kind of visual edit it
+makes. What keeps the boundary real is narrower: the edit stays inside the
+figure-drawing cell, never the analysis cells (where `hits`, `lim`, `tss_pos`
+or anything upstream of them is computed), and the entry in
+`requested_changes.md` is **the new cell's actual code**, pasted in full as a
+fenced code block, not a prose description of it -- so a reader can check for
+themselves that nothing in it computes a position. Name the cell or function
+changed, alongside the code.
 
 The repository skill carries the same rule. If an older clone's text seems to
 say otherwise, this is the newer rule for presentation.
-
-Record every such edit in `requested_changes.md` (status: applied) and in
-`run_log.md`, naming the cell or function that was edited, so the run states
-that it used a modified notebook copy.
 
 If the requested change would remove information the figure carries, say so
 once and offer a way to keep it. Circles instead of triangles, for example, drop
@@ -384,6 +420,11 @@ colour or title, an extra output, a change of wording, a request to alter a
 locked parameter, anything outside the four choices. The user can hand the file
 to the maintainer (**sara.salazar@gimm.pt**), so a request is never lost
 inside a chat, and the file shows what was done by default and what was asked.
+
+For a visual change applied with `restyle_sitemap.py --log`, the script writes
+its own "Applied" entry from what it actually changed -- do not also describe
+it yourself. Add everything else by hand: a change made by editing the
+notebook copy instead, a refusal, or anything not possible here.
 
 Do not log the answers to the four questions; `my_settings.yaml` and
 `run_config.yaml` already hold those. Do not log your own suggestions as the
@@ -443,7 +484,7 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] `biopython` installed before any attempt to read a bgzipped FASTA with `pyfaidx`
 - [ ] The RSAT environment was never put on `PATH` or activated; `python3 -m pip` and `python3` were used throughout
 - [ ] Genome fetched and verified with `fetch_genome.sh` and `check_genome.py` before any extraction, and the user told the first fetch was running rather than left waiting in silence
-- [ ] `prefilter_gff.py` run after the check, and the notebook copy changed only in its parameter cell and, where the user asked for a visual change, in its figure-drawing code — never in the analysis cells — with each such edit recorded in `run_log.md` and `requested_changes.md` (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
+- [ ] `prefilter_gff.py` run after the check, and the notebook copy changed only in its parameter cell and, where the user asked for a visual change not handled by `restyle_sitemap.py`, in its figure-drawing code — never in the analysis cells — with the new cell's actual code (not a description of it) recorded in `requested_changes.md` (the report names `genomic.refseq_select_mrna.gff` as the annotation read)
 - [ ] Promoters re-extracted in this run from the fetched genome; the committed FASTA was used only if the genome could not be fetched, and that reuse was disclosed in the answer and in the report
 - [ ] All four choices taken from the user — motifs, genes, upstream window, p-value — and the window and threshold reported, flagged where not 2 kb and 1e-4
 - [ ] Every requested gene present in the scanned set; a missing gene stopped the run rather than being scanned around
@@ -452,7 +493,7 @@ check and the outputs. Do not duplicate those here — walk that one too.
 - [ ] Notebook executed once, by `quarto render` only, with `DNA032_RESULTS` and `DNA032_PROJECT` set; if the clone changed it was discarded and cloned again, not repaired with git
 - [ ] `verify_run.py` passed, and its lines were shown in the reply, or its failures were reported to the user
 - [ ] Zip built by `package_results.py`, not by hand, and its `OK` output shown in the reply
-- [ ] `requested_changes.md` written in the run directory on this run (even if empty of requests), every request outside the four choices logged in the user's words with its outcome, refusals naming the locked setting and the maintainer's address, written before the zip was built, listed in `package_results.py`'s `OK` output (or, if the script did not list it, the user told it is delivered beside the zip), and also returned to the user as its own file
+- [ ] `requested_changes.md` written in the run directory on this run (even if empty of requests), every request outside the four choices logged with its outcome, refusals naming the locked setting and the maintainer's address, written before the zip was built, listed in `package_results.py`'s `OK` output (or, if the script did not list it, the user told it is delivered beside the zip), and also returned to the user as its own file
 - [ ] No genome, API or sequence source substituted for the ones the repository specifies
 
 ---

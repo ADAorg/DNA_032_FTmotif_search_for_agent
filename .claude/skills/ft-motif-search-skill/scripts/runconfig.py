@@ -31,6 +31,8 @@ together — so the report always carries the parameters that produced it.
 Usage:
     python runconfig.py --init my_settings.yaml      # write a starter config
     python runconfig.py --check my_settings.yaml     # validate without running
+    python runconfig.py --write-config RUN_DIR --settings RUN_DIR/my_settings.yaml
+                                                      # write run_config.yaml
     python runconfig.py --log RUN_DIR --settings RUN_DIR/my_settings.yaml \
         --promoters re-extracted --genome-check passed   # write run_log.md
 """
@@ -378,8 +380,9 @@ def main() -> int:
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--init", metavar="PATH", help="write a starter settings file")
     g.add_argument("--check", metavar="PATH", help="validate a settings file")
+    g.add_argument("--write-config", metavar="RUN_DIR", help="write RUN_DIR/run_config.yaml")
     g.add_argument("--log", metavar="RUN_DIR", help="write RUN_DIR/run_log.md")
-    ap.add_argument("--settings", metavar="PATH", help="(--log) the run's my_settings.yaml")
+    ap.add_argument("--settings", metavar="PATH", help="(--write-config, --log) the run's my_settings.yaml")
     ap.add_argument("--promoters", metavar="SOURCE", help="(--log) 're-extracted' or 'reused:<fasta>'")
     ap.add_argument("--genome-check", metavar="RESULT", help="(--log) e.g. 'passed' or 'not available'")
     ap.add_argument("--replaced", nargs="*", default=[], metavar="OLD=NEW",
@@ -390,6 +393,18 @@ def main() -> int:
     ap.add_argument("--annotation", metavar="FILE",
                     help="(--log) GFF the notebook read, e.g. genomic.refseq_select_mrna.gff")
     args = ap.parse_args()
+
+    if args.write_config:
+        if not args.settings:
+            ap.error("--write-config needs --settings")
+        try:
+            cfg = load(args.settings)
+            p = save_run_record(cfg, Path(args.write_config) / "run_config.yaml")
+        except (LockedSettingError, FileNotFoundError, ValueError) as e:
+            print(f"{e}", file=sys.stderr)
+            return 1
+        print(f"wrote {p}")
+        return 0
 
     if args.log:
         if not (args.settings and args.promoters and args.genome_check):

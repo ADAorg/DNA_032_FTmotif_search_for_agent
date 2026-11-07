@@ -3,8 +3,8 @@ name: ft-motif-search-skill
 description: Scan gene promoters for transcription factor binding motifs using RSAT matrix-scan with CIS-BP matrices, and produce a Quarto HTML report, a site map figure and a hits table packaged as a zip. Use this skill whenever the user wants to search for TF motifs or binding sites in promoters, scan promoters with a PWM or position weight matrix, run matrix-scan, look for Spic / Nfe2l2 / Bach1 (or other CIS-BP) motifs in a gene panel, regenerate or update the promoter motif report, or asks anything about the DNA_018 / DNA_032 promoter motif workflow — even if they only say "run the motif search", "scan these genes", or hand over a gene list and a repo.
 metadata:
   display-name: "FT Motif Search"
-  version: "0.5.0"
-  updated: "2026-11-03"
+  version: "0.8.0"
+  updated: "2026-11-07"
   canonical: ".claude/skills/ft-motif-search-skill/ in the DNA_032 repository"
 ---
 
@@ -226,7 +226,7 @@ region extend?"*, with these options, in this order:
 | Option label | Description to show | `promoter_upstream_bp` |
 |---|---|---|
 | `1 kb` | 1,000 bp upstream + 200 bp downstream (1,201 bp) | 1000 |
-| `2 kb (Recommended)` | 2,000 bp upstream + 200 bp downstream (2,201 bp); published method default | 2000 |
+| `2 kb (Recommended)` | 2,000 bp upstream + 200 bp downstream (2,201 bp) — the default window for this analysis | 2000 |
 | `5 kb` | 5,000 bp upstream + 200 bp downstream (5,201 bp) | 5000 |
 
 The user can type any other length through "Other" — a whole number of bp,
@@ -246,7 +246,7 @@ the user asks to change the downstream length, it is a locked setting (see
 Say in the answer and the report which window was used, and flag it if it is
 not 2 kb: the Markov background is estimated from the scanned promoters, so a
 different window changes the background as well as the search space, and the
-results are not directly comparable with the published analysis.
+results are not directly comparable with the default 2 kb analysis.
 
 ### 6. Ask for the p-value (option box) — then stop
 
@@ -380,20 +380,58 @@ the site positions, strands, scores and p-values, which are the result itself �
 and everything that produces them: the promoter extraction, the matrix
 conversion, the RSAT calls and every parameter in them, and the hit table. It
 also includes what marker size means: size must keep growing with significance
-(a smaller p-value gives a larger marker), and that mapping is not changed.
+(a smaller p-value gives a larger marker), and that mapping is not changed. A
+request to move a site or change what marker size means is refused exactly
+like a locked analysis setting, and recorded the same way: in
+`requested_changes.md`'s "Refused or not possible" section, naming which of
+the two it would have touched.
 
 *Everything else visual may be changed*, including scaling. That covers marker
 shape, colour, font weight and size, labels, title, legend, figure size and
 layout, the order of the promoter lanes, and making all markers or all text
 larger or smaller together. The settings above expose only some of these, and
-the notebook does not read all of the ones they expose. For a visual change the
-settings do not cover, edit the **figure-drawing code of the notebook copy in
-the run directory**, then run that copy again with `quarto render`, as in step 7,
-so the figure and the report still come from the same notebook. The repository stays untouched. Do not redraw
-a figure outside the notebook and do not edit an output by hand.
+the notebook does not read all of the ones they expose.
 
-Record each such edit in `run_log.md`, naming the cell or function that was
-changed, so the run states that it used a modified notebook copy.
+**Use `scripts/restyle_sitemap.py` first, on the already-rendered
+`sitemap_*.svg`.** It recolours a motif, hides a gene's lane, edits the title
+or a label's text, sets font-weight or font-size, and swaps a marker's shape —
+each new shape sized from that marker's own existing bounding box, so a point
+that was bigger because it was more significant stays exactly as big. It never
+writes a coordinate or a `transform`, checks that invariant itself before
+writing anything, and refuses (with nothing written) if a requested gene or
+motif cannot be found. Run it on the SVG in the run directory:
+
+```bash
+python scripts/restyle_sitemap.py runs/<YYYYMMDD_HHMM>/matrix_scan/sitemap_<name>.svg \
+    --recolor Spic=#1B9E77 --hide-gene Sqstm1 --set-text title="Nrf2 network" --bold title \
+    --log runs/<YYYYMMDD_HHMM>/requested_changes.md
+```
+
+It regenerates `sitemap_<name>.png` and `sitemap_<name>.pdf` from the edited
+SVG (via `cairosvg`) so the three formats in the zip agree; if `cairosvg` is
+not installed it says so and leaves the PNG/PDF as they were — tell the user
+only the SVG changed rather than shipping formats that disagree. For a visual
+change it does not support (figure size, layout, promoter sort order, a new
+kind of element), edit the **figure-drawing code of the notebook copy in the
+run directory** instead, then run that copy again with `quarto render`, as in
+step 7, so the figure and the report still come from the same notebook. The
+repository stays untouched either way. Do not redraw a figure outside the
+notebook or `restyle_sitemap.py`, and do not edit an output by hand.
+
+With `--log`, `restyle_sitemap.py` writes its own entry into
+`requested_changes.md` (see below) from what it actually changed — do not
+also describe the same edit yourself.
+
+For a change applied by editing the notebook copy instead, there is no
+equivalent self-check — the figure-drawing code can do anything, and nothing
+here tries to constrain what. What keeps the boundary real is narrower and
+simpler: the edit stays inside the figure-drawing cell, never touches the
+analysis cells (where `hits`, `lim`, `tss_pos` or anything upstream of them is
+computed), and the record of it in `requested_changes.md` is **the new cell's
+actual code**, pasted in full as a fenced code block, not a prose description
+of it. That makes the entry something a reader can check for themselves —
+nothing in it computes a position — rather than something they have to take on
+trust. Name the cell or function changed, alongside the code.
 
 If a requested change would remove information the figure carries, say so once
 and offer a way to keep it. Circles instead of triangles, for example, drop the
@@ -412,6 +450,15 @@ it is there. That file contains only the settable part, so handing it to a
 colleague reproduces their run without carrying hidden method differences.
 Every run also writes `run_config.yaml` with the settable **and** locked
 values together, so the report always records the parameters that produced it.
+Nothing writes it on its own — call `runconfig.py` explicitly:
+
+```bash
+python scripts/runconfig.py --write-config runs/<YYYYMMDD_HHMM> \
+    --settings runs/<YYYYMMDD_HHMM>/my_settings.yaml
+```
+
+`verify_run.py` and `package_results.py` both require `run_config.yaml`; skip
+this call and the run cannot be packaged.
 
 Finally, write `run_log.md` — what was run, what differs from the defaults, and
 anything that went wrong. Write it on **every** run, not only when something
@@ -439,6 +486,29 @@ computes it against `SETTABLE_DEFAULTS` so the list is the same every time.
 Write the log after walking the checklist at the end of this file, so
 `--unticked` reflects it; if the run stops early, still write the log with
 what was done and why it stopped.
+
+Also write `requested_changes.md` — a register of anything the user asked for
+beyond the four questions, in their own words, whether it was applied, refused,
+not possible here, or needs the maintainer. Write it on **every** run, even
+when nothing was asked (it then says so); a missing file must never be read as
+"nothing was requested". Its "Applied" entries, for a visual change made with
+`restyle_sitemap.py --log`, are written by that script itself from what it
+actually changed — do not duplicate them by hand. Add everything else yourself,
+one entry per request:
+
+```markdown
+## Refused or not possible
+- "<what the user asked>" → <reason>. Locked: <setting>. Contact sara.salazar@gimm.pt.
+
+## For the maintainer
+- "<what the user asked>" → needs a code or method change, not a setting
+```
+
+For a refusal, give the setting's name and relay the message from
+`runconfig.py` as it was shown. Do not log the answers to the four questions —
+`my_settings.yaml` and `run_config.yaml` already hold those — and do not log
+your own suggestions as the user's requests; if you suggested something and
+the user accepted it, record it as *suggested by the agent, accepted*.
 
 ### 8. Show the site map, then ask about the zip (option box) — then stop
 
@@ -542,7 +612,8 @@ machine, tell them which tracked files changed and let them restore them.
 - `scripts/check_genome.py` — genome completeness gate
 - `scripts/check_genes.py` — fast RefSeq Select lookup, UniProt links for misses
 - `scripts/motifscan.py` — matrices, background, scan; importable or CLI
-- `scripts/runconfig.py` — settable vs locked settings; load, validate, save; write `run_log.md`
+- `scripts/runconfig.py` — settable vs locked settings; load, validate, save; write `run_config.yaml` and `run_log.md`
+- `scripts/restyle_sitemap.py` — presentation-only edits to a rendered site map SVG (colour, hidden gene, text, font, marker shape); never touches a position; `--log` writes to `requested_changes.md`
 - `scripts/package_results.py` — the results contract; builds the zip or refuses and names what is missing
 
 ## Checklist before finishing
@@ -567,10 +638,11 @@ that skill's checklist covers the clone and the environment; walk both.
 - [ ] Notebook copied into the run directory with stored outputs stripped, rendered with `--execute`; the committed notebook was never rendered in place
 - [ ] Notebook copy executed once, by `quarto render` only — never nbclient, papermill or nbconvert — with the system `python3`, and the RSAT environment never on `PATH`
 - [ ] No locked setting changed or worked around; any request for one was refused with the `runconfig.py` message
-- [ ] Any visual change the settings do not cover was made only in the figure-drawing code of the notebook copy in the run directory — never in the repository, never in the analysis cells — with no site position changed and the size-to-significance mapping intact, and each edit recorded in `run_log.md`
+- [ ] Any visual change was made with `restyle_sitemap.py` where it could handle it, or otherwise only in the figure-drawing code of the notebook copy in the run directory — never in the repository, never in the analysis cells — with no site position changed and the size-to-significance mapping intact; for a notebook-copy edit, the new cell's actual code (not a description of it) is in `requested_changes.md`
 - [ ] All outputs written to `runs/<YYYYMMDD_HHMM>/` (or a path outside the repository); `git status` shows the repository unchanged
 - [ ] `my_settings.yaml` and `run_config.yaml` written to the run directory, and the user told where they are
 - [ ] `run_log.md` written by `runconfig.py --log` (not by hand), with the true promoter source, genome check result, gene replacements and every unticked item from this list
+- [ ] `requested_changes.md` written on every run (even if empty of requests): `restyle_sitemap.py --log` entries for any visual change it applied, and every other out-of-scope request added by hand with its outcome — applied, refused (naming the locked setting), not possible here, or needs the maintainer
 - [ ] Site map PNG shown in the chat with its summary, and the site map SVG and PDF handed back as files (step 8), before any packaging
 - [ ] Notebook copy run with `DNA032_RESULTS` set to the run directory, so nothing was written to the repository's `Results/`
 - [ ] `verify_run.py` passed (it runs inside `package_results.py`) or its failures were reported; if the repository changed, the run was discarded and redone from a fresh clone, not repaired with git
