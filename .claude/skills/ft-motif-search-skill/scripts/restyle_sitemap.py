@@ -463,17 +463,28 @@ def _append_log(log_path: Path, svg_name: str, messages: list[str]) -> str:
             "## For the maintainer\n"
         )
     text = log_path.read_text()
+    marker = "## Applied\n"
+    # The file may already exist without this heading -- created by hand, by
+    # an earlier version of this script, or mid-edit by the agent -- so don't
+    # assume it's there just because the file is. Add any missing section
+    # heading rather than failing on it.
+    for heading in ("## Applied\n", "## Refused or not possible\n", "## For the maintainer\n"):
+        if heading not in text:
+            if not text.endswith("\n"):
+                text += "\n"
+            text += ("\n" if text.strip() else "") + heading
     timestamp = datetime.now().isoformat(timespec="seconds")
     entries = "".join(f"- [{timestamp}] {svg_name}: {m}\n" for m in messages)
     # Append at the END of the "## Applied" section (right before the next
-    # "## " heading), so repeated calls accumulate in chronological order
-    # instead of each new entry pushing the previous ones down.
-    marker = "## Applied\n"
+    # "## " heading, or at the end of the file if "## Applied" is the last
+    # section), so repeated calls accumulate in chronological order instead
+    # of each new entry pushing the previous ones down.
     start = text.index(marker) + len(marker)
-    next_heading = text.index("\n## ", start)
-    section = text[start:next_heading].strip("\n")
+    next_heading_pos = text.find("\n## ", start)
+    end = next_heading_pos if next_heading_pos != -1 else len(text)
+    section = text[start:end].strip("\n")
     new_section = (section + "\n" + entries) if section else entries
-    log_path.write_text(text[:start] + "\n" + new_section + text[next_heading:])
+    log_path.write_text(text[:start] + "\n" + new_section + text[end:])
     return f"recorded this run's changes in {log_path}"
 
 
