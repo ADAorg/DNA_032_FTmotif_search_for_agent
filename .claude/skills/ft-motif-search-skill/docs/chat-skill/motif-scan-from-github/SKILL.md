@@ -1,6 +1,7 @@
 ---
 name: motif-scan-from-github
 description: Fetch the DNA_032 promoter motif-search repository from GitHub and run it here in chat — install RSAT, scan promoters for transcription factor binding motifs with matrix-scan, and produce the report and site map. Use this skill whenever the user wants to run the promoter motif search, scan promoters for TF motifs, re-render the motif report, try a different motif or p-value against existing promoters, or asks to pull the motif-search repo and work with it, without having a local checkout. Also use it for questions about how that workflow operates.
+model: sonnet
 metadata:
   display-name: "Motif Scan from GitHub"
   version: "0.8.0"
