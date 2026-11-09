@@ -35,6 +35,12 @@ Entry format: `- **TAG** — what changed. *Files:* …`
 
 
 
+## 2026-11-09
+
+### Requested by the user
+
+- **USER** — Both skills pinned to run on Sonnet (`model: sonnet` added to each `SKILL.md`'s frontmatter), to stop the harness defaulting this well-specified, existing-code workflow to a costlier model. *Files:* both skills. Version bumped to 0.9.0 to match (the commit that added the field did not bump it).
+
 ## 2026-11-07
 
 ### Requested by the user

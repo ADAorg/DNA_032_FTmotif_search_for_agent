@@ -4,8 +4,8 @@ description: Scan gene promoters for transcription factor binding motifs using R
 model: sonnet
 metadata:
   display-name: "FT Motif Search"
-  version: "0.8.0"
-  updated: "2026-11-07"
+  version: "0.9.0"
+  updated: "2026-11-09"
   canonical: ".claude/skills/ft-motif-search-skill/ in the DNA_032 repository"
 ---
 

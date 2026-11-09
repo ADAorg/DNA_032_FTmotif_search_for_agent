@@ -4,8 +4,8 @@ description: Fetch the DNA_032 promoter motif-search repository from GitHub and 
 model: sonnet
 metadata:
   display-name: "Motif Scan from GitHub"
-  version: "0.8.0"
-  updated: "2026-11-07"
+  version: "0.9.0"
+  updated: "2026-11-09"
   repository: "https://github.com/ADAorg/DNA_032_FTmotif_search_for_agent"
   companion: "ft-motif-search-skill, which lives inside the repository"
 ---
